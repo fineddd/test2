@@ -1,0 +1,839 @@
+syntax = "proto2";
+
+package SGMsg;
+
+import "SGMsgBase.proto";
+//import "SGMsgAlliance.pb";
+
+enum MessageType
+{
+	TXT = 1;
+    PICTURE = 2;
+    POS = 3;
+    ASSEMBLE = 4;
+    ALLIANCE_POS = 5;
+    ACHIEVEMENT = 6;
+    MAIL_REPORT = 7;
+	DoomsdayMonster = 8;
+    AT = 9;
+    BIG_EMOJI = 10;
+
+    ALLIANCE_SYS = 20;
+    RED_PACKET = 21;
+    NPCTOWN_SYS = 22;
+    ALLIANCE_INVITE = 23;
+	ALLIANCE_BOSS = 24;
+    ALLIANCE_LEADER = 25;
+    ALLIANCE_LEADER_SYS = 26;
+    ESCORT_CAR = 27;
+	NPCTOWN_AREA = 28;// 占领发送世界频道
+    
+    GROUP_SYS = 30; //群聊系统消息
+}
+
+enum EChatLeaderEvent
+{
+	ECHAT_LEADER_NIL                        = 0; //非事件触发
+	ECHAT_LEADER_JOIN_ALLIANCE_REQ          = 1; //有新的入盟申请
+	ECHAT_LEADER_BUILD_CENTER_FORT_LACK     = 2; //未符合建造要塞人数要求时
+	ECHAT_LEADER_UNBUILD_CENTER_FORT        = 3; //符合条件但未建造要塞时
+	ECHAT_LEADER_NPC_TOWN_READY 	        = 4; //NPC TOWN 0点提前预告
+    ECHAT_LEADER_TECH_STUDY                 = 5; //科技可研究提示
+
+	ECHAT_LEADER_ALLIANCE_CHAPTER           = 6;  	//征程任务开启提醒
+	ECHAT_LEADER_MILESTONE_STARTUP          = 7;  	//里程碑事件开启提醒
+	ECHAT_LEADER_MILESTONE_CLOSE            = 8;   //里程碑事件关闭提醒
+    ECHAT_LEADER_ALLIANCE_DONATION_MAIL     = 9;    //联盟捐献邮件
+}
+
+message FriendData
+{
+	required GUID player_id 		 = 1;
+	optional string player_name 	 = 2;
+	optional string alliance_tag 	 = 3;
+	optional int64 avatar_id 		 = 4;
+	optional bool is_online 		 = 5; //是否在线，只有friend_list有用
+	optional int64 time 			 = 6; //申请时间，只有apply_list有用
+	optional bool delete 			 = 7; //推送时，如果这个字段为true，则客户端删除该数据
+	optional int32 area_id 		 	 = 8;
+	optional int64 avatar_box		 = 9;
+	optional string avatar_url 		 = 10;
+	optional int64 npctown_official  = 11;   //npc城镇的官员ID
+}
+
+message FriendBasic
+{
+	repeated FriendData friend_list = 1;
+	repeated FriendData apply_list = 2;
+	repeated FriendData apply_me_list = 3;
+	repeated FriendData black_list = 4;
+}
+
+message MessageData
+{
+	required string message 		 	= 1; //单条消息的数据
+	required int32 message_type 	 	= 2;
+	optional int64 index				= 3; //消息序号
+	optional GUID player_id 		 	= 4; //所有optional字段都是服务器来填充
+	optional string player_name 	 	= 5;
+	optional string alliance_tag 	 	= 6;
+	optional int64 avatar_id 		 	= 7; //废弃
+	optional int32 area_id 		 	 	= 8;
+	optional int64 time				 	= 9;
+	optional int32 client_flag 		 	= 10; //客户端自己定义
+	optional int32 alliance_position 	= 11; //帮会职位
+	optional int64 avatar_box			= 12; //头像框
+	optional string avatar_url			= 13; //头像
+	optional int64 npctown_official  	= 14;   //npc城镇的官员ID
+	repeated string param_list			= 15;	//参数列表
+	optional int64 vip_level			= 16;	//vip等级
+	optional int64 castle_level			= 17;	//城堡等级
+    optional string quote_message 	 	= 18;   //引用消息
+    optional int64 quote_index 	 	    = 19;   //引用的消息序号
+    optional int32 gender               = 20;   //性别
+    optional int64 upvote               = 21;   //点赞次数
+    optional int64 officer_id  	        = 22;   //官员ID
+    optional int64 title_dressup        = 23;   //铭牌
+    repeated PlayerBasicInfo base_info  = 24;  //附带的其他玩家信息
+}
+
+message ChatData
+{
+	required GUID chat_id 				 			 = 1; //聊天室数据,玩家自用,只记一份
+	required int32 channel  			 			 = 2;
+	repeated MessageData message_list 	 			 = 3; //根据ChatRoomData内数据填充
+	optional GUID player_id 		 				 = 4; //所有optional字段都是服务器来填充
+	optional string player_name 		 			 = 5;
+	optional string alliance_tag 		 			 = 6;
+	optional int64 avatar_id 			 			 = 7;
+	optional int32 area_id 			 			 	 = 8;
+	optional bool not_disturb 			 			 = 9;   //免打扰
+	optional bool top 					 			 = 10;
+	optional int64 last_talk_time		 			 = 11; //服务器自用
+	optional string alliance_name 		 			 = 12;
+	optional AllianceSymbol alliance_symbol 		 = 13;
+	optional int64 avatar_box						 = 14;
+	optional string avatar_url 			 			 = 15;
+	optional int64 npctown_official             	 = 16;   //npc城镇的官员ID
+	repeated int64 at_indexes						 = 17; //@类型的消息index
+	optional int64 vip_level						 = 23; // vip等级
+	optional int64 castle_level					     = 24; // 城堡等级
+    optional int64 upvote                            = 25;  //点赞
+    optional string chat_name                        = 26;  //聊天房间名
+    repeated PlayerBasicInfo member_info             = 27;  //成员基本信息
+    optional AllianceNotice alliance_notice          = 28;  //联盟公告
+}
+
+message ChatRoomData
+{
+	required int32 channel  				 = 1; //聊天室数据,所有人共用,只记一份
+	repeated MessageData message_list 		 = 2;
+	repeated GUID player_ids 				 = 3;
+	optional int64 max_index 				 = 4; //聊天室消息自增序号
+    optional string chat_name                = 5;  //聊天房间名
+}
+
+message ChatBasic
+{
+	optional ChatData area_chat         = 1;
+	optional ChatData alliance_chat     = 2;
+	repeated ChatData player_chats 		= 3;
+	optional ChatData new_hand_chat     = 4;
+	optional ChatData language_chat     = 5;
+    optional ChatData alliance_r4_chat  = 6;
+    repeated ChatData group_chats 		= 7;    //群聊
+    optional int32 group_index          = 8;
+}
+
+message PS2PSRpcFriend
+{
+	optional int64 result 				 = 1;   //结果
+	required GUID from_player_id 		 = 2;
+	required int32 from_player_area_id   = 3;
+	required GUID to_player_id 			 = 4;
+	required int32 to_player_area_id 	 = 5;
+	optional int64 time 				 = 6;
+}
+
+//	MSG_C2S_REQ_GET_FRIEND_LIST		 	 = 2200;
+message C2SReqGetFriendList
+{
+}
+
+//	MSG_S2C_RSP_GET_FRIEND_LIST		 	 = 2201;
+message S2CRspGetFriendList
+{
+	repeated FriendData friend_list = 1;
+	repeated FriendData apply_list = 2;
+	repeated FriendData apply_me_list = 3;
+	repeated FriendData black_list = 4;
+}
+
+//	MSG_C2S_REQ_APPLY_FRIEND			 = 2202;
+message C2SReqApplyFriend
+{
+	required GUID to_player_id			 	 = 1;	//被申请玩家的id
+	required int32 to_player_area_id 		 = 2;   //被申请玩家的area_id
+}
+
+//	MSG_C2S_REQ_DEAL_APPLY_FRIEND		 = 2203;
+message C2SReqDealApplyFriend
+{
+	required GUID apply_player_id			 	 = 1;	//申请玩家的id
+	required int32 apply_player_area_id 		 = 2;   //申请玩家的area_id
+	required bool accept					 	 = 3;	//是否接受
+}
+
+//	MSG_C2S_REQ_DELETE_FRIEND			 = 2204;
+message C2SReqDeleteFriend
+{
+	required GUID delete_player_id			 	 = 1;	//删除好友id
+	required int32 delete_player_area_id 		 = 2;   //删除好友的area_id
+}
+
+//	MSG_C2S_REQ_BLACK_SOMEONE			 = 2205;
+message C2SReqBlackSomeone
+{
+	required GUID black_player_id			 	 = 1;	//拉黑某人
+	required bool black						 	 = 2;	//是否拉黑
+}
+
+// MSG_S2C_RSP_CHAT_BAN                  = 2228;   //玩家已被禁言(剩余秒)
+message S2CRspChatBan
+{
+	required int64 chat_ban_time = 1;	// 剩余秒
+}
+
+
+//	MSG_S2C_NTF_UPDATE_FRIEND			 = 2206;
+message S2CNtfUpdateFriend
+{
+	enum NtfType
+	{
+	    FRIEND = 1;
+	    APPLY = 2;
+	    APPLYME = 3;
+	    BLACK = 4;
+	}
+	required int32 ntf_type = 1;
+	required FriendData update_data = 2;
+}
+
+// MSG_C2S_REQ_PUBLISH_ALLIANCE_NOTICE         = 2240;   //联盟公告发布
+message C2SReqPublishAllianceNotice
+{
+	optional string notice_content = 1;     // 公告内容
+    optional int32 VoteTimeLmtIndex = 2;    // 持续时间索引
+    optional bool bmult_select = 3;         //是否多选
+    repeated string option_content = 4;    //选项内容
+    optional int32 notice_type = 5;        //通知类型
+}
+
+//MSG_C2S_REQ_UPVOTE_ALLIANCE_NOTICE          = 2241;   //联盟点赞公告
+message C2SReqUpvoteAllianceNotice
+{
+	optional GUID id = 1; // 公告索引
+}
+
+//MSG_S2C_NTF_UPVOTE_ALLIANCE_NOTICE          = 2241;   //通知联盟公告点赞消息
+message S2CNtfUpvoteAllianceNotice
+{
+    optional GUID id = 1; // 公告索引
+    optional int64 upvote = 2;  //点赞次数
+}
+
+//	MSG_C2S_REQ_SET_CHAT_ATTRIBUTE		 = 2207;
+message C2SReqSetChatAttribute
+{
+	required GUID chat_id 				 = 1;
+	required int32 channel  			 = 2;
+	optional bool not_disturb			 = 3;	//免打扰
+	optional bool top					 = 4;	//置顶
+    optional string chat_name            = 5;   //聊天室名字
+    
+    optional PlayerBasicInfo base_info   = 10;  //服务器填充
+}
+
+//	MSG_C2S_REQ_GET_CHAT_LIST		 = 2208;
+message C2SReqGetChatList
+{
+    enum DataType
+    {
+        Pack = 0;   //全量
+        Alliance = 1;   //联盟相关
+        Cross = 2;  //跨服相关
+    }
+    optional int32 data_type            = 1;
+    
+	optional int32 area_id              = 101; //玩家小区ID，后端填充
+	optional int64 chat_language		= 102; //聊天语言ID，后端填充
+    optional bool welcome_alliance      = 103;  //是否开启入盟欢迎, 后端填充
+}
+
+//	MSG_S2C_RSP_GET_CHAT_LIST		 = 2209;
+message S2CRspGetChatList
+{
+	repeated ChatData chat_list 		= 1;
+	optional GUID player_id 			= 2;
+    optional bool welcome_alliance      = 3;
+    repeated int64 leader_msg_switch_list = 4;
+    optional bool only_alliance         = 5;    //仅仅联盟数据
+}
+
+//	MSG_C2S_REQ_SEND_CHAT_MESSAGE		 = 2210;
+message C2SReqSendChatMessage
+{
+	required GUID chat_id 				 = 1;
+	required int32 channel  			 = 2;
+	required MessageData message 		 = 3;
+
+	optional int32 area_id               = 101; //玩家小区ID，后端填充
+	optional int64 chat_language		 = 102; //聊天语言ID，后端填充
+}
+
+//	MSG_S2C_NTF_CHAT_MESSAGE		 = 2211;
+message S2CNtfChatMessage
+{
+	required GUID chat_id 				 = 1;
+	required int32 channel  			 = 2;
+	required MessageData message 		 = 3;
+
+	optional int64 chat_language		 = 101; //聊天语言ID，后端填充
+}
+
+//	MSG_S2S_NTF_CHAT_MESSAGE		 = 2211;
+message S2SNtfChatMessage
+{
+	required S2CNtfChatMessage ntf_chat = 1;
+	repeated GUID player_ids		 = 2; //聊天语言ID，后端填充
+}
+
+//MSG_C2S_REQ_UPVOTE_CHAT_MESSAGE             = 2236;   //发送点赞消息
+message C2SReqSendUpvoteChatMessage
+{
+	optional GUID chat_id 				 = 1;
+	required int32 channel  			 = 2;
+    optional int32 message_type 	 	 = 3;
+	optional int64 index				 = 4; //消息序号
+
+	optional int32 area_id               = 101; //玩家小区ID，后端填充
+	optional int64 chat_language		 = 102; //聊天语言ID，后端填充
+}
+
+//MSG_S2C_NTF_UPVOTE_CHAT_MESSAGE             = 2211;   //点赞推送
+message S2CNtfUpvoteChatMessage
+{
+	optional GUID chat_id 				 = 1;
+	required int32 channel  			 = 2;
+    optional int32 message_type 	 	 = 3;
+	optional int64 index				 = 4; //消息序号
+    optional int64 upvote				 = 5; //点赞次数
+
+	optional int64 chat_language		 = 101; //聊天语言ID，后端填充
+}
+
+//	MSG_C2S_REQ_GET_CHAT_MESSAGES	= 2214;
+message C2SReqGetChatMessages
+{
+	optional GUID chat_id 				 = 1;
+	required int32 channel  			 = 2;
+	optional int64 index 				 = 3; //将会返回这个序号之前的消息
+	required int32 num 					 = 4; //返回数量
+
+	optional int32 area_id               = 101; //玩家小区ID，后端填充
+	optional int64 chat_language		 = 102; //聊天语言ID，后端填充
+}
+
+//	MSG_S2C_RSP_GET_CHAT_MESSAGES	= 2215;
+message S2CRspGetChatMessages
+{
+	required GUID chat_id 				 = 1;
+	required int32 channel  			 = 2;
+	repeated MessageData message_list 	 = 3;
+	optional bool no_more 				 = 4; //通知前端没有更多了
+}
+
+//	MSG_S2C_NTF_CHAT_ATTRIBUTE		 = 2216;
+message S2CNtfChatAttribute
+{
+    enum NtfType
+    {
+        Del = 1;    //删除
+        ReadNotice = 2;   //投票公告转为已读
+        UgentNotice = 3;  //公告转为紧急公告
+        UgentTip = 4;     //紧急公告tips
+        SelectVoteOption = 5;   //更新投票选项
+    }
+	required ChatData data               = 1;
+	optional bool show 					 = 2;
+    optional int32 ntf_type              = 3;   
+}
+
+//MSG_S2S_NTF_CHAT_ATTRIBUTE                     = 2239;   //通知聊天属性
+message S2SNtfChatAttribute
+{
+    message NtfInfo
+    {
+        optional int32 area_id = 1;
+        optional GUID player_id = 2;
+    }
+    optional S2CNtfChatAttribute chat_attr  = 1;
+    repeated NtfInfo ntf_info = 2;
+}
+
+
+//MSG_C2S_REQ_SEARCH_PLAYER                     = 2217;   //请求搜索用户
+message C2SReqSearchPlayer
+{
+	optional string search = 1; // 搜索内容
+	optional int64 search_id = 2;  //搜索ID
+}
+
+//MSG_S2C_RSP_SEARCH_PLAYER_RESULT              = 2218;   //请求搜索用户结果
+message S2CRspSearchPlayerResult
+{
+    repeated PlayerBasicInfo player_list = 1; // 搜索到的用户列表
+}
+
+//MSG_C2S_REQ_SET_CHAT_SHOW_LINE              = 2238;   //设置聊天主界面显示行数
+message C2SReqSetChatShowLine
+{
+	optional int32 show_line = 1;   // 显示行数
+}
+
+//----------------------新版聊天室-------------------------//
+
+//	MSG_C2S_REQ_CREATE_CHAT			 = 2219;
+message C2SReqCreateChat
+{
+	required int32 channel        	 = 1;
+	repeated GUID player_ids 	 	 = 2;
+    required string chat_name               = 3;   //聊天室名字
+    
+    //服务器填充
+    optional int32 create_max_size     = 10;  //聊天创建上限
+    optional string player_name      = 11;  //邀请人的名字
+}
+
+//	MSG_C2S_REQ_DELETE_CHAT			 = 2220;
+message C2SReqDeleteChat
+{
+	required GUID chat_id       = 1;
+    optional int32 channel      = 2;
+    
+    optional int32 area_id      = 10;   //服务器填充
+}
+
+//	MSG_C2S_REQ_ADD_CHAT_MEMBER		 = 2221;
+message C2SReqAddChatMember
+{
+	required GUID chat_id      		 = 1;
+	repeated GUID player_ids 	     = 2; //增加的玩家ID
+    optional int32 channel           = 3;
+    
+    optional string player_name      = 11;  //邀请人的名字(服务器填充)
+}
+
+//	MSG_C2S_REQ_REM_CHAT_MEMBER		 = 2222;
+message C2SReqRemChatMember
+{
+	required GUID chat_id      		 = 1;
+	repeated GUID player_ids 	     = 2;   //请离的玩家ID
+    optional int32 channel           = 3;
+    
+    repeated PlayerBasicInfo base_info = 10; //(服务器填充)
+}
+
+//	MSG_C2S_REQ_LEAVE_CHAT = 2239;   //请求离开聊天室
+message C2SReqLeaveChatMember
+{
+	required GUID chat_id      		 = 1;
+    optional int32 channel           = 2;
+    
+    optional PlayerBasicInfo base_info = 10; //(服务器填充)
+}
+
+//MSG_C2S_REQ_QUERY_CHAT_MEMBER               = 2245;   //请求聊天室所有成员
+message C2SReqQueryChatMember
+{
+	required GUID chat_id      		 = 1;
+}
+
+//MSG_S2C_RSP_QUERY_CHAT_MEMBER               = 2246;   //请求聊天室所有成员
+message S2CRspQueryChatMember
+{
+	required GUID chat_id      		 = 1;
+    repeated PlayerBasicInfo base_info = 2;
+}
+
+//MSG_S2S_RPC_QUERY_CHAT_MEMBER     = 2246;   //请求聊天室所有成员
+message S2SRpcQueryChatMember
+{
+	required GUID chat_id      		 = 1;
+    optional int32 area_id           = 2;
+    optional GUID player_id          = 3;
+    repeated GUID query_ids          = 4;   //查询的玩家ID
+    optional int32 result            = 5;
+}
+
+//	MSG_C2S_REQ_BLACK_MANY			 = 2224;
+message C2SReqBlackMany
+{
+	repeated GUID black_player_ids			 	 = 1;	//批量拉黑
+	required bool black						 	 = 2;	//是否拉黑
+}
+
+//	MSG_S2C_NTF_UPDATE_FRIENDS			= 2225;
+message S2CNtfUpdateFriends
+{
+	repeated S2CNtfUpdateFriend update_list      = 1;
+}
+
+//	MSG_S2S_REQ_CHANGE_CHAT_PLAYER_AREA		 = 2230;
+message S2SReqChangeChatPlayerArea
+{
+	optional int64 area_id 			= 1;
+}
+
+//----------------------红包-------------------------//
+//红包存储结构
+message AllianceRedPacket
+{
+	required GUID red_packet_id 	 	 = 1;		//红包唯一GUID
+	optional MessageData message_list 	 = 2;		//红包具体信息
+	repeated OpenRedPacketInfo open_list = 3;		//红包打开列表
+	repeated int32 result_list			 = 4;		//红包随机金额
+}
+
+//	MSG_C2S_REQ_OPEN_RED_PACKET			 = 2226;
+message C2SReqOpenRedPacket
+{
+	required GUID red_packet_id 	 	= 1;
+	required int64 config_id 	 		= 2; //红包表配置ID,红包的meesage_type是21
+}
+
+message OpenRedPacketInfo
+{
+	optional GUID player_id 			= 1;
+	optional string player_name			= 2;
+	optional string alliance_tag		= 3;
+	optional int64 item_id				= 4;
+	optional int64 item_num				= 5;
+	optional int64 time					= 6;
+	optional string avatar_url			= 7;
+	optional int32 avatar_box			= 8;
+}
+
+//MSG_C2S_REQ_REDPACKET_OPEN_LIST          	= 2243;   //请求红包打开列表
+message C2SReqRedPacketOpenList
+{
+	required GUID red_packet_id 	 	 = 1;		//红包唯一GUID
+}
+
+//MSG_S2C_RSP_REDPACKET_OPEN_LIST          	= 2244;   //响应红包打开列表
+message S2CRspRedPacketOpenList
+{
+	repeated OpenRedPacketInfo open_list = 3;		//红包打开列表
+}
+
+//MSG_S2C_NTF_REDPACKET_LIST_UPDATE          	= 2245;   //推送红包更新
+message S2CNtfRedPacketListUpdate
+{
+	message RedPacketInfo
+	{
+		required GUID red_packet_id 	 	 = 1;		//红包唯一GUID
+		optional MessageData message_list 	 = 2;		//红包具体信息
+		repeated GUID open_player_guid_list  = 3;		//打开红包玩家列表
+	}
+	repeated RedPacketInfo redpacket_list = 1;	//红包列表
+}
+
+//	MSG_S2C_RSP_OPEN_RED_PACKET			 = 2227;
+message S2CRspOpenRedPacket
+{
+	enum OpenResult
+	{
+	    OPEN_SUCCESS = 1; //抢到了
+	    OPEN_FAILED = 2; //没抢到
+	    ALREADY_OPEN = 3; //过去抢过
+	    EXPIRED = 4; //过期了
+	    OPEN_TIMES_LIMIT = 5; //抢红包次数用尽
+	}
+	required int64 result           	= 1;
+	required GUID red_packet_id 	 	= 2;
+	required int64 config_id 	 		= 3;
+	optional int64 charge_bag_id 		= 4;
+	repeated OpenRedPacketInfo open_list = 5;
+	optional string player_name 		= 6;
+	optional string alliance_tag 		= 7;
+	optional string avatar_url			= 8;
+	optional int32 avatar_box			= 9;
+}
+
+//MSG_C2S_REQ_RED_PACKET_LIST                 = 2233;   //请求获取未领取的联盟红包列表
+message C2SReqGetPacketList
+{
+	optional int32 index = 1;			//消息唯一序号
+	optional int32 num = 2;				//请求数量
+}
+
+//MSG_S2C_RSP_RED_PACKET_LIST                 = 2234;   //响应未领取的联盟红包列表
+message S2CRspGetPacketList
+{
+	message RedPacketInfo
+	{
+		required GUID red_packet_id 	 	 = 1;		//红包唯一GUID
+		optional MessageData message_list 	 = 2;		//红包具体信息
+		repeated GUID open_player_guid_list  = 3;		//打开红包玩家列表
+	}
+	
+	repeated RedPacketInfo redpacketinfo_list  	 = 1;
+}
+
+//	MSG_PS2CS_RPC_CREATE_CHAT				 = 50062;
+message PS2CSRpcCreateChat
+{
+	optional int64 result           		 = 1;
+	required int32 channel        			 = 2;
+	repeated PlayerBasicInfo player_list 	 = 3;
+	optional GUID owner_id 		 			 = 4; //群聊需要群主
+	optional string chat_name 	 			 = 5; //群聊名字
+	optional GUID chat_id                    = 6; //返回的聊天室ID
+}
+
+//	MSG_PS2CS_RPC_DELETE_CHAT		 = 50063;
+message PS2CSRpcDeleteChat
+{
+	optional int64 result            = 1;
+	required GUID player_id   		 = 2;
+	required GUID chat_id        	 = 3;
+}
+
+//	MSG_PS2CS_RPC_ADD_CHAT_MEMBER		 = 50064;
+message PS2CSRpcAddChatMember
+{
+    optional int64 result           		 = 1;
+	required int32 channel        			 = 2;
+	repeated PlayerBasicInfo player_list 	 = 3;//被邀请人的玩家信息
+	optional GUID player_id 		 	     = 4; //邀请人的玩家ID(目前只有群主才能邀请)
+	optional string chat_name 	 			 = 5; //群聊名字
+	optional GUID chat_id                    = 6; //返回的聊天室ID
+    optional string player_name              = 7; //邀请人的名字
+    optional bool bcreate                    = 8; //是否首次创建
+}
+
+//	MSG_PS2CS_RPC_REM_CHAT_MEMBER		 = 50065;
+message PS2CSRpcRemChatMember
+{
+	optional int64 result            = 1;
+	required GUID player_id   		 = 2;
+	required GUID chat_id        	 = 3;
+	required GUID rem_player_id      = 4;
+}
+
+//	MSG_S2S_RPC_GET_CHAT_LIST		 = 50066;
+message S2SRpcGetChatList
+{
+	optional int64 result            = 1;
+	required GUID player_id          = 2;
+	repeated GUID black_list 		 = 3;
+	repeated ChatData chat_list 	 = 4;
+	optional int32 area_id 			 = 5;
+	optional int64 chat_language 	 = 6;
+    repeated int64 leader_msg_switch_list = 7;   //r4频道leader消息开关列表
+}
+
+//	MSG_S2S_RPC_GET_CHAT_MESSAGES		 = 50067;
+message S2SRpcGetChatMessages
+{
+	optional int64 result           	 = 1;
+	required GUID player_id     	     = 2;
+	required GUID chat_id 				 = 3;
+	required int32 channel  			 = 4;
+	required int64 index 				 = 5; //将会返回这个序号之前的消息
+	required int32 num 					 = 6; //返回数量
+	repeated MessageData message_list 	 = 7;
+	optional bool no_more 				 = 8;
+	repeated GUID black_list 			 = 9;
+	optional int32 area_id 			 	 = 10;
+	optional int64 chat_language 		 = 11;
+}
+
+//	MSG_GS2PS_RPC_CREATE_RED_PACKET			= 50071;
+message GS2PSRpcCreateRedPacket
+{
+	optional int64 result           		 = 1;
+	optional int64 config_id 	 			 = 2;
+	optional int32 num 	 			 		 = 3;
+	optional int64 charge_bag_id 			 = 4; //弃用
+	optional GUID player_id 		 		 = 5;
+	optional string player_name 	 	 	 = 6;
+	optional string alliance_tag 	 		 = 7;
+	optional int64 avatar_id 		 		 = 8;
+	optional int32 area_id 		 	 		 = 9;
+	optional int64 time				 		 = 10;
+	optional int32 alliance_position 		 = 11; //帮会职位
+	optional int64 avatar_box				 = 12;	//头像框
+	optional string avatar_url 		 		 = 13;
+	optional int32 base_level				 = 14;	//玩家主基地等级
+	
+	optional int64 vip_level				 = 15;	//vip等级
+	optional int64 castle_level				 = 16;	//城堡等级
+    optional int32 gender               	 = 17;  //性别
+    optional int64 officer_id  	        	 = 18;  //官员ID
+    optional int64 title_dressup        	 = 19;  //铭牌
+}
+
+//	MSG_GS2PS_RPC_OPEN_RED_PACKET			= 50072;
+message GS2PSRpcOpenRedPacket
+{
+	optional int64 result           		 = 1; //同2227的OpenResult
+	required GUID red_packet_id 	 		 = 2;
+	required int64 config_id 	 			 = 3;
+	optional int64 charge_bag_id 			 = 4;
+	repeated OpenRedPacketInfo open_list 	 = 5;
+	optional GUID player_id   		         = 6; //以下是开红包的玩家信息
+	optional string player_name				 = 7;
+	optional string alliance_tag			 = 8;
+	optional int64 item_id					 = 9;
+	optional int64 item_num					 = 10;
+	optional string owner_player_name		 = 11;//红包创建者的名字
+	optional string owner_alliance_tag		 = 12;//红包创建者的帮会简称
+	optional string avatar_url 				 = 13;//发红包的人
+	optional int32 avatar_box 				 = 14;//发红包的人
+}
+
+//MSG_GS2AS_RPC_CREATE_RED_PACKET             = 50073;//请求创建红包(game-->alliance)
+message GS2ASRpcCreateRedPacket
+{
+	optional int64 result           		 = 1;
+	optional int64 config_id 	 			 = 2;
+	optional int32 num 	 			 		 = 3;
+	optional int64 charge_bag_id 			 = 4; //弃用
+	optional GUID player_id 		 		 = 5;
+	optional string player_name 	 	 	 = 6;
+	optional string alliance_tag 	 		 = 7;
+	optional int64 avatar_id 		 		 = 8;
+	optional int32 area_id 		 	 		 = 9;
+	optional int64 time				 		 = 10;
+	optional int32 alliance_position 		 = 11; //帮会职位
+	optional int64 avatar_box				 = 12;	//头像框
+	optional string avatar_url 		 		 = 13;
+	optional int32 base_level				 = 14;	//玩家主基地等级
+	
+	optional int64 vip_level				 = 15;	//vip等级
+	optional int64 castle_level				 = 16;	//城堡等级
+    optional int32 gender               	 = 17;  //性别
+    optional int64 officer_id  	        	 = 18;  //官员ID
+    optional int64 title_dressup        	 = 19;  //铭牌
+}
+
+//MSG_GS2AS_RPC_OPEN_RED_PACKET               = 50074;//请求开红包(game-->alliance)
+message GS2ASRpcOpenRedPacket
+{
+	optional int64 result           		 = 1; //同2227的OpenResult
+	required GUID red_packet_id 	 		 = 2;
+	required int64 config_id 	 			 = 3;
+	optional int64 charge_bag_id 			 = 4;
+	repeated OpenRedPacketInfo open_list 	 = 5;
+	optional GUID player_id   		         = 6; //以下是开红包的玩家信息
+	optional string player_name				 = 7;
+	optional string alliance_tag			 = 8;
+	optional int64 item_id					 = 9;
+	optional int64 item_num					 = 10;
+	optional string owner_player_name		 = 11;//红包创建者的名字
+	optional string owner_alliance_tag		 = 12;//红包创建者的帮会简称
+}
+
+
+//----------------------R4聊天频道-------------------------//
+
+//	MSG_C2S_REQ_SWITCH_LEADER_CHAT_MSG			 = 2231;
+message C2SReqSwitchLeaderChat
+{
+	optional int64 config_id 	 	= 1;
+	optional bool switch_msg        = 2; //true, 关闭聊天消息
+}
+
+//	MSG_S2C_REQ_SWITCH_LEADER_CHAT_MSG			 = 2231;
+message S2CReqSwitchLeaderChat
+{
+	optional int64 config_id 	 	= 1;
+	optional bool switch_msg        = 2; //true, 关闭聊天消息
+}
+
+//----------------------------联盟公告------------------------//
+
+//投票公告
+message VoteNotice
+{
+    message OptionParam
+    {
+        optional string content = 1;    //选项内容
+        repeated GUID playerid = 2;     //投票的玩家
+        optional int32 option_id = 3;         //选项ID
+    }
+
+    optional int64 end_time = 1;        //投票结束时间
+    repeated OptionParam option_list = 2;    //选项列表
+    optional bool bmult_select = 3;     //是否支持多选
+}
+    
+message AllianceNotice
+{
+    enum NoticeType
+    {
+        Normal  = 0;    //正常公告
+        Vote    = 1;    //投票公告
+    }
+
+	optional GUID chat_id 							 = 1;  //聊天ID
+	repeated MessageData message_list 				 = 2; // 评论(聊天消息)
+	optional string notice_content					 = 3; // 公告内容	
+	optional string notice_publisher_name			 = 4; // 公告发布人名字	
+	optional GUID notice_publisher_id				 = 5; // 公告发布人ID
+	optional int64 notice_publish_time				 = 6; // 公告发布时间	
+	optional int32 notice_comment_num				 = 7; // 公告评论数量	
+    optional int64 upvote                            = 8; //点赞次数
+    optional int32 notice_type                  = 9;   //公告类型
+    repeated GUID player_id                          = 10;  //已读玩家
+    optional VoteNotice vote_notice                  = 11;  //投票公告
+    optional bool burgent_notice                     = 12;  //是否紧急公告 
+    optional string urgent_publish_name              = 13;  //发布紧急公告人
+}
+
+message AllianceNoticeList
+{
+	repeated AllianceNotice notice_list = 1;
+    optional GUID last_urgent_notice_id = 2;
+}
+
+
+//MSG_C2S_REQ_VOTE_NOTICE_QUERY_MEMBER        = 4150;   //请求查看投票公告成员
+message C2SReqVoteNoticeQueryMember
+{
+    optional int32 option_id    = 1;        //选项ID
+    repeated GUID player_id     = 2;        //玩家ID列表
+}
+//MSG_S2C_RSP_VOTE_NOTICE_QUERY_MEMBER        = 4151;   //响应查看投票公告成员
+message S2CRspVoteNoticeQueryMember
+{
+    optional int32 option_id    = 1;                //选项ID
+    repeated PlayerBasicInfo base_infos  = 2;  
+}
+
+//MSG_C2S_REQ_OPERA_ALLIANCE_NOTICE           = 4152;   //请求操作联盟公告
+message C2SReqOperaAllianceNotice
+{
+    enum OperaType
+    {
+        ReadNotice = 2;   //投票公告转为已读
+        UgentNotice = 3;  //公告转为紧急公告
+        UgentTip = 4;     //紧急公告tips
+        SelectVoteOption = 5;   //选择投票公告选项
+    }
+    
+    optional GUID chat_id       = 1;
+    repeated int32 option_id    = 2;        //选项ID
+    optional int32 opera        = 3;
+}

@@ -1,0 +1,2293 @@
+syntax = "proto2";
+
+package SGMsg;
+
+import "SGMsgBase.proto";
+import "SGMsgCommon.proto";
+import "SGMsgDB.proto";
+import "SGMsgChat.proto";
+import "SGMsgMapData.proto";
+import "SGMsgActivity.proto";
+import "SGMsgUpgrade.proto";
+import "SGMsgRank.proto";
+
+//-------联盟协议-------
+
+message AllianceInfo  //联盟信息
+{
+	optional GUID alliance_id         						= 1;    //联盟ID
+	optional AllianceBasicInfo basic_info               	= 2;    //基础信息
+    repeated AllianceMember member_list 					= 5;	//成员列表
+    optional AllianceStorage storage                        = 6;    //仓库
+    optional string invite_notice                           = 7;    //联盟邀请公告
+}
+
+enum AllianceJoinRequirement  //入盟要求
+{
+	ANYONE 			= 0;  //任何人均可加入
+	APPLICATION 	= 1;  //需要申请
+	CLOSE           = 2;  //关闭
+    CONDITION       = 3;    //条件进入
+}
+
+enum AlliancePositionType  //联盟职位枚举
+{
+    LEADER = 0;     //盟主
+    R4 = 1;
+    R3 = 2;
+    R2 = 3;
+    R1 = 4;
+}
+
+message ScheduleInfo
+{
+	optional GUID schedule_id = 1;    	//日程ID
+	optional string title = 2;  		//标题
+	optional Point2D position = 3;  	//坐标
+	optional Tm start_time_tm = 4; 		//开始时间 //删除
+	optional string details = 5;        //详情
+	optional int64 start_time = 6;      //开始时间
+	optional int32 schedule_type = 7;      //日程类型
+	optional int32 schedule_icon = 8;   //日程图示
+	optional bool is_tips       = 9;   //提醒
+	optional int64 end_time = 10;  //结束时间
+	optional string player_name = 11;  //发起人
+	optional int64 area_id = 12;  //坐标所在的服ID
+	optional int64 create_time = 13;  //创建时间
+	//optional GUID player_id = 12;  //发起人ID
+}
+
+message AllianceNotify   //联盟变化通知
+{
+	enum AllianceNotifyType
+	{
+		SCHEDULE_NOTIFY 	= 1;  //日程通知
+		MEMBER_NOTIFY 		= 2;  //成员通知
+		GIFT_NOTIFY         = 3;  //礼物通知
+		INVITE_TIME_NOTIFY  = 4;  //邀请时间通知
+		SCHEDULE_TIPS       = 5;  //日程弹窗
+	}
+
+	message ScheduleNotify  //日程通知
+	{
+		optional ScheduleInfo schedule_info = 1; 
+	}
+
+	message MemberNotify  //成员变化通知
+	{
+		enum MemberNotifyType
+		{
+			MEMBER_ADD 		= 1;  
+			MEMBER_DEL 		= 2;
+			MEMBER_UPDATE 	= 3;
+		}
+
+		optional int32 type 					= 1;
+		repeated AllianceMember member_list 	= 2;
+	}
+
+	message GiftNotify
+	{
+		enum GiftNotifyType 
+		{
+			GIFT_HONOR_POINTS = 1;  //荣耀点数
+			GIFT_NUM_CHANGE = 2;	//新的荣耀宝箱
+		}
+
+		optional int32 type 					= 1;
+		optional int64 honor_points 			= 2;  //荣耀点数
+		optional int64 end_time                 = 3;  //宝箱过期时间
+	}
+
+	optional int32 type 						= 1; 
+	optional ScheduleNotify schedule_notify 	= 2;
+ 	optional MemberNotify member_notify 		= 3;
+ 	optional GiftNotify gift_notify             = 4;
+ 	optional int64 invite_time 					= 5;
+}
+
+message GiftRecord
+{
+	optional GUID gift_id = 1;
+	optional bool is_delete  = 2;
+	repeated ItemInfo item_list = 3;
+	optional bool take = 4;
+}
+
+// 联盟成员面板信息
+message AllianceMemberPanel
+{
+	optional GUID player_id         			= 1; 	//玩家ID
+	optional int64 power            			= 4; 	//战力
+	optional bool is_online                     = 6; 	//是否在线
+	optional int64 last_offline_time            = 7; 	//上次离线时间
+}
+
+// 联盟成员数据项
+message AllianceMemberSimple
+{
+	optional GUID player_id         			= 1; 	//玩家ID
+	optional int64 power            			= 4; 	//战力
+	optional int64 kill_num 					= 11; 	//击杀
+	optional int64 help_num                     = 12;   //帮助次数
+	optional int64 daily_donation               = 13;   //每日捐献值
+	optional int64 weekly_donation 				= 14;  	//每周捐献值
+}
+
+message AllianceMember  //联盟成员信息
+{
+	enum FieldIndex
+	{
+		// ... 1-28
+		field_name     = 2;   //名字
+		field_avatar_box = 20;  // 头像框
+		field_avatar_url = 24;  // 头像
+		field_dispatch = 29;  //派遣信息
+		// 30
+		field_charge = 31;  //充值额
+		field_free_move_city = 32;  //联盟免费迁城次数
+
+		field_vip_level = 35;  // vip等级
+	}
+	optional GUID player_id         			= 1; 	//玩家ID
+	optional string name 						= 2; 	//名字
+	optional int64 power            			= 4; 	//战力
+	optional int32 position 					= 5; 	//职位
+	optional bool is_online                     = 6; 	//是否在线
+	optional int64 last_offline_time            = 7; 	//上次离线时间
+	optional GUID game_city_id         			= 8; 	//玩家GameCity (服务器用)
+	optional Point2D cur_pos                    = 9; 	//玩家坐标(实时更新)
+	optional int64 join_time                    = 10;	//加入时间
+	optional int64 kill_num 					= 11; 	//击杀
+	optional int64 help_num                     = 12;   //帮助次数
+	optional int64 daily_donation               = 13;   //每日捐献值
+	optional int64 weekly_donation 				= 14;  	//每周捐献值
+	//optional int64 honor_gift_take_status       = 15;   //荣耀礼物领取状态    
+	repeated GUID take_gift_ids                 = 16;   //已经领取的礼物ID列表
+	optional int64 officer_id                   = 17;   //官员ID
+	optional int64 language_id					= 18; 	//语言ID
+	optional int64 avatar_id 					= 19;  	//头像
+	optional int64 avatar_box 					= 20;  	//头像框
+	optional bool is_anonymity                  = 21;   //是否匿名
+	optional bool is_pos_hide                   = 22;  //是隐藏示玩家位置  true 隐藏
+	optional int64 npctown_official             = 23;   //npc城镇的官员
+	optional string avatar_url 					= 24;  	//头像
+	repeated GiftRecord gift_records            = 25;   //礼物记录
+	optional int64 level                        = 26;   //等级
+	optional int32 explore_special_level		= 27;	//雷达特殊事件等级
+    optional int64 reg_time                     = 28;   //玩家注册时间
+	optional S2CRspDispatchNotify dispatch      = 29;   //派遣信息
+	optional int32 fieldIndex				    = 30;   //字段更新位置
+	optional int64 charge						= 31; 	//充值额
+	optional int32 free_move_city				= 32; 	//联盟免费迁城次数
+	optional bool is_bot						= 33; 	//是否是机器人
+	optional int64 last_daily_refresh_time		= 34;   // 每日刷新时间
+	optional int64 vip_level					= 35;   // vip等级
+	optional int64 join_charge					= 36;   // 加入联盟后的充值额
+	optional int32 gender 						= 37;   // 性别
+	optional int32 scence_city_area_id			= 38;	// 服务器暂时没赋值，客户端使用
+    optional bool bUrgentShowTips               = 39;   // 是否需要展示紧急公告tips
+}
+
+message AllianceBasicInfo  //联盟基础信息
+{
+	optional string alliance_tag 				= 1; 	//联盟简称
+	optional string name 						= 2; 	//名称
+    optional string announcement 				= 3; 	//公告
+	optional AllianceSymbol symbol 				= 4; 	//联盟标志
+	optional int64 language        				= 5; 	//语言
+	optional int32 join_requirement 			= 6; 	//入盟要求
+    repeated int64	label_list 					= 7; 	//标签
+	optional string welcome						= 8; 	//联盟迎新文字
+    optional int32 level                        = 10; 	//等级
+    optional int64 exp                          = 11; 	//经验
+    optional bool is_apply                      = 12;   //是否申请过
+    optional int32 max_members                  = 13;   //最大人数
+    optional int64 credit                       = 14;   //信誉值
+	optional ScheduleInfo schedule_info 		= 15;   //日程信息
+	optional int64 power 						= 16;   //战力
+	optional bool is_rookie                     = 17;   //是否是新手联盟
+	optional GUID alliance_id         			= 18;   //联盟ID
+	optional string welcome_title               = 19;   //迎新标题
+	optional int64 scene_id 					= 20; 	//场景ID (服务器用)
+	optional int64 scene_group_id 				= 21;	//场景组ID (服务器用)
+	optional int64 last_invite_time             = 22;   //上次邀请时间	
+	optional int64 mobilization_rank            = 23;   //总动员段位
+	optional MobilizationTaskInfo task_info     = 24;   //总动员任务信息
+	optional int64 require_power				= 25;   //入盟战力要求
+	optional int64 create_time				    = 26;   //创建联盟时间
+	optional int32 spawn 						= 27;   //是否衍生过新手盟
+    optional int32 require_castle_level         = 28;   //入盟主城等级要求
+	optional int64 TransferID 					= 30;	// 联盟转让ID (0开始, 转让成功+1)	
+	optional int64 invite_move_end_time 				= 31;   // 联盟迁城邀请结束时间
+	optional int32 newbie_leader 				= 32;   // 是否盟主	发邮件 0:不需要 1:需要
+	optional int64 leader_time 					= 33;   // 成为盟主时间
+	optional int64 area_id				 		 = 34;   // 联盟所在服ID
+	optional int64 npc_town_war_end_time 		= 35;   // NPC城镇宣战结束时间
+	optional int32 npc_town_war_daily_times 	= 36;   // 本日已宣战次数 每日重置为0
+	optional int64 npc_town_war_start_time 		= 37;   // NPC城镇宣战开始时间
+	optional int64 last_war_npc_town 			= 38;   // 上次宣战的NPC城镇配置ID
+	optional int32 npc_town_status				= 39;	// 宣战状态 0:开战中 1:占领成功 2:争夺失败 3:已超时
+	optional int32 npc_town_max_num				= 40;   // NPC城镇最大占领数量
+	repeated int64 npc_town_list				= 41;   // 占领NPC城镇列表
+    optional int64 burgent_notice_cd			= 42;   // 紧急公告发布CD
+    optional int64 burgent_notice_count			= 43;   // 紧急公告发布次数
+    optional int32 member_count                 = 44;   //成员人数
+}
+
+enum DeclareNpcTownStatus
+{
+	DECLARE_ING = 0;		// 进行中
+	SUCCESS = 1;   //成功
+	FAIL = 2;      //失败
+	TIME_OUT = 3;  //超时
+}
+
+enum AllianceOperateType  //联盟操作枚举
+{
+	SET_ALLIANCE_TAG 						= 1; //联盟简称
+	SET_NAME 								= 2; //名称
+    SET_ANNOUNCEMENT 						= 3; //公告
+	SET_SYMBOL 								= 4; //联盟标志
+	SET_LANGUAGE        					= 5; //语言
+	SET_JOIN_REQUIREMENT 					= 6; //入盟要求
+    SET_LABEL_LIST 							= 7; //标签
+	SET_WELLCOME							= 8; //设置联盟迎新文字
+	SET_WELLCOME_TITLE                      = 9; //设置迎新标题
+	SET_JOIN_REQUIREMENT_POWER				= 10; //设置加入联盟需要的战力
+	SET_INVITE_MOVE_CITY 					= 12; //联盟迁城邀请
+    SET_JOIN_REQUIREMENT_CASTLV 			= 13; //设置加入联盟需要的主城等级
+	SET_TAG_AND_NAME 						= 14; //设置联盟简称和名称
+}
+
+enum AllianceMemberOperateType  //联盟成员操作枚举
+{
+	MEMBER_REMOVE 					= 100;	//移除
+	MEMBER_INFO 					= 101;	//信息
+	MEMBER_AGREE 					= 102;	//同意申请
+	MEMBER_REFUSE 					= 103; 	//拒绝申请
+	MEMBER_REPLACE_LEADER 			= 104;	//取代盟主
+	MEMBER_APPOINT_OFFICER 			= 105;	//任命官员
+	MEMBER_CHANGE_POSITION 			= 106;	//修改职位
+	MEMBER_TRANSFER_LEADER 			= 107;	//转让盟主
+	MEMBER_LOCATE                   = 108;  //成员定位
+	MEMBER_ALLIANCE_MOVE_CITY		= 109;	//使用免费/联盟迁城
+	MEMBER_ALLIANCE_MOVE_CITY_BUY_USE = 110;	//使用免费/联盟迁城 (齿轮币购买)
+}
+
+enum AllianceLogType
+{
+	ALL				= 0;		//所有
+	FIGHT 			= 1;  		//战斗
+	MEMBER 			= 2;  		//成员
+	TERRITORY 		= 3;  		//领土
+	TECH 			= 4;  		//科技
+	ACTIVITY 		= 5;   		//活动
+	NPC_TOWN 		= 6;  		//NPC城镇
+}
+
+message AllianceLogRecord
+{
+	message Record
+	{
+		optional int64  log_id 				= 1;  //日志ID
+		repeated string log_param 			= 2;  //日志符串中的%s填充
+		optional int64  log_time            = 3;  //记录时间
+	}
+
+	optional int32 type 				= 1;  //日志类型
+	repeated Record record 				= 2;  //日志记录
+}
+
+message AllianceApplication  //申请
+{
+	optional GUID player_id 		= 1;    //玩家ID
+	optional string name 			= 2;  //玩家名字
+	optional int64 power 			= 3; //战力
+	optional int64 application_date = 4;  //申请时间
+	optional int64 kill_num 		= 5;  //击杀
+	optional int64 donation 		= 6;  //累计捐献值
+	optional string avatar 			= 7;  //头像   //待删除*********
+	optional bool is_refuse 		= 8;  //是否拒绝
+	optional int64 avatar_id 		= 9;  	//头像
+	optional int64 avatar_box 		= 10;  	//头像框
+	optional int64 total_score      = 11;  //个人累计积分
+	optional string avatar_url 		= 12;  	//头像
+}
+
+message RefuseApply  //拒绝申请
+{
+	optional GUID player_id 	= 1;    //玩家ID
+	optional int64 apply_time 	= 2;  	//申请时间
+}
+
+enum AllianceScheduleOperateType  //联盟日程操作类型
+{
+	OPER_SCHEDULE_INFO 		= 1;   	//信息
+	OPER_SCHEDULE_ADD 		= 2;	//增加	
+	OPER_SCHEDULE_DEL 		= 3;	//删除
+	OPER_SCHEDULE_EDIT 		= 4;	//修改
+    OPER_SCHEDULE_BRIEF     = 5;    //简要信息(目前仅有ID列表)
+}
+
+message AllianceSchedule  //联盟日程
+{
+	repeated ScheduleInfo scheduleInfo_list 		= 1;  //日程列表
+	repeated ScheduleInfo expire_scheduleInfo_list 	= 2;  //过期日程列表   //弃用
+} 
+
+enum AllianceTechOperateType  //联盟科技操作类型
+{
+	OPER_RECOMMEND 			= 1;  		//推荐
+	OPER_STUDY 				= 2;  		//研究
+	OPER_DONATE_RESOURCE    = 3;        //捐献(资源)
+	OPER_DONATE_GOLD     	= 4;        //捐献(货币)
+	OPER_INFO       		= 5;        //信息
+	OPER_CANCEL_RECOMMEND   = 6;        //取消推荐
+	OPER_AUTO_TECH			= 7;		//开启自动研究
+	OPER_CANCEL_AUTO_TECH	= 8;		//关闭自动研究
+}
+
+enum AllianceTechNotifyType
+{
+	NOTIFY_RECOMMEND 	    = 1;  		//推荐
+	NOTIFY_STUDY 			= 2;  		//研究
+	NOTIFY_STUDY_FINISH    	= 3;  		//研究完成
+	NOTIFY_DONATE      		= 4;        //捐献
+	NOTIFY_CANCEL_RECOMMEND = 5;        //通知取消推荐
+	NOTIFY_AUTO_TECH		= 6;		//自动研究
+	NOTIFY_CANCEL_AUTO_TECH	= 7;		//取消自动研究
+}
+
+message AllianceTech   //联盟科技信息
+{
+	message TechInfo
+	{
+		optional int64 position 	= 1;  //位置ID
+		optional int64 level 		= 2;  //等级
+		optional int64 donation 	= 3;  //捐献值
+	}
+
+	repeated TechInfo tech_list 		= 1;  	//科技列表
+	optional int64 recommend_tech_id 	= 2; 	//推荐科技  //下一等级ID
+	optional int64 study_tech_id 		= 3;  	//研究科技  //下一等级ID
+	optional int64 study_start_time 	= 4;  	//研究开始时间
+	optional string playerName 			= 5;
+	optional int32 auto_tech 			= 6;	// 1:开启自动研究 0:关闭自动研究
+}
+
+
+enum AllianceGiftOperateType  //联盟礼物操作类型
+{
+	OPER_PAY_GIFT_TAKE 		= 1; 	//付费礼物领取
+	OPER_GVE_GIFT_TAKE 		= 2;  	//GVE礼物领取
+	OPER_ONE_KEY_TAKE  		= 3;  	//一键领取
+	OPER_HONOR_GIFT_TAKE 	= 4;    //荣耀礼物领取
+	OPER_GIFT_INFO          = 5;  	//礼物信息
+	OPER_HONOR_GIFT_REFRESH = 6;    //荣耀礼物刷新
+	OPER_IS_ANONYMITY       = 7;    //是否匿名
+	OPER_DELETE_RECORD_LIST = 8;    //删除所有已经领取或已过期的礼物记录
+	OPER_PAY_GIFT_TAKE_MANY	= 9; 	//领取多个付费礼物
+}
+
+enum AllianceGiftNotifyType  //联盟礼物通知类型
+{
+	NOTIFY_HONOR_POINTS	= 1;  		//荣耀点数
+}
+
+message AllianceGift  //联盟礼物
+{
+	message PayGift  //付费礼物
+	{
+		optional GUID gift_id 			= 1;   //礼物唯一ID
+		optional int64 end_time 		= 2;   //失效时间
+		optional int64 item_id 			= 3;   //物品ID  //废弃
+		optional string name            = 4;   //名字
+		optional bool take              = 5;   //领取状态(true为已经领取)
+		repeated ItemInfo item_list     = 6;   //物品列表
+		optional int64 charge_bag_id 	= 7;   //礼包ID
+	}
+
+	message GveGift  //Gve礼物
+	{
+		optional GUID gift_id 		= 1;   //礼物唯一ID
+		optional int64 end_time 	= 2;   //失效时间
+		optional int64 item_id 		= 3;   //物品ID
+		optional bool take          = 4;   //领取状态(true为已经领取)
+		repeated ItemInfo item_list = 5;   //物品列表
+		optional string name 		= 6;   //名字
+	}
+
+	message HonorGift  //荣耀礼物
+	{
+		optional GUID gift_id 		= 1;   //礼物唯一ID
+		optional int64 end_time 	= 2;   //失效时间
+		optional int64 drop_id 		= 3;   //奖励ID
+	}
+
+	optional int64 honor_points 			= 1;  //荣耀点数
+	repeated PayGift pay_gift_list 			= 2;  //付费礼物列表 
+	repeated GveGift gve_gift_list 			= 3;  //GVE礼物列表
+	repeated HonorGift honor_gift_list 		= 4;  //荣耀礼物列表
+
+	optional HonorGift honor_gift   = 5;  //时间最早的荣耀礼物 (客户端用)
+	optional int32 honor_gift_num   = 6;  //荣耀礼物待领取数量
+}
+
+enum AllianceHelpOperateType  //联盟帮助操作类型
+{
+	OPER_REQUEST_HELP 		= 1;  //请求帮助
+	OPER_HELP_ALL           = 2;  //帮助所有人
+	OPER_HELP_INFO          = 3;  //帮助信息
+	OPER_UPDATE_HELP        = 4;  //更新帮助状态(服务器用)
+	OPER_BE_HELP_ALL   		= 5;  //被帮助所有请求
+}
+
+enum AllianceHelpNotifyType  //联盟帮助通知类型
+{
+	NOTIFY_CAN_HELP	        = 1;  		//可以进行帮助
+	NOTIFY_CAN_NOT_HELP     = 2;        //不能帮助
+}
+
+message AllianceHelp  //联盟帮助
+{
+	message HelpInfo
+	{
+		optional GUID player_id 	  		= 1;   //玩家ID
+		optional string name 				= 2;   //名字   
+		//optional string avatar 				= 3;   //头像
+		optional int64 config_id        	= 4;   //配置ID 
+		optional GUID building_id     		= 5;   //建筑ID
+		optional int32 building_status 		= 6;   //建筑状态   //SGDefine.pb //enum EBStatus
+		repeated GUID help_player_id_list   = 7;   //提供帮助的玩家列表
+		optional int32 be_helped_num        = 8;   //被帮助的次数
+		optional int32 be_helped_num_max    = 9;   //被帮助的次数上限
+		optional int64 end_time             = 10;   //结束时间
+		optional GUID game_city_id          = 11;  //玩家GameCity
+		optional int64 avatar_id 			= 12;  //头像
+		optional int64 avatar_box 			= 13;  //头像框
+		optional string avatar_url 			= 14;  //头像
+
+	}
+	repeated HelpInfo help_info_list = 1;  //帮助信息列表
+}
+
+enum AllianceMarkNotifyType //联盟标记通知类型
+{
+	NOTIFY_INFO     = 1;  //信息
+	NOTIFY_EDIT 	= 2;  //编辑
+	NOTIFY_DEL 		= 3;  //删除
+	NOTIFY_ADD 		= 4;  //添加
+}
+
+message AllianceMark  //联盟标记
+{
+	message MarkRecord
+	{
+		optional GUID object_id 				= 1;	//唯一ID
+		optional string name 					= 2;  	//标签名
+		optional Point2D pos 					= 3;	//坐标
+		optional int32 server_id 				= 4;	//服务器id(战区id)
+		optional int32 alliance_mark_index		= 5;  	//联盟标记图案下标 从1开始
+		optional int32 mark_object_type			= 6;  	//联盟标记显示位置，是否偏移0.5服务器格（1：偏移）
+		optional int64 mark_time                = 7;    //标记时间
+		optional int64 start_time				= 8;    //设置的时间
+	}
+
+	repeated MarkRecord mark_record_list = 1;  //标记记录列表
+}
+
+enum AllianceBuildingType   //联盟建筑类型
+{
+	ALLIANCE_BUILD_CENTER_FORT 	= 1;   	//联盟中心要塞
+	ALLIANCE_BUILD_BUOY 		= 2;  	//联盟浮标
+	//ALLIANCE_BUILD_FORT 		= 3;	//联盟要塞
+	ALLIANCE_BUILD_NPC_TOWN     = 4;    //NPC城镇
+	ALLIANCE_BUILD_BOSS_TRAP    = 5;    //召唤联盟boss用的陷阱
+}
+
+message StorageItem
+{
+	optional int64 config_id = 1;   //物品配置ID
+	optional int64 count = 2;    //数量
+	optional int64 speed = 3;  //产出速度/s  
+	optional int64 start_produce_time = 4;  //开始产出资源时间(单位s)
+	optional int64 res_points_count = 5;  //资源点数量
+	optional int64 count_max = 6; //仓库最大数量
+}
+
+message AllianceStorage  //联盟仓库
+{
+	repeated StorageItem storage_item_list = 1;  //物品列表
+	repeated AllianceResLog res_log_list = 2;  //资源消耗记录列表
+}
+
+message BuildingSide
+{
+	optional GUID side_start = 1;
+	optional GUID side_end = 2;
+}
+
+message AllianceBuilding    //联盟建筑
+{
+	optional int64 config_id        		= 1;  //配置ID
+	optional GUID building_id 				= 2;  //建筑ID
+	optional Point2D cur_pos        		= 4;  //位置
+	optional int64 scene_id         		= 5;  //场景
+	optional int64 scene_group_id   		= 6;  //场景组ID
+	optional int64 hp               		= 7;  //耐久值  //ToClient
+	optional int32 building_status  		= 8;  //状态
+	optional int32 type             		= 9;  //类型
+	optional int64 hp_max           		= 10; //最大耐久值 //ToClient
+	optional int64 territory_bit_1 			= 11;  //领土范围1
+	optional int64 territory_bit_2 			= 12;  //领土范围2
+	optional bool is_effect        			= 13;  //是否生效
+	optional int64 hp_change_speed 			= 14;  //耐久值变化速度
+	optional int64 hp_change_start_time 	= 15;  //耐久值变化开始时间
+	optional int32 garrison_status          = 16;  //驻守状态(0:无人驻守，1:己方驻守，2:敌方驻守)
+	repeated ItemInfo cost_list             = 17;  //建造消耗
+	optional string PlayerName				= 18;	//玩家名字
+	optional int64 avatar_id 				= 19;  	//头像
+	optional int64 avatar_box 				= 20;  	//头像框
+	repeated BuildingSide side_list 		= 21;  //边界线段列表
+	optional string territory_bit           = 22;  //领土范围
+	optional string avatar_url 				= 23;  	//头像
+	optional GUID alliance_boss				= 24;	//是否召唤联盟boss
+	optional int64 building_time            = 25;   //建造时间戳
+}
+
+message AllianceTerritory  //联盟领土
+{
+	repeated int32 unlock_building_type_list   = 1;   	//解锁建筑类型列表
+	repeated AllianceBuilding building_list    = 2;  	//建筑列表
+}
+
+message NPCTownBuff  //帮会占领的NPC城镇
+{
+	optional int64 config_id 				= 1;  //配置ID
+	optional int64 buff_valid_time 			= 2;  //buff有效时间
+}
+message NpcTownEnroll
+{
+	optional int32 sub_type 				= 1;
+	repeated int64 enrolled_config_ids  	= 2;
+	optional int32 max_enroll_times 		= 3;
+	optional int64 enroll_step_end_time 	= 4;     //报名阶段结束时间
+	repeated GUID battle_schedule_ids 		= 5;
+}
+message AllianceNpcTown  //联盟城镇相关
+{
+	repeated NPCTownBuff town_buff_list     = 1;     //NPC城镇buff列表
+	repeated NpcTownEnroll enroll_list     	= 2;     //NPC城镇报名相关信息
+	// 上一次战功的排名
+	repeated NpcTownMeritRankInfo rank_list = 3;
+}
+
+enum EAllianceResLogType
+{
+	BUILD_BUILDING 		= 1;  //建造联盟建筑
+	REMOVE_BUILDING 	= 2;  //拆除联盟建筑
+	STUDY_TECH 			= 3;  //研究科技
+}
+
+message AllianceResLog   //联盟资源记录
+{
+	optional int32 type 		= 1;  //类型
+	repeated string param_list 	= 2;  //参数列表
+	repeated ItemInfo item_list = 3;  //资源变化
+	optional int64 time = 4; //时间
+}
+
+//MSG_C2S_REQ_CREATE_ALLIANCE = 2901;  //玩家请求创建联盟
+message C2SReqCreateAlliance  //创建联盟
+{
+	optional AllianceBasicInfo basic_info 		= 1;   	//创建联盟需要的一些基础信息
+	optional AllianceMember alliance_member 	= 2;  	//玩家信息 (服务器用)
+	optional int64 scene_id 					= 3; 	//场景ID (服务器用)
+	optional int64 scene_group_id 				= 4;	//场景组ID (服务器用)
+}
+
+//MSG_S2C_RSP_CREATE_ALLIANCE = 2902;  //创建联盟返回
+message S2CRspCreateAlliance
+{
+	optional AllianceInfo alliance_info = 1;  //联盟信息
+	optional GUID game_city_id = 2;  //服务器用
+}
+
+//MSG_C2S_REQ_JOIN_ALLIANCE = 2903;  //玩家请求加入联盟
+message C2SReqJoinAlliance 
+{
+	optional GUID alliance_id 					= 1;  //联盟ID
+	optional AllianceMember alliance_member 	= 2;  //玩家信息(服务器用)
+}
+
+//MSG_S2C_RSP_JOIN_ALLIANCE = 2904;  //加入联盟返回
+message S2CRspJoinAlliance 
+{
+	optional AllianceInfo alliance_info = 1;  //联盟信息
+	optional GUID game_city_id = 2;  //服务器用
+}
+
+// MSG_S2C_NTF_PLAYER_ALLIANCE_APPLY_STATUS  = 3005;   //通知玩家联盟申请状态
+message S2CNtfPlayerAllianceApplyStatus
+{
+	optional GUID alliance_id 	= 1;  //联盟ID
+	optional bool is_refuse 	= 2;  //是否拒绝
+}
+
+//MSG_C2S_REQ_QUIT_ALLIANCE = 2905;  //玩家请求退出联盟
+message C2SReqQuitAlliance  //退出联盟
+{
+
+}
+
+//MSG_S2C_RSP_QUIT_ALLIANCE = 2906;  //退出联盟返回
+message S2CRspQuitAlliance
+{
+	optional GUID player_id         = 1;  //玩家ID
+	optional GUID game_city_id = 2;  //服务器用
+}
+
+//MSG_C2S_REQ_OPERATE_ALLIANCE = 2907;  //请求操作联盟
+message C2SReqOperateAlliance //联盟常规操作
+{
+	repeated int32 operate_type  = 1;  //常规操作枚举 AllianceOperateType
+	optional AllianceBasicInfo basic_info = 2;  //基础信息修改
+}
+
+//MSG_S2C_RSP_OPERATE_ALLIANCE = 2908;  //操作联盟返回
+message S2CRspOperateAlliance
+{
+	optional AllianceBasicInfo basic_info = 1;  //基础信息修改
+
+	//服务器用
+	message OperateRes
+	{
+		optional int32 operate_type  = 1;
+		optional bool success = 2;
+	}
+	repeated OperateRes operate_res_list = 2;
+}
+
+//MSG_C2S_REQ_OPERATE_ALLIANCE_MEMBER = 2909; //请求联盟成员常规操作
+message C2SReqOperateAllianceMember //联盟成员常规操作
+{
+	optional GUID player_id         			= 1;    //玩家ID
+	optional int32 operate_type 				= 2;    //操作类型 AllianceMemberOperateType
+	optional int32 position                     = 3;    //AlliancePositionType  联盟职位枚举
+	optional int64 officer_id                   = 4;    //官员ID
+}
+
+//MSG_S2C_RSP_OPERATE_ALLIANCE_MEMBER = 2910; //联盟成员常规操作返回
+message S2CRspOperateAllianceMember
+{
+	optional int32 operate_type 				= 1;    //操作类型
+	optional GUID alliance_id 					= 2;  	//联盟ID
+	repeated AllianceMember member_list 		= 3;    //成员信息
+	optional AllianceBasicInfo basic_info 		= 4;    //基础信息
+	optional bool success                       = 5;    //是否成功(服务器用)
+	optional bool use_item					  	= 6;    //是否使用了联盟迁城道具(服务器用)
+}
+
+//MSG_C2S_REQ_ALLIANCE_LIST = 2911;   //请求联盟列表
+message C2SReqAllianceList  //请求联盟列表
+{
+	optional int64 player_power = 1;  //玩家战力(服务器用)
+	optional int64 player_language = 2;  //玩家语言(服务器用)
+    optional int64 castle_level = 3;    //主城等级
+}
+
+//MSG_S2C_RSP_ALLIANCE_LIST = 2912;   //联盟列表返回
+message S2CRspAllianceList
+{
+	repeated AllianceInfo alliance_info_list = 1;  //联盟信息列表
+}
+
+//MSG_C2S_REQ_SEARCH_ALLIANCE = 2913;  //请求搜索联盟
+message C2SSearchAlliance
+{
+	optional string search_text = 1;  //搜索文本
+	optional int64	label 		= 2;  //标签
+	optional int64 language     = 3;  //语言
+	optional int32 join_requirement = 4; //入盟要求
+}
+
+//MSG_S2C_RSP_SEARCH_ALLIANCE = 2914;  //搜索联盟返回
+message S2CSearchAlliance
+{
+	repeated AllianceInfo alliance_info_list = 1;  //联盟信息列表
+}
+
+//MSG_C2S_REQ_ALLIANCE_NAME_CHECK = 2915;  //请求联盟名字检测
+message C2SReqAllianceNameCheck
+{
+	optional string alliance_tag 						= 1; //联盟简称
+	optional string name 								= 2; //名称
+}
+
+//MSG_S2C_RSP_ALLIANCE_NAME_CHECK = 2916;  //联盟名字检测返回
+message S2CRspAllianceNameCheck
+{
+	optional AllianceBasicInfo basic_info               	= 1;    //基础信息
+}
+
+
+//MSG_C2S_REQ_ALLIANCE_APPLICATION_LIST = 2917;  //请求拉取申请列表
+message C2SReqAllianceApplicationList
+{
+	optional int32 from = 1;  //表示从第几行开始
+}
+
+//MSG_S2C_RSP_ALLIANCE_APPLICATION_LIST = 2918;  //拉取申请列表返回
+message S2CRspAllianceApplicationList
+{
+	repeated AllianceApplication application_list = 1;  //申请列表
+}
+
+
+//MSG_C2S_REQ_ALLIANCEINFO = 2919;  	//请求联盟信息
+message C2SReqAllianceInfo
+{
+
+}
+
+//MSG_S2C_RSP_ALLIANCEINFO = 2920;	//联盟信息返回
+message S2CRspAllianceInfo  //联盟信息
+{
+	optional AllianceInfo alliance_info = 1;  //联盟信息
+}
+
+// MSG_S2C_RSP_ALLIANCE_MEMBER_PANEL = 2981;  //联盟成员面板返回
+message S2CRspAllianceMemberPanel
+{
+	optional GUID alliance_id = 1;  //联盟ID
+	repeated AllianceMemberPanel member_list = 2;  //成员列表
+}
+
+// MSG_S2C_RSP_ALLIANCE_INFO_SIMPLE = 2983;  //联盟简略信息返回
+message S2CRspAllianceInfoSimple  //联盟信息(简略)
+{
+	optional GUID alliance_id         						= 1;    //联盟ID
+	repeated AllianceMemberSimple member_list 				= 2;	//成员列表
+}
+
+//MSG_C2S_REQ_ALLIANCE_INVITE = 2921;  //请求联盟邀请
+message C2SReqAllianceInvite
+{
+	optional int64 player_language = 1;  //玩家语言(服务器用)
+}
+
+//MSG_S2C_RSP_ALLIANCE_INVITE = 2922;  //联盟邀请返回
+message S2CRspAllianceInvite
+{
+	optional AllianceInfo alliance_info = 1;  //联盟信息
+}
+
+//MSG_C2S_REQ_ALLIANCE_LOG = 2923; 	//请求联盟日志
+message C2SReqAllianceLog
+{
+	optional int32 type = 1;  //日志类型
+}
+
+//MSG_S2C_RSP_ALLIANCE_LOG = 2924;	//联盟日志返回
+message S2CRspAllianceLog
+{
+	optional AllianceLogRecord log_record = 1; //日志记录
+}
+
+//MSG_C2S_REQ_OPERATE_ALLIANCE_SCHEDULE = 2925;  //请求操作联盟日程
+message C2SReqOperateAllianceSchedule
+{
+	optional int32 operate_type = 1;  //enum AllianceScheduleOperateType  //联盟日程操作类型
+	optional ScheduleInfo schedule_info = 2;  //日程信息
+}
+
+//MSG_S2C_RSP_OPERATE_ALLIANCE_SCHEDULE = 2926;  //操作联盟日程返回
+message S2CRspOperateAllianceSchedule
+{
+	optional int32 operate_type = 1;  //enum AllianceScheduleOperateType  //联盟日程操作类型
+	optional AllianceSchedule schedule = 2;  //日程
+}
+
+//MSG_C2S_REQ_OPERATE_ALLIANCE_TECH = 2927;  //请求操作联盟科技
+message C2SReqOperateAllianceTech
+{
+	optional AllianceTechOperateType type = 1;  //操作类型
+	optional int64 tech_id = 2;  //科技ID
+}
+
+//MSG_S2C_RSP_OPERATE_ALLIANCE_TECH = 2928;  //操作联盟科技返回
+message S2CRspOperateAllianceTech
+{
+	optional AllianceTechOperateType type = 1;  //操作类型
+	optional AllianceTech tech = 2;    //科技
+	optional int64 donation = 3;  //个人捐献值
+	optional int64 crit = 4;  //暴击
+}
+
+//MSG_S2C_NTF_ALLIANCE_TECH = 2929;  //科技通知
+message S2CNtfAllianceTech
+{
+	optional AllianceTechNotifyType type = 1;  //通知类型
+	optional AllianceTech tech = 2;    //科技
+}
+
+//MSG_C2S_REQ_OPERATE_ALLIANCE_GIFT = 2930;  //请求操作联盟礼物
+message C2SReqOperateAllianceGift
+{
+	optional int32 type 				  = 1;  //联盟礼物操作  //AllianceGiftOperateType
+	optional GUID gift_id 				  = 2;  //礼物唯一ID
+	optional bool is_anonymity            = 3;  //是否匿名
+	optional bool is_pay_gift             = 4;  //删除指定类型
+	repeated GUID gift_id_list			  = 5;  //礼物唯一ID的列表。OPER_PAY_GIFT_TAKE_MANY 的时候使用
+}
+
+//MSG_S2C_RSP_OPERATE_ALLIANCE_GIFT = 2931;  //返回联盟礼物操作
+message S2CRspOperateAllianceGift
+{
+	optional int32 type 				  = 1;  //联盟礼物操作 //AllianceGiftOperateType
+	optional AllianceGift gift            = 2;  //礼物信息
+	//repeated ItemInfo item_list           = 3;  //奖励列表(服务器用)
+	repeated int64 drop_list              = 4;  //掉落列表(服务器用)
+	optional bool is_anonymity            = 5;  //是否匿名
+}
+
+//MSG_S2C_NTF_ALLIANCE_GIFT         = 2932;  //联盟礼物通知
+message S2CNtfAllianceGift
+{
+
+}
+
+//MSG_C2S_REQ_ALLIANCE_HELP = 2934;    //请求联盟帮助
+message C2SReqOperateAllianceHelp
+{
+	optional int32 type 			= 1;   //联盟帮助操作  //AllianceHelpOperateType
+	optional GUID building_id     	= 2;   //建筑ID
+	optional int32 building_status 	= 3;   //建筑状态   //SGDefine.pb //enum EBStatus
+
+	//（服务器用）
+	optional int64 config_id = 4;  //配置ID
+	optional int64 end_time = 5;  //结束时间
+	optional int64 start_time = 6;  //开始时间
+	optional int32 be_helped_num_max = 7;   //被帮助的次数上限
+
+
+	optional int32 client_source = 8;   //客户端参数，直接回传
+}
+
+
+//MSG_GS2AS_UPDATE_PLAYER_HELP_INFO  = 2994;  //更新玩家帮助信息
+message GS2ASUpdatePlayerHelpInfo
+{
+	optional GUID building_id     	= 1;   //建筑ID
+	optional int32 building_status 	= 2;   //建筑状态   //SGDefine.pb //enum EBStatus
+	optional int64 end_time = 3;  //结束时间
+}
+
+//MSG_S2C_RSP_ALLIANCE_HELP = 2935;    //联盟帮助返回
+message S2CRspOperateAllianceHelp
+{
+	optional int32 type 			= 1;   //联盟帮助操作  //AllianceHelpOperateType
+	optional AllianceHelp help      = 2;   //联盟帮助信息
+	optional string player_name     = 5;   //帮助玩家名称
+
+	// (服务器用)
+	optional int32 building_status 	= 3;   //建筑状态   //SGDefine.pb //enum EBStatus
+	optional bool success = 4;  //是否成功
+	optional GUID building_id     	= 6;   //建筑ID
+	optional int64 end_time = 7;  //结束时间
+
+	
+	optional int32 client_source = 8;   //客户端参数，直接回传
+}
+
+//MSG_S2C_NTF_ALLIANCE_HELP         = 2937;  //联盟帮助通知
+message S2CNtfAllianceHelp
+{
+	optional int32 type 			= 1;   //帮助通知 AllianceHelpNotifyType
+	optional int32 count            = 2;   //可以帮助数量  
+}
+
+//MSG_AS2GS_VERIFY_ALLIANCE = 2930;   //校验联盟
+message AS2GSVerifyAlliance
+{
+	optional GUID player_id     	= 1;   //玩家ID
+	optional GUID alliance_id   	= 2;   //联盟ID
+	optional GUID game_city_id      = 3;   //城市ID
+}
+
+//MSG_S2C_NTF_ALLIANCE_HELP_RECORD = 2936;    //联盟帮助记录
+message S2CNtfAllianceHelpRecord
+{
+	message HelpRecord
+	{
+		optional GUID building_id     		= 1;   //建筑ID
+		optional int32 building_status 		= 2;   //建筑状态   //SGDefine.pb //enum EBStatus
+		optional int64 end_time             = 3;   //结束时间
+	}
+	repeated HelpRecord help_record_list = 1;
+}
+
+//MSG_S2C_NTF_ALLIANCE_MARK = 2938;  //联盟标记通知协议
+message S2CNtfAllianceMark
+{
+	optional int32 type 		= 1;  	//通知类型  // AllianceMarkNotifyType
+	optional AllianceMark mark 	= 2;    //标记
+}
+
+//MSG_C2S_REQ_ALLIANCE_MARK_INFO = 2939;  //联盟标记Info请求
+message C2SReqAllianceMarkInfo
+{
+
+}
+
+//MSG_S2C_RSP_ALLIANCE_MARK_INFO = 2940;  //返回联盟标记Info
+message S2CRspAllianceMarkInfo
+{
+	optional AllianceMark mark 	= 1;    //标记
+}
+
+//MSG_S2C_NTF_ALLIANCE         = 2941;  //联盟通知
+message S2CNtfAlliance
+{
+	optional AllianceNotify alliance_notify = 1;
+}
+
+//MSG_C2S_REQ_ALLIANCE_CHANGE_NAME =  2942;  //请求联盟改名(包括简称)
+message C2SReqAllianceChangeName 
+{
+	optional int32 operate_type  			= 1;  //enum AllianceOperateType  //联盟操作枚举
+	optional AllianceBasicInfo basic_info 	= 2;  //基础信息修改
+}
+
+//MSG_S2C_RSP_ALLIANCE_CHANGE_NAME =  2943;  //联盟改名返回
+message S2CRspAllianceChangeName 
+{
+	optional int32 operate_type  			= 1;  //enum AllianceOperateType  //联盟操作枚举
+	optional AllianceBasicInfo basic_info 	= 2;  //基础信息修改
+	optional bool success 					= 3;  //是否成功(服务器用)
+}
+
+
+//MSG_S2AS_RPC_ALLIANCE_BRIEFINFO             = 50041;  //查询联盟简要信息
+message S2ASAllianceBriefInfoRpc
+{
+	repeated GUID alliance_id_list         			= 1;    //联盟ID列表
+	repeated AllianceBasicInfo alliance_info_list   = 2;    //联盟基础信息列表
+}
+
+//MSG_C2S_REQ_INVITE_JOIN_ALLIANCE = 2951;   //入盟邀请请求
+message C2SReqInviteJoinAlliance
+{
+	optional GUID player_id = 1;
+}
+
+//MSG_S2S_RSP_INVITE_JOIN_ALLIANCE = 2955;  //入盟邀请返回
+message S2SRspInviteJoinAlliance
+{
+	optional GUID player_id = 1;
+	optional bool success = 2;
+}
+
+
+//MSG_MAIL2AS_JOIN_ALLIANCE = 2953;  //邮件入盟
+message Mail2AsJoinAlliance
+{
+	optional GUID player_id = 1;
+	optional AllianceMember alliance_member = 2;
+}
+
+/////////////////////////服务器用////////////////////////////////////////////////
+/////////////////////////服务器用////////////////////////////////////////////////
+/////////////////////////服务器用////////////////////////////////////////////////
+/////////////////////////服务器用////////////////////////////////////////////////
+
+//MSG_AS2SS_RPC_MEMBER_LOCATE                 = 50040;  //成员定位
+message AS2SSReqMemberLocateRpc
+{
+	optional GUID city_id 		= 1;  	//城市ID
+	optional Point2D cur_pos    = 2; 	//坐标
+}
+
+//MSG_AS2SS_RPC_MEMBER_MOVE_CITY                    = 50800;  // 联盟成员联盟迁城
+message RpcAS2SSMemberMoveCity
+{
+	optional GUID player_id 	= 1;  	//玩家ID
+	optional GUID alliance_id 	= 2;  	//联盟ID
+	optional GUID leader_id 	= 3;  	//盟主ID
+	optional int32 result		= 4;	//迁城结果
+}
+
+//MSG_GS2AS_RPC_FREE_MOVE_INFO                      = 50801;  // 联盟自由迁城信息
+message RpcGS2ASFreeMoveInfo
+{
+	optional GUID player_id 		= 1;  	//玩家ID
+	optional int32 free_move_count 	= 2;	//当前拥有免费迁城次数
+}
+
+//MSG_S2S_RPC_CREATE_ROBOT                          = 50802;  // 创建机器人
+message RpcS2SCreateRobot
+{
+	optional int64 result		= 1;	//结果
+	optional GUID player_id 	= 2;  	//获取机器人玩家ID
+	optional string account 	= 3;  	//机器人账号
+	optional int64 flag_language_id 	= 4;  	//AllianceFlag 语言ID
+	optional string name_tag = 5;  
+}
+
+// MSG_GS2AS_RPC_INCIDENT_HELP                     = 50806;  // 帮助联盟成员
+message RpcGS2ASIncidentHelp
+{
+	optional int64 result		= 1;	//结果
+	optional GUID player_id 	= 2;  	//玩家ID
+	optional GUID member_id 	= 3;  	//盟友ID
+	repeated GUID helping_player_id_list = 4;   //提供帮助的玩家列表
+}
+
+// MSG_GS2AS_RPC_GET_INCIDENT_HELPER_ID            = 50807;  // 获取N个联盟帮助者ID
+message RpcGS2ASGetIncidentHelperId
+{
+	optional int64 result		= 1;	//结果
+	optional GUID player_id 	= 2;  	//玩家ID
+	optional int32 num 			= 3;  	//随机数量
+	repeated AllianceMember helping_player_id_list = 4;   //提供帮助的玩家列表
+}
+
+//MSG_S2AS_REQ_REWARD_ALLIANCE_GIFT = 2946;  //发送联盟礼物奖励
+message S2ASReqRewardAllianceGift
+{
+	optional int64 award_id = 1;   //奖励ID
+	optional string name = 2;   //发起人名字
+}
+
+//MSG_S2AS_PLAYER_ADD_ALLIANCE_GIFT = 2990;  //玩家发放联盟礼物
+message S2ASPlayerAddAllianceGift
+{
+	optional GUID player_id = 1;
+	repeated ItemInfo item_list = 2;  //奖励列表
+	optional int64 charge_bag_id = 3;  //充值礼包ID
+}
+
+//MSG_S2S_SYNC_ALLIANCE_INFO = 2947;  //同步联盟信息
+message S2SSyncAllianceInfo
+{
+	enum SyncType
+	{
+		Create = 1;  		//创建联盟
+		Join   = 2;  		//加入联盟
+		Quit   = 3;  		//推出联盟
+		Officer = 4;   		//指挥官任免
+	}
+
+	optional SyncType sync_type = 1;    //同步类型
+	optional GUID city_id 		= 2;  	//城市ID
+	optional GUID alliance_id 	= 3;  	//联盟ID
+	optional int64 officer_id   = 4;    //官员ID
+	optional int64 join_time    = 5;    //加入时间
+}
+
+//MSG_AS2GS_SYNC_ALLIANCE_HELP = 2948;   //同步联盟帮助
+message AS2GSSyncAllianceHelp
+{
+	optional GUID player_id   	= 1;   //玩家ID
+	optional int32 help_num   	= 2;   //帮助数量
+}
+
+//MSG_GS2AS_REQ_CREATE_ROOKIE_ALLIANCE = 2995;   //创建新手联盟
+message GS2ASReqCreateRookieAlliance
+{
+	optional AllianceMember alliance_member = 1;  	//玩家信息
+}
+
+//MSG_AS2GS_RSP_CREATE_ROOKIE_ALLIANCE = 2996;   //创建新手联盟返回
+message AS2GSRspCreateRookieAlliance
+{
+	optional GUID alliance_id = 1;  //联盟ID
+	optional AllianceMember alliance_member = 2;  	//玩家信息
+}
+
+//MSG_GS2AS_REQ_QUIT_ROOKIE_ALLIANCE = 2948;   //请求退出新手联盟
+message GS2ASReqQuitRookieAlliance
+{
+	optional GUID player_id     	= 1;   //玩家ID
+	optional GUID city_id 			= 2;   //城市ID
+}
+
+//MSG_AS2GS_RSP_QUIT_ROOKIE_ALLIANCE = 2949;   //退出新手联盟返回
+message AS2GSRspQuitRookieAlliance
+{
+	optional GUID city_id 		= 1;  	//城市ID
+}
+
+//MSG_S2AS_ALLIANCE_LOG = 2997;   //同步联盟日志到联盟服
+message S2ASAllianceLog
+{
+	optional GUID alliance_id = 1;  //联盟ID
+	optional AllianceLogRecord log_record = 2;  //日志记录
+}
+
+//MSG_GS2AS_RPC_ALLIANCE_OPERATE_TECH         = 50039;  //联盟科技操作
+message GS2ASReqOperateAllianceTechRpc
+{
+	optional GUID player_id 				= 1;  //玩家ID
+	optional AllianceTechOperateType type 	= 2;  //操作类型
+	optional int64 tech_id 					= 3;  //科技ID
+ 	optional AllianceTech tech              = 4;  //科技
+	optional int64 donation 				= 5;  //个人捐献值
+	optional bool success 					= 6;  //是否成功
+	optional int64 crit                     = 7;  //暴击
+}
+
+//MSG_AS2S_SYNC_ALLIANCE_INCR_PROPERTY = 2998;  //联盟对象同步property
+message AS2SSyncAllianceIncrProperty
+{
+    optional GUID alliance_id   	= 1;   //联盟ID
+    repeated SubDBMsg incr_data 	= 2;   //增量数据
+}
+message DmdRewardBox
+{
+	optional int64 boss_id							 = 1;	//DoomsdayAllianceBoss id
+	optional Point2D box_pos						 = 2;	//宝箱位置
+	optional int64 box_time							 = 3;	//宝箱消失时间
+}
+//MSG_AS2S_INIT_ALLIANCE_OBJECT   = 2999;   //联盟对象同步Server
+message AS2SInitAllianceObject
+{
+	optional ScenceEntityData alliance_data 	= 1;  //联盟数据
+	repeated AllianceBuilding building_list 	= 2;  //建筑列表
+	optional S2SReqInitPropertys property_list	= 3;  //联盟属性
+	optional bool is_load_finish_newtech		= 4;	//初始化联盟数据时是否完成了新科技
+	optional int32 member_count					= 5;	//成员数量
+	//repeated DmdRewardBox dmd_boxs				= 6;	//末日试炼宝箱
+	optional AllianceBossData alliance_boss_data= 7;	//联盟boss
+}
+
+//MSG_AS2S_DELETE_ALLIANCE_OBJECT = 3000;   //Server删除联盟对象
+message AS2SDeleteAllianceObject
+{
+	optional GUID alliance_id   	= 1;   //联盟ID
+}
+
+//同步到ELK的基本联盟信息
+message SyncELKAllianceInfo
+{
+	optional string alliance_tag 						= 1; //联盟简称
+	optional string name 								= 2; //名称
+	repeated int64	label_list 							= 3; //标签
+	optional int64 language                             = 4; //语言
+	optional int32 join_requirement                     = 5; //加入方式
+}
+
+//DB 存储相关
+message AllianceBasic
+{
+	optional AllianceBasicInfo basic_info               = 1;    //基础信息
+}
+
+message AllianceMemberList
+{
+	repeated AllianceMember member_list 				= 1;	//成员列表
+}
+
+message AllianceApplicationList
+{
+	repeated AllianceApplication application_list = 1;
+}
+
+message AllianceLog  //联盟日志
+{	
+	repeated AllianceLogRecord log_record = 1; //日志记录
+}
+
+message AllianceIntelRecord  //情报记录
+{
+	optional GUID player_id = 1;  //玩家ID
+	optional int64 area_id = 2;  //区服ID
+	optional string alliance_tag = 3; //联盟简称
+	optional string player_name = 4;  //玩家名称
+	optional int64 power = 5;  //战斗力
+	optional int64 time = 6;  //时间
+	optional Point2D pos = 7; //坐标	
+	optional string avatar_url = 8; // 头像	
+	optional int64 avatar_box = 9; // 头像框
+}
+
+message AllianceEnemyRecord  //联盟敌人
+{
+	optional GUID player_id = 1;  //玩家ID
+	optional int64 time = 2;  //时间
+}
+
+// MSG_S2C_RSP_ALLIANCE_INTEL                  = 3623;   //返回联盟情报
+message AllianceIntel
+{
+	repeated AllianceIntelRecord intel_record = 1; //情报记录
+	repeated AllianceEnemyRecord Enemy_record = 2; //敌人
+}
+
+// MSG_S2AS_ALLIANCE_INTEL                     = 3624;   //同步联盟情报到联盟服
+message S2ASAllianceIntel
+{
+	optional GUID alliance_id = 1;  //联盟ID
+	optional AllianceIntel intel = 2;  //情报
+}
+
+// MSG_AS2SS_RPC_GET_ALLIANCE_INTEL               = 50052;//获取情报对象的详细信息
+message RpcGetAllianceIntel
+{
+	optional AllianceIntel intel = 1;  //情报
+}
+
+message AllianceChat
+{
+	optional int32 tips_index = 1;  //新手联盟Tips索引
+	optional string invite_notice = 2;  //邀请公告
+	repeated MessageData message_list = 3; //聊天消息
+    repeated int64 leader_msg_switch_list = 4; //R4聊天开关
+}
+
+//	MSG_S2C_NTF_BRIEF_ALLIANCE_INFO = 2951;   //Server通知玩家所有联盟简要信息 上线通知，不管切场景
+message NTFBriefAllianceInfo
+{
+	enum EBAInfoType
+	{
+		BAIT_ALL								= 1;	//设置 所有联盟信息，需要清空之前的联盟
+		BAIT_REMOVE 							= 2;	//删除 联盟信息
+		BAIT_UPDATE_NAME						= 3;	//更新 名字
+		BAIT_UPDATE_TAG							= 4;	//更新 简称
+		BAIT_UPDATE_BUILDING_EFFECT				= 5;	//更新 建筑是否生效
+		BAIT_UPDATE_BUILDING_TERRITORY_COLOR	= 6;	//更新 建筑领土颜色
+		BAIT_UPDATE_BUILDING_ADD				= 7;	//更新 新增建筑
+		BAIT_UPDATE_BUILDING_REMOVE				= 8;	//更新 删除建筑
+		BAIT_UPDATE_BUILDING_STATUS             = 9;    //更新 建筑状态
+		BAIT_UPDATE_BUILDING_SIDE               = 10;   //更新 边界
+		BAIT_UPDATE_ALLIANCE_BOSS				= 11;   
+		BAIT_UPDATE_BIT                         = 12;   //领土占位
+	}
+	optional int32 type							 = 1;	//EBAInfoType
+	repeated BriefAlliance alliance_info		 = 2;
+	optional bool first_package                  = 3;   //第一个包，用于全量同步拆包
+	optional int32 area_id				 		 = 4;
+}
+message BriefAlliance
+{
+	message Building
+	{
+		optional int64 config_id = 1;  		  //配置ID
+		optional bool is_effect = 3;  //是否有效
+		repeated int64 territory_bit = 4;  //领土范围
+		optional GUID building_id = 5; //唯一ID
+		optional Point2D pos = 6;  //中心点
+		optional int64 building_status = 7;  //建造状态  //EAllinaceBuildingBuildState
+		repeated BuildingSide side_list = 8;  //边界
+		optional int32 object_type = 9;  //对象类型
+		optional string territory_bits = 10;  //领土范围
+		optional GUID alliance_boss = 11;  //联盟boss
+	}
+
+	optional GUID alliance_id					 = 1;	//联盟guid
+	optional string alliance_tag				 = 2;	//联盟简称
+	optional string alliance_name				 = 3;	//联盟全称
+	optional AllianceSymbol symbol 				 = 4;   //联盟旗帜
+	repeated Building building_list              = 5;   //建筑列表
+}
+
+//MSG_GS2AS_PLAYER_ENTER_SCENE             = 2952;   //玩家进入场景
+message GS2ASPlayerEnterScene
+{
+	optional int32 scene_type = 1;  //场景类型
+}
+
+
+//MSG_SS2AS_SAVE_ALLIANCE_TERRITORY  = 2956;   //存储联盟领土数据
+message SS2ASReqSaveAllianceTerrotory
+{
+	optional AllianceTerritory alliance_territory = 1;   //领土数据
+}
+
+
+
+//MSG_C2S_REQ_BUILD_ALLIANCE_BUILDING = 2957;    //请求建造联盟建筑
+message C2SReqBuildAllianceBuilding
+{
+	optional int64 config_id   = 1;   //配置ID
+	optional Point2D build_pos = 2;   //建造位置
+}
+
+//MSG_S2C_RSP_BUILD_ALLIANCE_BUILDING = 2958;    //建造联盟建筑返回
+
+
+//MSG_AS2SS_RPC_BUILD_ALLIANCE_BUILDING       = 50042;  //请求建造联盟建筑
+message AS2SSReqBuildAllianceBuildingRpc
+{
+	optional int64 config_id    					= 1;    //配置ID
+	optional GUID city_id 							= 2;  	//城市ID
+	optional Point2D build_pos 						= 3;    //建造位置
+	optional AllianceBuilding alliance_building  	= 4;    //建筑数据
+}
+
+//MSG_C2S_REQ_REMOVE_ALLIANCE_BUILDING = 2959;  //请求拆除联盟建筑
+message C2SReqRemoveAllianceBuilding
+{
+	optional GUID building_id = 1;  //建筑ID
+}
+
+//MSG_S2C_RSP_REMOVE_ALLIANCE_BUILDING = 2960;  //拆除联盟建筑返回
+message S2CRspRemoveAllianceBuilding
+{
+	
+}
+
+//MSG_AS2SS_REQ_REMOVE_ALLIANCE_BUILDING = 2961;  //AS->SS 删除联盟建筑
+message AS2SSReqRemoveAllianceBuilding
+{
+
+}
+
+//MSG_SS2AS_SAVE_ALLIANCE_TERRITORY  = 2956;   //存储联盟领土数据
+//message SS2ASSaveAllianceTerritory
+//{
+	//repeated AllianceBuoy buoy_list 					= 1;  	//浮标列表
+	//optional AllianceCenterFort center_fort             = 2;    //中心要塞
+//}
+
+
+//MSG_C2S_REQ_ALLIANCE_BUILDING_BUILD_CHECK = 2962;  //请求建造检测
+message C2SReqAllianceBuildingBuildCheck
+{
+	optional int64 config_id   = 1;   //配置ID
+	optional Point2D build_pos = 2;   //建造位置
+}
+
+//MSG_S2C_RSP_ALLIANCE_BUILDING_BUILD_CHECK = 2963;  //建造检测返回
+message S2CRspAllianceBuildingBuildCheck
+{
+	optional bool success = 1;  //是否成功
+}
+
+//MSG_C2S_REQ_ALLIANCE_TERRITORY_INFO = 2964;   //领土信息请求
+message C2SReqAllianceTerritoryInfo
+{
+
+}
+
+//MSG_S2C_RSP_ALLIANCE_TERRITORY_INFO = 2965;   //领土信息返回
+message S2CRspAllianceTerritoryInfo
+{
+	repeated AllianceBuilding building_list = 1;  //建筑列表
+	optional int32 center_fort_max = 2;  //中心要塞最大数量
+	optional int32 buoy_max = 3;  //浮标最大数量
+	repeated int32 unlock_building_type_list = 4; //解锁类型列表
+	optional int32 trap_max = 5;  //陷阱最大数量
+}
+
+//MSG_S2C_NTF_ALLIANCE_STORAGE_ITEM_LIST = 2966;  //通知资源变化
+message S2CNtfAllianceStorageItemList
+{
+	repeated StorageItem item_list = 1; //资源变化
+}
+
+enum EAllinaceBuildingBuildState
+{
+	ABBS_IN_BUILD			= 0;	//建筑中
+	ABBS_BUILD_COMPLETE		= 1;	//已完成
+}
+
+enum EAllianceBuildingGarrisonState
+{
+	ABGS_EMPTY_BUILDING	 = 0;
+	ABGS_SELF_GARRISON	 = 1;
+	ABGS_ENEMY_GARRISON	 = 2;
+}
+
+//MSG_SS2AS_ALLIANCE_RES_POINTS_CHANGE = 2967;  //联盟资源点数量变化
+message SS2ASAllianceResPointsChange  //联盟资源点变化
+{
+	message AllianceResPoints
+	{
+		optional int64 config_id = 1; //配置ID
+		optional int64 count = 2;  //变化数量
+	}
+	repeated AllianceResPoints alliance_res_points_list = 1;  //联盟资源点
+}
+
+//MSG_C2S_REQ_ALLIANCE_RES_LOGLIST = 2968;  //请求联盟资源消耗列表
+message C2SReqAllianceResLogList
+{
+
+}
+
+//MSG_S2C_RSP_ALLIANCE_RES_LOGLIST = 2969;  //联盟资源消耗列表返回
+message S2CRspAllianceResLogList
+{
+	repeated AllianceResLog res_log_list = 1;  //记录列表
+}
+
+//MSG_SS2AS_UPDATE_ALLIANCE_BUILDING_DATA = 2970;  //更新联盟建筑数据
+message SS2ASUpdateAllianceBuildingData   //更新建筑数据
+{
+	enum EDataType  //数据类型
+	{
+		IS_EFFECT = 1; //是否生效 (is_effect)
+		BUILDING_STATUS = 2;  //建筑状态 (building_status)
+		HP_CHANGE = 3;  //血量变化  (hp_change_speed、hp_change_start_time、hp)
+		REMOVE = 4;  //删除
+		SIDE = 5;  //领土边界
+		BIT = 6;  //占位
+	}
+
+	optional int32 type = 1;
+	repeated AllianceBuilding building_list = 2;  	//更新列表
+	optional GUID player_id = 3;				  	//对方ID
+	optional GUID allance_id = 4;					//对方联盟ID
+}
+
+//MSG_S2AS_ADD_ALLIANCE_RES = 2971;  //增加联盟资源
+message S2ASAddAllianceRes
+{
+	repeated ItemInfo item_list = 1;
+}
+
+//MSG_SS2GS_ALLIANCE_BUILDING_BUILD_GET_POINTS = 2972; //联盟建筑建造获得积分
+message SS2GSAllianceBuildingBuildGetPoints   //联盟建筑建造获得积分
+{
+	optional int64 get_points = 1;  //获得积分
+}
+
+//MSG_GS2AS_GIVE_ALLIANCEPOINTS = 2973;   //GAME发放联盟积分
+message GS2ASGiveAlliancePoints  //发送联盟积分
+{
+	optional int64 alliance_points = 1;  //联盟积分
+	optional GUID player_id = 2;
+}
+
+
+//MSG_S2C_HELP_BUILDING_LEVELUP = 2993;   //被帮助建筑升级
+message S2CHelpBuildingLevelup
+{
+	optional GUID building_id 			= 1;   //建筑ID
+	optional string player_name 		= 2;   //玩家名字
+	optional int64 config_id        	= 3;   //配置ID
+	optional int32 be_helped_num        = 4;   //被帮助的次数
+	optional int32 be_helped_num_max    = 5;   //被帮助的次数上限
+	optional int64 building_status      = 6;   //建筑状态
+}
+
+//MSG_C2S_REQ_ALLIANCE_WAR_SOLO_INFO = 2974;  //请求联盟战斗SOLO信息 
+message C2SReqAllianceWarSoloInfo  //请求联盟战争Solo信息
+{
+
+}
+
+//MSG_S2C_RSP_ALLIANCE_WAR_SOLO_INFO = 2975;  //联盟战斗SOLO信息返回
+message S2CRspAllianceWarSoloInfo
+{
+	repeated AllianceWarSoloInfo solo_info_list = 1;  //联盟战争solo信息
+}
+
+//MSG_NTF_ALLIANCE_WAR_SOLO_INFO_DEL = 2976;  //联盟战斗SOLO信息删除
+message NtfAllianceWarSoloInfoDel
+{
+	optional GUID unique_id         = 1;  //唯一ID
+}
+
+//MSG_NTF_ALLIANCE_WAR_SOLO_INFO_UPDATE = 2977;  //联盟战斗SOLO信息更新
+message NtfAllianceWarSoloInfoUpdate
+{
+	optional AllianceWarSoloInfo solo_info = 1; 
+}
+
+//MSG_SS2AS_SYNC_ALLIANCE_WAR_SOLO_INFO = 2978;  //场景同步联盟战争信息到联盟
+message SS2ASSyncAllianceWarSoloInfo
+{
+	enum SyncType
+	{
+		ADD = 1;  //新增
+		DEL = 2;  //删除
+		UPDATE = 3; //修改
+	}
+
+	optional SyncType type = 1; //同步类型
+	optional AllianceWarSoloInfo solo_info = 2;   
+}
+
+//MSG_S2AS_RPC_GET_ALLIANCE_LEADER             = 50044;  //获取联盟首领信息
+message S2ASRpcGetAllianceLeader
+{
+	optional int64 result         				= 1;    //联盟ID
+	optional GUID alliance_id         			= 2;    //联盟ID
+	optional GUID leader_id         			= 3;    //首领玩家ID
+	optional GUID leader_city      		   		= 4;    //首领城市ID
+	optional string leader_name      		   	= 5;    //首领名字
+	optional int64 avatar_id      		   		= 6;    //首领头像
+	optional string avatar_url      		   	= 7;    //首领头像
+}
+
+// MSG_SS2AS_RPC_GET_DECLARE_WAR                = 50055;  //获取宣战信息
+message S2ASRpcGetDeclareWar
+{
+	optional GUID alliance_id         			= 1;    //联盟ID
+	optional int64 npc_town_id      			= 2;    //宣战NPC城镇配置ID
+}
+
+//MSG_AS2SS_BUILD_ALLIANCE_BUILDING_RESULT = 2979;  //请求建造建筑结果同步
+message AS2SSReqBuildAllianceBuildingResult
+{
+	optional GUID building_id = 1;  //建筑ID
+}
+
+//MSG_SS2AS_NPC_TOWN_ADD_TO_ALLIANCE          = 2980;     //NPC城镇归属联盟
+// message SS2ASNPCTownAddToAlliance
+// {
+// 	optional GUID building_id = 1;  //建筑ID
+// 	optional int64 building_status = 2;  //建筑状态
+// }
+
+//MSG_SS2AS_NPC_TOWN_REMOVE_IN_ALLIANCE       = 2981;     //NPC城镇从联盟中删除
+// message SS2ASNPCTownRemoveInAlliance
+// {
+// 	optional GUID building_id = 1;  //建筑ID
+
+// }
+
+// MSG_SS2AS_REQ_DEL_NPC_TOWN      = 2984;     //联盟删除NPC城镇
+message SS2ASReqDelNPCTown
+{
+	optional int64 config_id = 1;  //NpcTown配置ID
+}
+
+//MSG_SS2AS_REQ_ADD_NPC_TOWN_BUFF    		      = 2985;
+message SS2ASReqAddNPCTownBuff
+{
+	optional GUID building_id = 1;  //建筑ID
+	optional int64 config_id = 2;  //配置ID
+	optional int64 buff_valid_time = 3;  //buff有效时间
+	optional GUID last_alliance_id = 4;  //上一个占领联盟
+}
+
+//MSG_C2S_REQ_INVITE_JOIN_ALLIANCE_BY_CHAT = 2987;    //邀请入盟通过聊天发送世界频道
+message C2SReqInviteJoinAllianceByChat
+{
+	optional GUID player_id = 1;  //玩家ID
+	optional string message_data = 2;  //内容
+}
+
+//MSG_C2S_REQ_QUERY_ALLIANCE_INFO = 2988;   //请求查询其他联盟信息
+message C2SReqQueryAllianceInfo
+{
+	optional GUID alliance_id = 1;
+    optional int32 area_id  = 2;    //指定区ID， 如果不传(值为0)，则默认玩家视野所在的区
+    optional int32 self_area = 3;   //玩家所在区
+}
+
+//MSG_SS2AS_RPC_QUERY_ALLIANCEINFO            = 50048;  //请求联盟信息
+message RpcReqQueryAllianceInfo
+{
+	optional GUID alliance_id = 1;
+	optional S2CRspQueryAllianceInfo response = 2;
+	optional GUID player_id = 3;
+	optional int32 err_code = 4;
+}
+
+//MSG_S2C_RSP_QUERY_ALLIANCE_INFO = 2989;   //查询其他联盟信息返回
+message S2CRspQueryAllianceInfo
+{
+	optional AllianceInfo alliance_info = 1;
+}
+
+//MSG_S2AS_CITY_CHANGE_POS = 3500;  //玩家主城位置改变
+message S2ASCityChangePos
+{
+	optional GUID player_id = 1;
+	optional Point2D cur_pos = 2;
+}
+
+enum FilterInviteType
+{
+	FILTER_INVITE_LANGUAGE 		= 1;  //语言
+	FILTER_INVITE_POWER    		= 2;  //战力
+	FILTER_INVITE_CASTLE_LEVEL 	= 3;  //主堡等级
+}
+
+//MSG_C2S_REQ_FILTER_INVITE_LIST = 2991;   //请求过滤邀请列表
+message C2SReqFilterInviteList
+{
+	optional int32 type = 1;  //过滤类型
+	optional int32 page = 2;  //页数
+}
+
+//MSG_S2C_RSP_FILTER_INVITE_LIST = 2992;   //返回过滤邀请列表
+message S2CRspFilterInviteList
+{
+	message PlayerBasicInfo
+	{
+		optional int64 power = 1;
+		optional int64 avatar_id = 2;
+		optional int64 avatar_box = 3;
+		optional int64 language = 4;
+		optional string name = 5;
+		optional int64 castle_level = 6;
+		optional GUID player_id = 7;
+		optional string avatar_url = 8;
+	}
+
+	repeated PlayerBasicInfo player_basic_info_list = 1;
+}
+
+//MSG_S2AS_CITY_IS_RECYCLE_CHANGE = 3501;  //玩家主城回收状态改变
+message S2ASCityIsRecycleChange
+{
+	optional GUID player_id = 1;
+	optional bool is_recycle = 2;
+}
+
+
+//MSG_AS2S_GIVE_ITEMS                 = 3502;  //联盟通用给玩家发奖
+message AS2SGiveItems
+{
+	optional GUID game_city_id  = 1;
+	repeated ItemInfo item_list = 2;
+	repeated int64 drop_list = 3;
+	optional int32 reward_ntf_type = 4;
+}
+
+enum MobilizationTaskSlotType
+{
+	SLOT_TYPE_CLAIM 	= 1;  	//接取
+	SLOT_TYPE_PERSONAL 	= 2;   	//专属
+	SLOT_TYPE_COMMON  	= 3;  	//普通任务
+}
+
+message MobilizationTaskInfo
+{
+	optional int32 task_slot 			= 1;   //任务槽位
+	optional int64 task_id 				= 2;   //任务ID
+	optional int64 value        		= 3;   //进度
+	optional int64 claim_time   		= 5;   //接取时间
+	optional int64 next_refresh_time 	= 6;   //下次刷新时间
+	optional int32 slot_type            = 7;   //槽位类型    //MobilizationTaskSlotType
+}
+
+
+message MobilizationSingleRankInfo
+{
+	optional GUID player_id 			= 1;  //玩家ID
+	optional int64 value                = 2;  //积分
+	optional string player_name      	= 3;  //玩家名字 
+	optional int64 avatar_box 			= 4;  //头像框
+	optional string avatar_url 			= 6;  //头像
+	optional int64 claimed_num          = 7;  //已经接收次数
+	optional int64 claim_max            = 8;  //接收次数上限
+}
+
+message MobilizationAllianceRankInfo  //联盟榜
+{
+	optional GUID alliance_id 			= 1;  //联盟ID
+	optional AllianceSymbol symbol      = 2;  //旗帜
+	optional string leader_name         = 3;  //盟主名字
+	optional string alliance_tag        = 5;  //联盟简称
+	optional string name                = 6;  //联盟名字
+	optional int64 value                = 7;  //积分
+}
+
+message MobilizationRewardInfo
+{
+	message LevelInfo
+	{
+		optional int64 level = 1;  //等级
+		optional bool single_state = 2;  // false 未领取 true 已经领取
+		optional bool alliance_state = 3;  // false 未领取 true 已经领取
+	}
+
+	optional GUID player_id = 1;  //玩家ID
+	repeated LevelInfo level_info_list = 2;  //等级信息
+}
+
+message MobilizationLog
+{
+	optional string player_name = 1;
+	optional int64 task_id = 2;  //任务ID
+}
+
+//MSG_S2C_NTF_MOBILIZATION_TASK_UPDATE    = 3505;  //通知任务状态更新
+message S2CNtfMobilizationTaskUpdate
+{
+	optional MobilizationTaskInfo task 	= 1;  	//任务
+}
+
+enum EMobilizationInfoType
+{
+	BASIC_INFO 			= 1;  //基础信息
+	PLAYER_RANK 		= 2;  //个人排行
+	ALLIANCE_RANK 		= 3;  //联盟排行
+	REWARD 				= 4;  //奖励
+	LOG                 = 5;  //日志
+}
+
+//MSG_C2S_REQ_MOBILIZATION_INFO           = 3506;  //基础信息请求
+message C2SReqMobilizationInfo
+{
+	optional int32 info_type = 1;  //信息类型  //EMobilizationInfoType
+	optional int32 log_page = 2;  //页数
+}
+
+//MSG_S2C_RSP_MOBILIZATION_INFO           = 3507;  //基础信息返回
+message S2CRspMobilizationInfo
+{
+	optional int32 info_type 					= 1;    //信息类型
+	optional MobilizationTaskInfo claim_task 	= 2;  	//接取的任务
+	optional int64 alliance_rank 				= 3;  	//联盟排名
+	optional int64 player_rank 					= 4;  	//个人排名
+	optional int64 player_score 				= 5;   	//个人积分
+	optional int64 alliance_score 				= 6; 	//联盟积分
+	optional int64 claim_num                    = 7;    //接取次数
+	optional int64 rank                         = 8;    //联盟等级
+	repeated MobilizationTaskInfo task_list     = 9; 	//任务列表
+	repeated MobilizationSingleRankInfo single_rank_list = 10;  //个人排行榜
+	repeated MobilizationAllianceRankInfo alliance_rank_list = 11;  //联盟排行榜
+	optional MobilizationRewardInfo reward_info = 12;  //奖励领取信息
+	optional int64 can_buy_claim_num = 13;  //可购买次数
+	repeated MobilizationLog log_list = 14;  //日志
+}
+
+//MSG_C2S_REQ_MOBILIZATION_CLAIM_TASK     = 3508;  //领取任务请求
+message C2SReqMobilizationClaimTask
+{
+	optional int32 task_slot 		= 1;  		//任务槽位
+	optional int32 slot_type        = 2;        //槽位类型
+}
+ 
+//MSG_S2C_RSP_MOBILIZATION_CLAIM_TASK     = 3509;  //领取任务返回
+message S2CRspMobilizationClaimTask
+{
+	optional MobilizationTaskInfo claim_task 	= 1;  	//接取的任务
+	optional int64 claim_num                    = 2;    //接取次数
+}
+ 
+//MSG_C2S_REQ_MOBILIZATION_REFRESH_TASK   = 3510;  //刷新任务
+message C2SReqMobilizationRefreshTask
+{
+	optional int32 task_slot 		= 1;  		//任务槽位
+	optional int32 slot_type        = 2;        //槽位类型
+}
+ 
+//MSG_C2S_REQ_MOBILIZATION_GIVE_UP_TASK   = 3511;  //放弃任务请求
+message C2SReqMobilizationGiveUpTask
+{
+ 
+}
+ 
+//MSG_S2C_RSP_MOBILIZATION_GIVE_UP_TASK   = 3512;  //放弃任务返回
+message S2CRspMobilizationGiveUpTask
+{
+
+}
+
+//MSG_C2S_REQ_MOBILIZATION_BUY_CLAIM_NUM  = 3513;  //购买接取次数请求
+message C2SReqMobilizationBuyClaimNum
+{
+	optional int64 buy_claim_num = 1;   //购买领取次数
+}
+
+//MSG_S2C_RSP_MOBILIZATION_BUY_CLAIM_NUM  = 3514;  //购买接取次数返回
+message S2CRspMobilizationBuyClaimNum
+{
+	optional bool success = 1;   //服务器用
+	optional int64 claim_num = 2;   //接取次数
+	optional int64 can_buy_claim_num = 3;  //可购买次数
+	optional int64 buy_claim_num = 4;   //服务器用
+	optional int64 activity_id = 5;
+}
+
+message MobilizationPlayerInfo  //总动员玩家数据
+{
+	optional MobilizationTaskInfo task_info = 1;
+	optional GUID player_id = 2;  //玩家ID
+	optional int64 claim_num = 3;  //接取次数
+	optional int64 score = 4;  //积分
+	optional int64 can_buy_claim_num = 5;  //可购买次数
+	optional int64 claimed_num          = 7;  //已经接收次数
+	repeated MobilizationTaskInfo personal_task_list = 8;  //专属任务列表
+	optional int32 refresh_count = 9;  //刷新次数
+	optional int64 time = 10;   //时间
+}
+
+message ActivityMobilization  //联盟总动员
+{
+	repeated MobilizationTaskInfo task_list = 1; //任务列表
+	repeated MobilizationPlayerInfo player_info_list = 2;  //参与成员列表
+	repeated MobilizationRewardInfo reward_info_list = 3;  //奖励列表
+	optional int64 score = 4;  //联盟积分
+	repeated MobilizationLog log_list = 5;  //日志
+	optional int32 activity_time_type = 6;  //活动时间类型 用于区分是小服还是大区的活动
+	optional int64 activity_id = 7;  //活动ID
+	optional int32 match_type = 8;  //匹配类型
+}
+
+//MSG_GS2AS_MOBILIZATION_TASK_TRIGGER     = 3515;  //GAME通知ALLIANCE 玩家任务触发
+message GS2ASMobilizationTaskTrigger  //总动员任务触发
+{
+	message TaskParam
+	{
+		optional int64 param1 = 1; //参数1
+		optional int64 param2 = 2;	//参数2
+		optional int64 ratio = 3;  //目标系数值
+	}
+
+	optional GUID player_id = 1; //玩家ID
+	optional int32 task_type = 2; //任务类型
+	repeated TaskParam param_list = 3;  //参数列表
+}
+
+
+//MSG_C2S_REQ_MOBILIZATION_SUBMIT_TASK    = 3516;  //提交任务请求
+message C2SReqMobilizationSubmitTask
+{
+
+}
+
+//MSG_S2C_RSP_MOBILIZATION_SUBMIT_TASK    = 3517;  //提交任务返回
+message S2CRspMobilizationSubmitTask
+{
+	optional int64 player_score = 1;  //个人积分
+	optional int64 alliance_score = 2;  //联盟积分
+	optional int64 get_score = 3;	//本次获得积分
+	optional int64 activity_id = 4;	//活动id
+	optional int64 rank = 5;
+}
+
+//MSG_C2S_REQ_MOBILIZATION_TAKE_AWARD     = 3518;  //请求领取奖励
+message C2SReqMobilizationTakeAward
+{
+	enum ETakeType
+	{
+		SINGLE 		= 1;  //个人
+		ALLIANCE 	= 2;  //联盟
+	}
+
+	optional int64 level = 1;  //等级
+	optional int32 take_type = 2;   //领取类型
+}
+
+//MSG_S2C_RSP_MOBILIZATION_TAKE_AWARD     = 3519;  //领取奖励返回
+message S2CRspMobilizationTakeAward
+{
+	optional int64 level = 1;  //等级
+	optional int32 take_type = 2;   //类型
+}
+
+//总动员开启条件
+//MSG_S2C_NOTIFY_MOBILIZATION_OPEN_LIMIT  = 3520;  //总动员开启限制
+message S2CNotifyMobilizationOpenLimit
+{
+	optional bool is_match = 1;  //是否参与匹配
+	optional string alliance_name = 2;   //联盟名字
+}
+
+message MobilizationAlliance
+{
+	optional string _id = 1;  //联盟ID
+	optional int64 mobilization_rank = 2;  //总动员等级
+	optional int32 group_id = 3;   //组ID
+	optional int64 score = 4;  //积分
+	optional int64 time = 5;  //时间
+}
+
+message MobilizationGroupingAlliance  //联盟匹配分组
+{
+	optional string _id = 1;  //联盟ID
+	optional int64 mobilization_rank = 2;  //总动员等级
+}
+
+message AllianceTaskData
+{
+	optional int64 task_type 		= 1;	
+	optional int64 value 			= 2; //准确值
+	optional int64 para1            = 3; //参数
+}
+
+//MSG_C2S_ALLIANCE_TASK_CHAPTER     = 3601;  //请求联盟任务章节信息
+//MSG_S2C_ALLIANCE_TASK_CHAPTER     = 3602;  //回复联盟任务章节信息
+message AllianceTaskChapter
+{
+	optional int64 cur_chapter 		= 1; //当前章节
+	repeated int64 task_id 			= 2; //当前章节已完成的taskid
+	repeated AllianceTaskData task_infos 		= 3; //请求联盟任务进度
+
+	optional int32 opt_type 		= 4; //0 打开界面通知 全量 1 当前章节有任务完成 增量
+
+	repeated chaptertask 	chapter_task= 5; //0 前面的任务完成情况
+	optional int64 min_chapter 		= 6; //这个章节之前的全部完成了。包括这个
+	optional int64 chapterVer 		= 7; //0是老版本，1是新版本
+}
+
+message chaptertask
+{
+	optional int64 chapter_id 		= 1; //当前章节
+	repeated int64 task_id 			= 2; //当前章节已完成的taskid
+}
+
+// MSG_SS2AS_TRIGER_ALLIANCE_TASK = 3603;// 触发联盟任务 通知AS
+message SS2ASTrigerAllianceTask
+{
+	optional int32 task_type = 1;
+
+	optional int32 level = 2;
+}
+
+// MSG_C2S_REQ_POINTS_ALLIANCE_TERRITORY       = 2996;     //批量获取点的联盟领土归属
+message C2SReqPointsAllianceTerritory
+{
+	repeated Point2D poses = 1;
+}
+
+// MSG_S2C_RSP_POINTS_ALLIANCE_TERRITORY       = 2997;     //批量获取点的联盟领土归属返回
+message S2CRspPointsAllianceTerritory
+{
+	repeated Point2D poses = 1;
+	repeated GUID alliance_ids = 2;
+}
+
+
+//MSG_C2S_REQ_EDIT_ALLIANCE_INVITE_NOTICE     = 3605;   //请求编辑联盟邀请公告
+message C2SReqEditAllianceInviteNotice
+{
+	optional string invite_notice = 1;  //邀请公告
+}
+
+//MSG_S2C_RSP_EDIT_ALLIANCE_INVITE_NOTICE     = 3606;   //编辑联盟邀请公告返回
+message S2CRspEditAllianceInviteNotice
+{
+	optional string invite_notice = 1;  //邀请公告
+    optional string edit_player_name = 2;  //编辑玩家名字
+}
+//	MSG_S2S_SYNC_EXPLORE_SPICALEVENT_LEVEL  = 3521; // 对联盟服同步雷达特殊事件等级
+message SyncExploreSpicalEventLevel
+{
+	optional GUID player_id			 = 1;
+	optional int32 event_level		 = 2;	//雷达特殊事件等级
+}
+//	MSG_C2S_REQ_EXPLORE_SPICALEVENT_MEMBER  = 3522; // 联盟内某个雷达特殊事件等级成员列表
+message ReqExploreSpicalEventMember
+{
+	optional int32 event_level			 = 1;	//服务器使用 雷达特殊事件等级
+	optional GUID player_id				 = 2;	//服务器使用 
+}
+
+//	MSG_S2C_RSP_EXPLORE_SPICALEVENT_MEMBER  = 3523; // 联盟内某个雷达特殊事件等级成员列表
+message RspExploreSpicalEventMember
+{
+	repeated AllianceMember alliance_member = 1;  	//成员信息
+}
+
+//MSG_AS2GS_RPC_ALLIANCE_MEMBER_INFO          = 50049;  //更新联盟成员部分信息
+message GS2ASReqAllianceMemberInfoRpc
+{
+	optional AllianceMember alliance_member = 1;  //成员信息
+}
+
+//MSG_C2S_REQ_ALLIANCE_BE_ACTIVE              = 3607;   //联盟是否活跃请求
+message C2SReqAllianceBeActive
+{
+    optional GUID allance_id = 1;
+}
+ 
+//MSG_S2C_RSP_ALLIANCE_BE_ACTIVE              = 3608;   //联盟是否活跃返回
+message S2CRspAllianceBeActive
+{
+    optional GUID allance_id = 1;   //联盟ID
+    optional bool bactive = 2;   //是否活跃联盟
+}
+
+
+//联盟红包存储结构
+message AllianceRedPacketDB
+{
+	message RedPacketInfo
+	{
+		required GUID red_packet_id 	 	 = 1;		//红包唯一GUID
+		optional MessageData message_data 	 = 2;		//红包具体信息
+		repeated OpenRedPacketInfo open_list = 3;		//红包打开列表
+		repeated int32 result_list			 = 4;		//红包随机金额
+	}
+	
+	repeated RedPacketInfo redpacketinfo_list  	 = 1;
+}
+
+
+//MSG_C2S_REQ_FAST_JOIN_ALLIANCE              = 3609;   //一键加入联盟请求
+message C2SReqFastJoinAlliance  
+{
+    optional AllianceMember alliance_member 	= 1;  //玩家信息(服务器用)
+}
+
+// MSG_SS2AS_ALLIANCE_LEADER_MOVE              = 3620;   //联盟增加免费迁城次数
+message SS2ASAllianceLeaderMove
+{
+    
+}
+
+// MSG_GS2AS_CHANGE_MEMBER_FREE_MOVE           = 3621;   //玩家修改免费迁城次数
+message GS2ASChangeMemberFreeMove
+{
+	optional int32 change = 1;  //免费迁城修改
+}
+
+//联盟对决参与状态
+enum AllianceDuleJoinStatus
+{
+	None 			= 0;  //未参与
+	Join 	        = 1;  //正常参与
+	Leave           = 2;  //离开参与的联盟(此时只给个人积分，不给联盟积分)
+}
+
+message AllianceDuleLog
+{
+    message AllianceInfo
+    {
+        optional GUID alliance_id   = 1;    //联盟ID
+        optional int64 score        = 2;    //任务积分
+    }
+    optional int32 stage                = 1;        //阶段(第几天)
+    optional GUID mvp_player            = 2;		//mvp玩家
+    optional GUID win_alliance          = 3;		//胜利方联盟
+    optional int32 win_score            = 4; 	    //胜场积分
+    optional string mvp_avatar_url      = 5;        //mvp玩家头像
+    optional int64 mvp_avatar_box       = 6;        //mvp头像框
+    optional string win_allianceflag    = 7;        //胜利方联盟标签
+    optional bool bwin                  = 8;        //是否胜利
+    optional AllianceSymbol win_symbol  = 9; 	    //胜利方标志
+    repeated AllianceInfo alliance_info = 10;       //联盟信息
+    
+}
+    
+message AllianceDuleInfo  //联盟对决信息
+{
+	optional GUID dule_id         			    = 1;   //对决联盟ID
+    optional int64 score                        = 2; 	//今日任务积分
+    optional int32 dule_group                   = 3;    //对决分组ID
+    optional GUID mvp_player                    = 4;    //今日MVP玩家
+    optional int64 mvp_score                    = 5; 	//今日mvp积分
+    optional int64 dule_socre                   = 6;    //对决积分
+    repeated AllianceDuleLog dule_log           = 7;    //对决日志
+    repeated GUID match_id_logs                 = 8;    //历史匹配联盟ID日志
+    optional int32 win_count                    = 9;    //连胜次数(负数代表连败)
+    optional int64 history_power                = 10;   //匹配前n小时的历史战力
+    optional int64 power_time                   = 11;   //计算匹配战力时间
+    optional AllianceDuleWeekLog week_log       = 12;    //对决日志
+    
+}
+
+//MSG_S2AS_ADD_ALLIANCE_DULE_SCORE            = 3625;  //增加联盟对决积分
+message S2ASAddAllianceDuleScore
+{
+	message DuleScore
+	{
+		optional GUID guid   = 1;		    
+		optional int64 score     = 2;   //当前积分
+        optional int64 add_score = 3;   //新增积分
+        optional GUID alliance_id = 4;  //联盟ID
+	}
+
+    repeated DuleScore dule_score_list  = 1;    //联盟新增积分列表
+}
+
+//MSG_C2S_ALLIANCE_DULE_INFO            = 3626;  //请求联盟信息
+message C2SReqAllianceDuleInfo
+{
+
+}
+
+//MSG_RPC_ALLIANCE_DULE_INFO        = 50803; //联盟对决RPC信息请求
+//MSG_S2C_ALLIANCE_DULE_INFO        = 3627;  //响应联盟对决信息
+message S2CRspAllianceDuleInfo
+{
+    message DuleInfo
+    {
+        optional AllianceBasicInfo alliance_info = 1;
+        optional PlayerBasicInfo mvp_player      = 2;   //今日MVP玩家
+        optional int64 mvp_score                 = 3;   //今日mvp玩家对应任务积分
+        optional int64 score                     = 4;   //联盟任务总积分
+        optional int64 dule_socre                = 5;    //对决积分
+    }
+    repeated DuleInfo dule_info       = 1;    //对决信息
+    repeated AllianceDuleLog dule_log = 2;      //联盟对决日志
+    optional GUID player_id = 3;    //服务器使用
+    optional GUID alliance_id = 4;  //服务器使用
+    optional int32 dule_group = 5;    //对决分组ID
+}
+
+message AllianceMatchInfo
+{
+    optional GUID id                = 1;    //联盟ID
+    optional int64 avg_power        = 2;    //联盟近期平均战力
+    optional int32 win_count        = 3;    //连胜次数(负数代表连败)
+    repeated GUID match_id_logs     = 4;    //历史匹配联盟ID日志
+    optional int32 area_id          = 5;    //区ID
+}
+
+//MSG_AS2CS_ALLIANCE_DULE_MATCH_JOIN               = 3628;  //联盟对局参与匹配
+message S2SAllianceDuleMatchJoin
+{
+    optional bool bCrossAreaMatch   = 1;   //是否参与跨区匹配
+    optional int32 area_id          = 2;    //区ID
+    optional int64 activity_id      = 3;    //活动id
+    optional int64 open_time        = 4;    //活动匹配开始时间
+    optional int64 close_time       = 5;    //活动结算时间
+    repeated AllianceMatchInfo match_info_list = 6;    //联盟匹配信息列表
+    optional bool match_test_data           = 7;    //匹配gm测试数据
+    optional bool startup_match_test          = 8;    //直接启动测试匹配
+}
+
+message AllianceDuleMatchGroup
+{
+    message AllianceInfo
+    {
+        optional int32 area_id      = 1;
+        optional GUID alliance_id   = 2;    //联盟ID
+        optional int64 score        = 3;    //任务积分(当天)
+        optional int64 dule_score   = 4;    //对决积分
+        optional int64 week_score   = 5;    //任务积分(周总积分)
+    }
+    optional int32 group_id     = 1;    //组ID
+    repeated AllianceInfo alliance_infos = 2;    //联盟ID
+    optional int64 open_time    = 3;    //活动匹配开始时间
+    optional int64 close_time   = 4;    //活动结算时间
+    optional int64 activity_id = 5;     //活动ID
+}
+
+message AllianceDuleMatchGroupList
+{
+    repeated AllianceDuleMatchGroup match_group_list = 1;
+}
+
+//MSG_S2AS_ALLIANCE_DULE_MATCH_NTF            = 3629;  //联盟对局匹配通知(cross->alliance)
+message S2ASAllianceDuleMatchNtf
+{
+    repeated AllianceDuleMatchGroup match_group_list = 1;
+}
+
+//MSG_S2AS_ALLIANCE_DULE_SETTLE_NTF            = 3630;  //联盟对局匹配通知(cross->alliance)
+message S2ASAllianceDuleSettleNtf
+{
+    repeated AllianceDuleMatchGroup match_group_list = 1;
+}
+
+//MSG_C2S_ALLIANCE_DULE_MOVE_POS              = 3631;  //请求联盟坐标
+message C2SAllianceDuleMovePos
+{
+    optional GUID allianceid = 1;       //联盟ID
+    optional int32 area_id = 2;         //区id
+}
+//MSG_S2C_ALLIANCE_DULE_MOVE_POS              = 3632;  //响应联盟对决迁城坐标
+message S2CAllianceDuleMovePos
+{
+    optional int32 area_id = 1;         //区id
+    optional Point2D pos = 2;   
+}
+
+message AllianceDuleWeekLog
+{
+    message DuleBasicInfo
+    {
+        optional AllianceBasicInfo alliance_info = 1;
+        optional int32 week_score = 2;
+    }
+    optional bool bWin = 1;
+    repeated AllianceDuleLog dule_log   = 2;      //联盟对决日志
+    optional PlayerBasicInfo mvp_player = 3;   //本周MVP玩家
+    repeated DuleBasicInfo dule_base_info = 4;
+    optional GUID self_alliance = 5;
+
+}
+
+//MSG_C2S_ALLIANCE_DULE_WEEK_LOG              = 3633;  //请求联盟对决周结算
+message C2SAllianceDuleWeekLog
+{
+    
+}
+
+//MSG_S2C_ALLIANCE_DULE_WEEK_LOG              = 3634;  //响应联盟对决周结算
+message S2CAllianceDuleWeekLog
+{
+    optional AllianceDuleWeekLog dule_week_log = 1;
+    optional GUID alliance_id = 2;  //服务器使用
+    optional int32 err_code = 3;    //错误码
+}
+
+//MSG_AS2S_ALLIANCE_DULE_SCORE                = 3635;  //刷新联盟对决积分(alliance->cross)
+message AS2SAllianceDuleScore
+{
+	message DuleScore
+	{	 
+        optional GUID alliance_id   = 1;  //联盟ID    
+		optional int64 score        = 2;   //当前积分
+
+	}
+
+    repeated DuleScore dule_score_list  = 1;    //联盟新增积分列表
+    optional int64 now_time             = 2;
+}
+
+//MSG_S2PS_ALLIANCE_DULE_SETTLE_NTF                  = 3636;  //排行榜结算通知
+message S2PSAllianceDuleSettleNtf
+{
+    optional bool bweek = 1;    //是否周结算
+    optional AllianceDuleMatchGroup match_group = 2;
+    optional RankInfo rank_info = 3;    //日榜
+    optional PlayerBasicInfo daily_mvp_player = 4; //日MVP玩家
+    optional PlayerBasicInfo week_mvp_player  = 5; //周MVP玩家
+    optional int32 nday   = 6;    //结算的阶段天数
+    optional RankInfo week_rank_info = 7; //周榜
+    optional GUID week_win_alliance = 8;    //周胜利联盟
+}
+
+//MSG_SS2GS_TRANS_MSG_TO_ALLIANCE				= ;	//通过game转发的联盟服消息
+message TransMsgToAlliance
+{
+	optional int32 msg_id					 = 1;
+	optional bytes msg_data					 = 2;
+}
+
+//MSG_REQ_ALLIANCE_DULE_CROSS_AREA            = 3639; //请求联盟对决跨区
+message C2SReqAllianceDuleCorssArea
+{
+	optional int32 area_id  = 1;
+    optional Point2D pos    = 2;
+}
+enum ECrossMemberChangeType
+{
+	CMCT_ALL			 = 1;	//全量数据
+	CMCT_ADD			 = 2;	//增加
+	CMCT_DELETE			 = 3;	//删除
+	CMCT_UPDATE			 = 4;	//更新、修改
+}
+message AllianceCrossMember
+{
+	optional GUID player			 = 1;
+	optional int32 cur_area			 = 2;	//当前所在区服
+}
+//	MSG_NTF_ALLIANCE_CROSS_MEMBER			= 3524;	// 通知联盟内 跨服的成员列表
+message S2CNtfAllianceCrossMember
+{
+	optional int32 type										 = 1;
+	repeated AllianceCrossMember cross_member_list			 = 2;
+}
+message AllianceCrossCityPos
+{
+	optional GUID player			 = 1;
+	optional Point2D pos			 = 2;	//
+}
+//	MSG_NTF_ALLIANCE_CROSS_CITY_POSITION	= 3525;	// 通知联盟内跨服到当前服的玩家city 坐标
+//message S2CNtfAllianceCrossCityPosition
+//{
+//	optional int32 type										 = 1;
+//	optional int32 area_id									 = 2;
+//	repeated AllianceCrossCityPos cit_pos_list				 = 3;
+//}
+//	MSG_AS2S_NTF_ALLIANCE_MEMBER_LEAVE				= 3640;   //联盟服通知联盟成员离开
+message NTFAllianceMemberLeave
+{
+	optional GUID leave_member					 = 1;	//联盟服通知联盟成员离开联盟
+	repeated GUID members						 = 2;	//其他成员guid
+}

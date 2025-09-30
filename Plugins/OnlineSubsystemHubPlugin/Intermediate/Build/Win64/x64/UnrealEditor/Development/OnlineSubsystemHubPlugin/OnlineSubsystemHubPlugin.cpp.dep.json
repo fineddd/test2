@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\workspace\\ue\\test2\\plugins\\onlinesubsystemhubplugin\\source\\onlinesubsystemhubplugin\\private\\onlinesubsystemhubplugin.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\workspace\\ue\\test2\\intermediate\\build\\win64\\x64\\test2editor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "d:\\workspace\\ue\\test2\\plugins\\onlinesubsystemhubplugin\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\onlinesubsystemhubplugin\\definitions.onlinesubsystemhubplugin.h",
+            "d:\\workspace\\ue\\test2\\plugins\\onlinesubsystemhubplugin\\source\\onlinesubsystemhubplugin\\public\\onlinesubsystemhubplugin.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

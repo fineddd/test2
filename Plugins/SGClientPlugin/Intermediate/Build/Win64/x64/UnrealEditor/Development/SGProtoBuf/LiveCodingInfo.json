@@ -1,0 +1,9 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.SGProtoBuf.cpp.obj": [
+			"PerModuleInline.gen.cpp.obj",
+			"SGProtoBuf.cpp.obj"
+		]
+	}
+}

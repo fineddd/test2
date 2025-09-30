@@ -1,0 +1,1312 @@
+﻿syntax = "proto2";
+
+package SGDefine;
+
+// ZK服务器的类型
+enum ZKServerType
+{
+    ZK_SERVER_TYPE_IN_BIGAREA  = 0; // 大区内ZK
+    ZK_SERVER_TYPE_OUT_BIGAREA = 1; // 大区外ZK
+}
+
+enum server_type
+{
+    SERVER_TYPE_SELF        = 0;    // 标志自己，真实情况不会使用
+    SERVER_TYPE_CLIENT      = 1;    // 客户端
+    //SERVER_TYPE_TLOG      = 2;    // TLog服务器
+    SERVER_TYPE_WEBSDK      = 4;    // websdk服务器
+    SERVER_TYPE_GMIP        = 5;    // BGIP服务器
+    SERVER_TYPE_CONFIG      = 6;    // 大区配置服务器(管理gate的状态)
+
+    SERVER_TYPE_MASTER      = 7;    // master服务器
+
+    SERVER_TYPE_LOGIN       = 8;    // 登录服务器
+    SERVER_TYPE_GATEWAY     = 9;    // 网关服务器
+    SERVER_TYPE_DB          = 10;   // 游戏DB服务器
+    SERVER_TYPE_GAME        = 11;   // 游戏服务器
+    SERVER_TYPE_PUBLIC      = 12;   // 公共服务器
+    SERVER_TYPE_GUILD       = 13;   // 公会服 GD
+    SERVER_TYPE_MAIL        = 14;   // 邮件服务器
+    SERVER_TYPE_CHAT        = 15;   // 聊天服务器
+    SERVER_TYPE_SECURITY    = 16;   // 安全服务器
+    SERVER_TYPE_DUNGEONS    = 17;   // 副本服务器
+    //SERVER_TYPE_TRADE     = 19;   // 交易服务器
+    //SERVER_TYPE_SOCIAL    = 20;   // 社交服务器
+    SERVER_TYPE_HTTP        = 22;   // HTTP服务器
+    SERVER_TYPE_ROUTER      = 23;   // 路由服务器
+    SERVER_TYPE_MATCH       = 24;   // 匹配服务器
+    SERVER_TYPE_AUTH        = 25;   // SDK验证服
+    SERVER_TYPE_DATACENTER  = 26;   // 数据中心服务器
+    SERVER_TYPE_FRIEND      = 27;   // 好友服
+    SERVER_TYPE_GUARD       = 28;   // 哨兵服务器
+    SERVER_TYPE_TEST        = 29;   // 测试服务器
+    SERVER_TYPE_SCENCE      = 30;   // 大地图副本
+    SERVER_TYPE_SCENCECLONE = 31;   // 新手副本
+    SERVER_TYPE_ALLIANCE    = 32;   // 联盟服务器
+    SERVER_TYPE_CROSS       = 33;   // 跨服服务器
+	SERVER_TYPE_CROSS_GATE  = 34;   // gate 写zk 节点的 额外类型
+	SERVER_TYPE_CROSS_SCENCE= 35;   // gate 写zk 节点的 额外类型
+    SERVER_TYPE_END         = 36;
+    //注意，SERVER TYPE值范围为[0;255]
+};
+
+enum ItemResourceType                       //物品的大类类型
+{
+    ITEM_RESOURCE_TYPE_NONE          	= 0; // 0
+	ITEM_RESOURCE_TYPE_CURRENCY			= 1; // 资源货币类型（充值货币，食物，净水，金属石油等等直接进背包）
+	ITEM_RESOURCE_TYPE_ADDSPEED			= 2; // 加速道具
+	ITEM_RESOURCE_TYPE_HERO_CHIP		= 3; // 英雄碎片
+	ITEM_RESOURCE_TYPE_HERO				= 4; // 英雄道具自动进英雄系统
+	ITEM_RESOURCE_TYPE_HEROE_GROWUP		= 5; // 英雄养成道具
+	ITEM_RESOURCE_TYPE_TREASURE_BOX		= 6; // 箱子
+	ITEM_RESOURCE_TYPE_CURRENCY_IN_BAG	= 7; // 背包通用道具
+    ITEM_RESOURCE_TYPE_CITY_MOVE        = 8; // 背包迁城道具
+    ITEM_RESOURCE_TYPE_RECRUIT          = 9;     // 招募道具
+    ITEM_RESOURCE_TYPE_SOLDIER_ITEM     = 10;     // 士兵道具
+    ITEM_RESOURCE_TYPE_RECRUIT_CREDIT   = 11;     // 招募道具 跳转
+    ITEM_RESOURCE_TYPE_SHOW_TIPS        = 12;     // 仅用来展示的道具
+    ITEM_RESOURCE_TYPE_DRESS_UP         = 13;     // 装扮道具
+    ITEM_RESOURCE_TYPE_CHANGE_NAME      = 14;     // 改名道具
+	ITEM_RESOURCE_TYPE_ADDBUFF			= 15;// 新增Buff
+	ITEM_RESOURCE_TYPE_CALL_MONSTER		= 16;	//召唤怪物道具
+   	ITEM_RESOURCE_TYPE_ALLIANCE         = 17;  //联盟资源
+	ITEM_RESOURCE_TYPE_CITY_GROWUP      = 18;// 内城养成道具
+	ITEM_RESOURCE_TYPE_EQUIP_MATERIAL	= 19;// 装备材料
+	ITEM_RESOURCE_TYPE_CAR_UPGRA		= 20;// 赛车升级道具 
+	ITEM_RESOURCE_TYPE_CAR_STAR			= 21;// 赛车升升星道具 
+	ITEM_RESOURCE_TYPE_VIPPOINT			= 22; //VIP点数道具
+    ITEM_RESOURCE_TYPE_NOTE             = 23; //手记用的道具
+    ITEM_RESOURCE_TYPE_UNLOCK_WORKER    = 24; // 解锁建造队列
+    ITEM_RESOURCE_TYPE_UPGRADE_BUILDING = 25; // 升级建筑消耗道具
+	ITEM_RESOURCE_TYPE_SHELTER_UNLOCK	= 26; // 避难所解锁道具
+    ITEM_RESOURCE_TYPE_RED_PACKET       = 27; // 红包道具
+    ITEM_RESOURCE_TYPE_CAR_ACTIVE       = 28;// 车激活道具
+
+    ITEM_RESOURCE_TYPE_NPC_DISPATCH     = 29;  // npc派遣道具
+    ITEM_RESOURCE_TYPE_ALLIANCE_GIFT    = 30;  //联盟礼物    
+    ITEM_RESOURCE_TYPE_HERO_EQUIP       = 31;  // 英雄装备
+    ITEM_RESOURCE_TYPE_AUTO_OPEN_BOX    = 32;  // 自动打开的宝箱    
+    ITEM_RESOURCE_TYPE_BATTLE_PASS_SCORE   = 33; // 通行证积分
+    ITEM_RESOURCE_TYPE_MIGRATE          = 34; // 移民道具
+    ITEM_RESOURCE_TYPE_DUNGEONLISTREWARD= 35; // 战役道具
+    ITEM_RESOURCE_TYPE_FACILITY         = 36; // 建筑设施    
+    ITEM_RESOURCE_TYPE_SKIN             = 37;  // 皮肤道具(废弃，统一用13类型)
+    ITEM_RESOURCE_TYPE_FURNITURE_COST   = 38;  // 家具消耗品
+    ITEM_RESOURCE_TYPE_DEVICE           = 39;  // 装置
+    ITEM_RESOURCE_TYPE_DAILY_SCORE      = 40;  // 每日积分
+    ITEM_RESOURCE_TYPE_TIME_LIMIT_MATCH = 41;  // 限时比赛相关积分
+    ITEM_RESOURCE_TYPE_ESCORT_ITEM      = 42;  //押镖道具
+    ITEM_RESOURCE_TYPE_LEVEL_BOX        = 43;   // 等级宝箱
+    ITEM_RESOURCE_TYPE_LEGEND           = 44;  // 招募橙卡英雄
+    ITEM_RESOURCE_TYPE_LEGEND_CHIP      = 45; // 招募橙卡英雄碎片
+    ITEM_RESOURCE_TYPE_APC              = 46;   // 载具材料
+
+	ITEM_RESOURCE_VIP_TIME              = 47;   // vip时间(进包裹的道具)
+    ITEM_RESOURCE_VIP_TIME_POINT        = 48;   // vip时间(不进包裹)
+    ITEM_RESOURCE_GLORY_SCORE           = 49;   // 荣耀积分(智慧勋章)
+
+    ITEM_RESOURCE_TYPE_RESIDENT         = 50; // 居民道具
+    ITEM_RESOURCE_TYPE_RESIDENT_CHIP    = 51; // 居民碎片道具
+	
+	ITEM_RESOURCE_TYPE_EMOJI    		= 52; // 表情道具
+	
+	ITEM_RESOURCE_TYPE_DECORATION    	= 53; // 装饰道具
+        
+    ITEM_RESOURCE_TYPE_END              = 54;  // 用于标识最大
+
+}
+
+enum HeroBelongType 
+{
+    HERO_BELONG_TYPE_NONE        = 0;
+    HERO_BELONG_TYPE_PLAYER      = 1;// 1=玩家英雄
+    HERO_BELONG_TYPE_MONSTER     = 2;// 2=野怪英雄
+    HERO_BELONG_TYPE_SPECIAL     = 3;// 3=特殊英雄
+}
+
+enum ItemSubType                        //物品的子类型类型
+{
+    ITEM_SUB_TYPE_NONE              = 0; // 0
+    ITEM_SUB_TYPE_GOLD          = 10000; // 齿轮币(免费)
+    ITEM_SUB_TYPE_ONE_OIL       = 10001; // 食物资源 改成新的石油 ITEM_SUB_TYPE_FOOD-->ITEM_SUB_TYPE_ONE_OIL
+    ITEM_SUB_TYPE_TWO_IRON      = 10002; // 净水资源 改成新的钢铁 ITEM_SUB_TYPE_WOOD-->ITEM_SUB_TYPE_TWO_IRON
+    ITEM_SUB_TYPE_THREE_FOOD    = 10003; // 金属资源 改成新的食物 ITEM_SUB_TYPE_IRON-->ITEM_SUB_TYPE_THREE_FOOD
+    ITEM_SUB_TYPE_FOUR_WATER    = 10004; // 石油资源 改成新的水   ITEM_SUB_TYPE_OIL-->ITEM_SUB_TYPE_FOUR_WATER
+    ITEM_SUB_TYPE_POINTS        = 10005; // 个人积分
+    ITEM_SUB_TYPE_PAY_GOLD      = 10006; // 齿轮币(付费)    
+    ITEM_SUB_TYPE_DUNGEON       = 10007; // 管线勋章    
+    ITEM_SUB_TYPE_ARENA         = 10008; //竞技场币
+    ITEM_SUB_TYPE_ORDER         = 10009; // 政令点
+    ITEM_SUB_TYPE_DOLLAR        = 10010;  //黄金(代币)
+    ITEM_SUB_TYPE_MIN_GAME_ENERGY = 10012; //小游戏玩法能量
+    ITEM_SUB_TYPE_RESCUE        = 10013; // 救助积分
+	ITEM_SUB_TYPE_HERO_COMMON_EXP = 10014; // 英雄公共经验值
+	ITEM_SUB_SHUGUANGZHILU_SCORE = 10015; // 曙光之路积分
+
+    //ITEM_SUB_TYPE_CREDIT_1      = 10006; // 招募券
+    //ITEM_SUB_TYPE_CREDIT_2      = 10007; // 招募券    
+
+	ITEM_SUB_TYPE_BUILDSPEED	= 20005; // 建筑加速
+	ITEM_SUB_TYPE_STUDYSPEED	= 20006; // 科技加速
+	ITEM_SUB_TYPE_CURESPEED		= 20007; // 医疗加速
+	ITEM_SUB_TYPE_TRAINSPEED	= 20008; // 训练加速
+	ITEM_SUB_TYPE_COMONSPEED	= 20009; // 通用加速道具
+    ITEM_SUB_TYPE_VIPPOINT      = 22001; // VIP成长点数
+    ITEM_SUB_TYPE_NOTE          = 23000; // 剧情相关道具
+    ITEM_SUB_TYPE_UNLOCK_WORKER = 24001; // 临时建造队列解锁道具
+    ITEM_SUB_TYPE_UPGRADE_BUILDING = 25000; // 建筑消耗道具
+    ITEM_SUB_TYPE_SHELTER_UNLOCK_1 = 26001; // 自动使用的避难所区域解锁道具
+    ITEM_SUB_TYPE_SHELTER_UNLOCK_2 = 26002; // 自动使用的避难所区域解锁道具
+    ITEM_SUB_TYPE_NPC_DISPATCH = 29001; // NPC升级道具
+    ITEM_SUB_TYPE_ALLIANCE_GIFT = 30001; // 联盟宝箱    
+	ITEM_SUB_TYPE_HEROE_CHIP	= 30009; // 英雄碎片
+	ITEM_SUB_TYPE_COMMON_HEROE_CHIP	= 30011; // 通用英雄碎片
+    ITEM_SUB_TYPE_HERO_EQUIP    = 31001; // 英雄装备(新)
+	ITEM_SUB_TYPE_HERO_AUTO		= 40010; // 英雄卡片自动获取兑换成英雄
+	ITEM_SUB_TYPE_KNOWLEDGE		= 50008; // 知识之书
+	ITEM_SUB_TYPE_SKILLBOOK		= 50009; // 技能书
+    ITEM_SUB_TYPE_TALENT_RESET	= 50010; // 天赋重置道具
+    ITEM_SUB_TYPE_ALLIANCE_BOX  = 60007; //联盟宝箱
+    ITEM_SUB_TREASURE_BOX_NORMAL= 60008; // 正常背包宝箱
+	ITEM_SUB_TREASURE_BOX_USER_CHOOSE= 60009; // 可选择的箱子宝箱
+    ITEM_SUB_TREASURE_BOX_RANDOM= 60010; // 可选择的箱子宝箱
+    ITEM_SUB_TYPE_STAMINA       = 70001; // 体力道具
+    ITEM_SUB_CITY_MOVE_SENIOR = 80001; // 定点迁城
+    ITEM_SUB_CITY_MOVE_RANDOM = 80002; // 随机迁城
+    ITEM_SUB_CITY_MOVE_ALLIANCE = 80003; // 联盟迁城
+    ITEM_SUB_CITY_MOVE_NEW_HAND = 80004; // 新手迁城
+    ITEM_SUB_CITY_MOVE_ALLIANCE_ROOKIE = 80005; // 联盟新手迁城
+    ITEM_SUB_CITY_MOVE_ALLIANCE_LEADER = 80006; // 联盟整体迁城
+    ITEM_SUB_TYPE_RECRUIT       = 90001; // 招募卡 在救护站中可以招募成员
+    ITEM_SUB_TYPE_SOLDIER_ITEM = 100001; // 近战兵/远程兵/摩托兵 包
+    ITEM_SUB_TYPE_RECRUIT_CREDIT_1 = 110001; // 普通抽卡券
+    ITEM_SUB_TYPE_RECRUIT_CREDIT_2 = 110002; // 高级抽卡券
+    ITEM_SUB_TYPE_SHOW_TIPS     = 120001; // 仅用来展示的道具
+    ITEM_SUB_TYPE_DRESS_UP_1 = 130001; // 解锁头像
+    ITEM_SUB_TYPE_DRESS_UP_2 = 130002; // 解锁头像
+    ITEM_SUB_TYPE_CHANGE_NAME = 140001; // 改名卡    
+    ITEM_SUB_TYPE_CHANGE_ALLIANCE_NAME = 140002; // 改联盟名卡
+	ITEM_SUB_TYPE_ADDBUFF		= 150000;// 新增Buff
+	ITEM_SUB_TYPE_CALL_MONSTER = 160001; // 召唤怪物道具
+    ITEM_SUB_TYPE_ALLIANCE_FOOD = 170001; // 联盟食物 
+    ITEM_SUB_TYPE_ALLIANCE_WOOD = 170002; // 联盟净水
+    ITEM_SUB_TYPE_ALLIANCE_IRON = 170003; // 联盟钢铁
+    ITEM_SUB_TYPE_ALLIANCE_OIL = 170004; // 联盟石油
+    ITEM_SUB_TYPE_CITY_GROWUP = 180000; // 内城养成道具
+    ITEM_SUB_TYPE_EQUIP_MATERIAL = 190000; // 装备材料
+
+	ITEM_SUB_TYPE_CAR_UPGRA		= 200000;// 赛车升级道具 
+	ITEM_SUB_TYPE_CAR_STAR		= 210000;// 赛车升升星道具 
+    ITEM_SUB_TYPE_VIPPOINT_0 = 220000; // VIP点数道具
+    ITEM_SUB_TYPE_RED_PACKET = 270001; // 红包道具    
+    ITEM_SUB_TYPE_AUTO_OPEN_BOX = 320001; // 自动打开的宝箱
+    ITEM_SUB_TYPE_BATTLE_PASS_SCORE = 330001; // 通行证积分
+    ITEM_SUB_TYPE_GETDUNGEONREWARD =  350001; // 获取2小时的挂机奖励
+    ITEM_SUB_TYPE_SKIN =  380001; // 主城皮肤
+    ITEM_SUB_TYPE_LEGEND           = 420001;  // 招募橙卡英雄
+    ITEM_SUB_TYPE_LEGEND_CHIP      = 430001; // 招募橙卡英雄碎片
+    
+    ITEM_SUB_TYPE_APC_LEVELUP = 460001; //载具改装车升级材料
+    ITEM_SUB_TYPE_APC_PART_LEVELUP = 460002; //载具部件升级材料
+    ITEM_SUB_TYPE_APC_PART_LEVELUP2 = 460003; //载具部件升级材料
+
+    ITEM_SUB_TYPE_RESIDENT = 500001; // 居民道具
+    ITEM_SUB_TYPE_RESIDENT_CHIP = 510001; // 居民碎片道具
+	
+	ITEM_SUB_TYPE_DECORATION = 530001; // 装饰道具
+    ITEM_SUB_TYPE_DECORATION_GENERAL_FRAGMENT = 530002; // 装饰道具万能碎片道具
+	ITEM_SUB_TYPE_DECORATION_SPECIFIC_FRAGMENT = 530003; // 装饰道具专用碎片道具
+}
+
+enum RewardSourceType
+{
+    REWARD_SOURCE_TYPE_NONE = 0; // 无
+    // 战斗掠夺
+    REWARD_SOURCE_TYPE_FIGHT_PLUNDER = 1;
+    // 打野（首杀）
+    REWARD_SOURCE_TYPE_FIGHT_FIRST_BLOOD = 2;
+    // 打野（常规）
+    REWARD_SOURCE_TYPE_FIGHT_NORMAL = 3;
+    // 集结
+    REWARD_SOURCE_TYPE_FIGHT_ASSEMBLE = 4;
+    // 资源采集（铁，罐头，水，油）
+    REWARD_SOURCE_TYPE_RESOURCE_GATHER = 5;
+    // 抽卡
+    REWARD_SOURCE_TYPE_RECRUIT = 6;
+    // vip等级
+    REWARD_SOURCE_TYPE_VIP_LEVEL = 7;
+    // 限时商店
+    REWARD_SOURCE_TYPE_LIMIT_SHOP = 8;
+    // 道具商店
+    REWARD_SOURCE_TYPE_ITEM_SHOP = 9;
+    // 指挥官buff启用
+    REWARD_SOURCE_TYPE_COMMANDER_BUFF = 10;
+    // 战役立即获取
+    REWARD_SOURCE_TYPE_CAMPAIGN_GET = 11;
+    // 资源快捷购买
+    REWARD_SOURCE_TYPE_RESOURCE_BUY = 12;
+    // 立即完成升级建筑
+    REWARD_SOURCE_TYPE_BUILDING_UPGRADE = 13;
+    // 立即完成训练士兵
+    REWARD_SOURCE_TYPE_TRAIN_SOLDIER = 14;
+    // 立即完成晋升士兵
+    REWARD_SOURCE_TYPE_PROMOTE_SOLDIER = 15;
+    // 立即完成研究科技
+    REWARD_SOURCE_TYPE_STUDY_TECH = 16;
+    // 商店刷新
+    REWARD_SOURCE_TYPE_SHOP_REFRESH = 17;
+    // 购买体力
+    REWARD_SOURCE_TYPE_BUY_STAMINA = 18;
+    // 商店购买
+    REWARD_SOURCE_TYPE_SHOP_BUY = 19;
+    // 联盟总动员刷新
+    REWARD_SOURCE_TYPE_ALLIANCE_MOBILIZATION_BUY = 20;
+    // 改名
+    REWARD_SOURCE_TYPE_CHANGE_NAME = 21;
+    // 灭火
+    REWARD_SOURCE_TYPE_FIRE = 22;
+    // 齿轮币银行存
+    REWARD_SOURCE_TYPE_GOLD_BANK_SAVE = 23;
+    // 联盟捐献（产出，消耗）
+    REWARD_SOURCE_TYPE_ALLIANCE_DONATE = 24;
+    // 联盟免费普通宝箱
+    REWARD_SOURCE_TYPE_ALLIANCE_FREE_BOX = 25;
+    // 联盟付费宝箱（1，2，3，4，5各档）
+    REWARD_SOURCE_TYPE_ALLIANCE_PAY_BOX = 26;
+    // 联盟荣耀宝箱
+    REWARD_SOURCE_TYPE_ALLIANCE_HONOR_BOX = 27;
+    // 活动消耗齿轮币
+    REWARD_SOURCE_TYPE_ACTIVITY_COST_GOLD = 28;
+    // 联盟BOSS奖励
+    REWARD_SOURCE_TYPE_ALLIANCE_BOSS = 29;
+    // 战役关卡挂机奖励    
+    REWARD_SOURCE_TYPE_CAMPAIGN_HANGUP = 30;
+    //转盘
+    REWARD_SOURCE_TYPE_ROULETTE = 31;
+    // 金条加速建筑状态
+    REWARD_SOURCE_TYPE_SPEEDUP_BY_GOLD = 32;
+    // 道具加速建筑状态
+    REWARD_SOURCE_TYPE_SPEEDUP_USE_ITEMS = 33;
+    // 购买道具加速建筑状态
+    REWARD_SOURCE_TYPE_SPEEDUP_BUY_ITEM = 34;
+     // 关卡首杀奖励
+    REWARD_SOURCE_TYPE_DUNGEON_FIRST_PASS = 35;
+    // 雷达事件奖励
+    REWARD_SOURCE_TYPE_EXPLORE_EVENT_REWARD = 36;
+    // 载具升级
+    REWARD_SOURCE_TYPE_CAR_UPGRADE = 37;
+    // 载具升星
+    REWARD_SOURCE_TYPE_CAR_STAR = 38;
+    //NPC升级
+    REWARD_SOURCE_TYPE_NPC_LEVELUP = 39;
+	// vip免费宝箱
+    REWARD_SOURCE_TYPE_VIP_FREE_PACK = 40;
+	//活动-集结打怪活动怪物掉落
+	REWARD_SOURCE_TYPE_ASSEMBLE_ACTIVITY = 41;
+    // 治疗士兵
+    REWARD_SOURCE_TYPE_CURE_SOLDIER = 42;
+    // 内城资源产出
+    REWARD_SOURCE_TYPE_RESOURCE_FACTORYS = 43;
+    // 章节任务奖励
+    REWARD_SOURCE_TYPE_CHAPTER_TASK = 44;
+    // 主线任务奖励
+    REWARD_SOURCE_TYPE_MAIN_TASK = 45;
+    // 支线任务奖励
+    REWARD_SOURCE_TYPE_BRANCH_TASK = 46;
+    // 故事任务奖励
+    REWARD_SOURCE_TYPE_MAP_INCIDENT = 47;
+    // 邮件奖励
+    REWARD_SOURCE_TYPE_MAIL_REWARD = 48;
+    // 商城购买（充值）
+    REWARD_SOURCE_TYPE_CHARGE_PAY = 52;
+    // 英雄获得经验
+    REWARD_SOURCE_TYPE_HERO_EXP = 53;
+    // 英雄升星
+    REWARD_SOURCE_TYPE_HERO_STARUP = 54;
+    // 装备强化
+    REWARD_SOURCE_TYPE_EQUIP_UPGRADE = 55;
+    // 装备觉醒
+    REWARD_SOURCE_TYPE_EQUIP_RISE = 56;
+    // 装备回收
+    REWARD_SOURCE_TYPE_EQUIP_RECYCLE = 57;
+    // 英雄故事奖励
+    REWARD_SOURCE_TYPE_HERO_STORY = 58;
+    // 齿轮比银行取
+    REWARD_SOURCE_TYPE_GOLD_BANK_GET = 59;
+    // 迁城消耗
+    REWARD_SOURCE_TYPE_CITY_MOVE = 60;
+    // 创建联盟消耗
+    REWARD_SOURCE_TYPE_CREATE_ALLIANCE = 61;
+    // 通行证
+    REWARD_SOURCE_BATTLE_PASS = 62;
+    // 连续充值活动  
+    REWARD_SOURCE_REPEAT_PAY = 63; 
+    // 转盘活动
+    REWARD_SOURCE_ROULETTE_ACTIVITY = 64; 
+    // 周付费活动商店
+    REWARD_SOURCE_WEEKLY_PAY_EVENTS_SHOP = 65; 
+	// 活动免费礼包获得
+	REWARD_SOURCE_ACTIVITY_FREE_REWARD = 66;
+	// 大逃杀活动副本结算
+	REWARD_SOURCE_BTR_ACTIVITY_DUNGEON = 67;
+	// 大逃杀活动任务
+	REWARD_SOURCE_BTR_ACTIVITY_TASK = 68;
+	// 大逃杀活动转盘
+	REWARD_SOURCE_BTR_ACTIVITY_ROULETTE = 69;
+	// 大逃杀活动每周清理
+	REWARD_SOURCE_BTR_ACTIVITY_CLEAR = 70;
+	// 大逃杀活动兑换
+	REWARD_SOURCE_BTR_ACTIVITY_EXCHANGE = 71;
+	// 订阅
+	REWARD_SOURCE_ACTIVITY_NEWSUBSCRIBE = 72;
+	// 建筑设施
+    REWARD_SOURCE_BUILDING_FACILITY = 73;
+    // 事务奖励
+    REWARD_SOURCE_TYPE_AFFAIR_REWARD = 74;
+    // 法典文书
+    REWARD_SOURCE_TYPE_DECREE = 75;
+    // 事务选项奖励
+    REWARD_SOURCE_TYPE_AFFAIR_SECTION = 76;
+	// 零元购
+    REWARD_SOURCE_FREE_PURCHASE = 77;	
+    // 建造家具
+    REWARD_SOURCE_CREATE_FURNITURE = 78;
+    // 升级家具
+    REWARD_SOURCE_UPGRADE_FURNITURE = 79;
+    // 领取怪物入侵奖励
+    REWARD_SOURCE_METEOR_REWARD = 80;
+    // 小游戏攻击(装置模块)
+    REWARD_SOURCE_SMALL_GAME_ATTACK = 81;
+    //每日任务
+    REWARD_SOURCE_DAILY_TASK = 82;
+    // 英雄派遣领取奖励
+    REWARD_SOURCE_HERO_DISPATCH = 83;
+    // 英雄派遣帮助奖励
+    REWARD_SOURCE_HERO_DISPATCH_HELP = 84;
+    // 英雄派遣掠夺奖励
+    REWARD_SOURCE_HERO_DISPATCH_ROB = 85;
+    // 载具改装车升级
+    REWARD_SOURCE_APC_LEVELUP = 86;
+    // 载具配件升级
+    REWARD_SOURCE_APC_PART_LEVELUP = 87;
+    // 改性别
+    REWARD_SOURCE_TYPE_CHANGE_GENDER = 88;
+    // 英雄手册
+    REWARD_SOURCE_TYPE_HERO_MANUAL = 89;
+    // vip时间
+    REWARD_SOURCE_TYPE_VIP_TIME = 90;
+    // 转化技能书
+    REWARD_SOURCE_TYPE_SKILLBOOK_EXCHANGE = 91;
+	
+	// 沙拉那拼圖
+    REWARD_SOURCE_TYPE_ACTIVITY_SHARANNA_PUZZLE = 92;
+	
+	// 沙拉那转盘
+    REWARD_SOURCE_TYPE_ACTIVITY_SHARANNA_FLOP   = 93;
+	
+	// 自选礼包
+    REWARD_SOURCE_TYPE_ACTIVITY_CUSTOM_BAG   = 94;
+
+    // 居民升星
+    REWARD_SOURCE_TYPE_RESIDENT_UPGRADE_STAR = 95;
+}
+
+enum RewardNtfType
+{
+    REWARD_NTF_IGNORE = -1; //将不会下发给前端
+    REWARD_NTF_DEFAULT = 0;	//奖励框
+    REWARD_NTF_DAILY_TASK = 1; // 日常任务
+    REWARD_NTF_MAIN_TASK = 2; // 主线任务
+    REWARD_NTF_BRANCH_TASK = 3; // 支线任务
+    REWARD_NTF_CAMPAIGN = 4; //副本
+    REWARD_NTF_MAIL = 5; // 邮件
+    REWARD_NTF_USE_ITEM = 6; // 使用物品
+    REWARD_NTF_CHAPTER_TASK = 7; // 章节任务
+    REWARD_NTF_NOTES = 8; // 手记
+    REWARD_NTF_GAME_EVENT = 9; // 游戏事件手记
+    REWARD_NTF_SHELTER_CHAPTER = 10; // 避难所章节
+    REWARD_NTF_REVERT = 11; // 用于错误处理返还道具
+    REWARD_NTF_TIP = 12; // 弹tip
+    REWARD_NTF_COST = 13; // 消耗
+    REWARD_NTF_NOTE_TASK = 14; // 手记
+    REWARD_NTF_RESOURCE = 15; // 资源
+    REWARD_NTF_EXPLORE_LEVELUP = 16; // 雷达探索
+    REWARD_NTF_DECREE = 17; // 颁布法典
+	REWARD_NTF_AREA_GRID = 18; // 地格发奖
+    REWARD_NTF_RECYCLE_DEVICE = 19; //回收装置
+    REWARD_NTF_LIMIT_MATCH = 20; //限时比赛
+    REWARD_NTF_MONSTER_AWARD = 21; //击杀怪物奖励
+	REWARD_NTF_SPEEDUP_RETURN = 22;//使用加速道具返回
+    REWARD_NTF_EXPLORE_COMPLETE_REWARD = 23; // 雷达探索完成奖励
+}
+
+enum LanguageType
+{
+    LANGUAGE_TYPE_NONE = 0;
+    LANGUAGE_TYPE_ENG = 180000001; // English
+    LANGUAGE_TYPE_originalwords = 180000002; // 简体中文
+    LANGUAGE_TYPE_CHT = 180000003; // 繁體中文
+    LANGUAGE_TYPE_FR = 180000004; // Français
+    LANGUAGE_TYPE_DE = 180000005; // Deutsch
+    LANGUAGE_TYPE_JP = 180000006; // 日本語
+    LANGUAGE_TYPE_IT = 180000007; // 意大利语
+    LANGUAGE_TYPE_PL = 180000008; // 波兰语
+    LANGUAGE_TYPE_RU = 180000009; // 俄语
+    LANGUAGE_TYPE_TH = 180000010; // 泰语
+    LANGUAGE_TYPE_ES = 180000011;// 西班牙语
+    LANGUAGE_TYPE_IND = 180000012;// 印尼语
+    LANGUAGE_TYPE_PT = 180000013;// 葡萄牙语
+    LANGUAGE_TYPE_TR = 180000014;// 土耳其语
+    LANGUAGE_TYPE_VN = 180000015;// 越南语
+    LANGUAGE_TYPE_KR = 180000016;// 韩语
+    LANGUAGE_TYPE_ARB = 180000017;// 阿拉伯语
+    
+}
+
+enum PackCase
+{
+    USE_LIMIT_MAX = 10000; // 单次使用上限
+}
+
+enum RecruitType
+{
+    RECRUIT_TYPE_SINGLE = 1;// 单次招募
+    RECRUIT_TYPE_LOT = 2;//十次招募
+}
+enum BannerType
+{
+    BANNER_TYPE_PRIMARY = 1; // 低级抽卡
+    BANNER_TYPE_SENIOR = 2; // 高级抽卡
+}
+
+enum ShopType
+{
+    SHOP_TYPE_NONE      = 0;
+    SHOP_TYPE_ALLIANCE  = 1;
+
+
+}
+
+enum ShopRefreshType
+{
+    SHOP_REFRESH_TYPE_NONE = 0;
+    SHOP_REFRESH_TYPE_WEEKLY = 1; // 周刷新
+    SHOP_REFRESH_TYPE_DAILY = 2; // 日刷新
+    SHOP_REFRESH_TYPE_Hours = 3;// 按多少小时刷新
+}
+
+enum RecruitFreeType
+{
+    RECRUIT_FREE_NONE = 0;
+    RECRUIT_FREE_GENERAL_SINGLE = 1; // 普通单抽
+    RECRUIT_FREE_GENERAL_LOT = 2; // 普通十抽
+    RECRUIT_FREE_SENIOR_SINGLE = 3; // 高级单抽
+    RECRUIT_FREE_SENIOR_LOT = 4; // 高级十抽
+}
+
+enum MonsterType
+{
+    MONSTER_TYPE_NONE        = 0;
+    MONSTER_TYPE_NORMAL      = 1; // 普通野怪
+    MONSTER_TYPE_ASSEMBLE    = 2; // 集结怪
+	MONSTER_TYPE_NPC_TOWN_GUARDER    = 3; // npc城镇游荡守卫
+	MONSTER_TYPE_EXPLORE_MONSTER     = 4; // 探索怪，实际服务器不使用，服务器不是怪物类型
+	MONSTER_TYPE_DOOMSDAY_MONSTER	 = 101;		//末日试炼普通怪
+	MONSTER_TYPE_DOOMSDAY_BOSS		 = 102;		//末日试炼联盟boss
+	MONSTER_TYPE_ASSEMBLE_ACTIVITY	 = 103;		//集结打怪的活动怪
+	MONSTER_TYPE_WP_CALL_MONSTER_ACTIVITY	 = 104;		//周付费召唤怪活动
+	MONSTER_TYPE_ALLIANCE			 = 105;		//联盟boss 实际服务器不使用，服务器联盟boss不是怪物类型
+    MONSTER_TYPE_BR_NORMAL = 106; // 大逃杀普通怪物
+    MONSTER_TYPE_BR_SENIOR = 107; // 大逃杀高级怪物
+	MONSTER_TYPE_WORLD_BOSS = 108; // 世界Boss
+}
+
+enum ResourcePointType
+{
+    RESOURCE_POINT_TYPE_NONE = 0;
+    RESOURCE_POINT_TYPE_NORMAL = 1; // 普通资源
+    RESOURCE_POINT_TYPE_INCIDENT = 2; // 电台创建资源
+}
+
+enum MarkType
+{
+    MARK_TYPE_NONE          = 0;
+    MARK_TYPE_SPECIAL       = 1; // 收藏:特殊
+    MARK_TYPE_FRIEND        = 2; // 收藏:友方
+    MARK_TYPE_ENEMY         = 3; // 收藏:敌方
+    MARK_TYPE_ALLIANCE      = 4; // 联盟标记
+}
+
+enum HeroStatus
+{
+    HERO_STATUS_NONE        = 0;
+    HERO_STATUS_MARCHING    = 1; // 出征
+    HERO_STATUS_GARRISON    = 2; // 驻守
+}
+
+enum HeroSkillType
+{
+    HERO_SKILL_TYPE_NONE    = 0;
+    HERO_SKILL_TYPE_ONE     = 1; // 技能位1 ~ 4
+    HERO_SKILL_TYPE_TWO     = 2;
+    HERO_SKILL_TYPE_THREE   = 3;
+    HERO_SKILL_TYPE_FOUR    = 4;
+}
+
+enum LoginModeType
+{
+	LOGIN_MODULE_SELF = 0;           //内网登录方式
+    LOGIN_MODULE_SDK_PAPPUS = 1;     //sdk登录方式
+	LOGIN_MODULE_IGG_SDK = 2;        //IGG sdk 登录
+	// LOGIN_MODULE_TOUTIAO = 3;
+	// LOGIN_MODULE_AWEME = 4;
+	// LOGIN_MODULE_GOOGLE = 5;
+	LOGIN_MODULE_FACEBOOK = 6;
+	// LOGIN_MODULE_TWITTER = 7;
+	// LOGIN_MODULE_LINE = 8;
+	// LOGIN_MODULE_KAKAO = 9;
+	// LOGIN_MODULE_VK = 10;
+	// LOGIN_MODULE_EAGAMEBOX = 11;
+	LOGIN_MODULE_LOCAL_ACCOUNT = 12;
+	LOGIN_MODULE_MI = 13;
+	// LOGIN_MODULE_MOBILE_QQ = 14;
+	// LOGIN_MODULE_WE_CHAT = 15;
+	// LOGIN_MODULE_SAN_QI = 16;
+}
+
+
+//踢人原因
+enum KICK_PLAYER_TYPE
+{
+    //已经在线
+    KICK_PLAYER_TYPE_DEFAULT = -1;
+
+    //已经在线
+    KICK_PLAYER_TYPE_ONLINE_ALREADY = 0;
+    //玩家长时间断线
+    KICK_PLAYER_TYPE_DISCONNECT_LONGTIME = 1;
+    //玩家请求下线
+    KICK_PLAYER_TYPE_CLIENT_REQ_OFFLINE = 2;
+    //沉迷信息非法
+    KICK_PLAYER_TYPE_HEALTH_INVALID = 3;
+    //运营踢人
+    KICK_PLAYER_TYPE_BGIP_PROC = 4;
+    //关服
+    KICK_PLAYER_TYPE_SHUT_SERVER = 5;
+    //zk通知
+    KICK_PLAYER_TYPE_ZK_OFF_LINE_ALL_PLAYER = 6;
+	//服务器登录错误
+	KICK_PLAYER_TYPE_SERVER_ERROR = 7;
+    //GM踢下线
+    KICK_PLAYER_TYPE_GM = 8;
+
+    //验证token，不对，踢人
+    KICK_PLAYER_TYPE_GATETOKENERROR = 9;
+
+    //小重连，信息不对，踢人
+    KICK_PLAYER_TYPE_GATE_RECONNECT = 10;
+};
+
+//手机操作系统类型
+enum PlatformType
+{
+    PLATFORMTYPE_ANDRIOD            = 0;    //安卓平台
+    PLATFORMTYPE_IOS                = 1;    //ios平台
+};
+
+// 服务器类型
+enum WorldType
+{
+    WORLDTYPE_WEBCHAT   = 1;    //微信
+    WORLDTYPE_QQ        = 2;    //手Q
+    WORLDTYPE_TEST      = 3;    //测试
+};
+
+enum PlatformWorldType
+{
+    PLATFORM_WORLD_ANDROID = 0;//安卓
+    PLATFORM_WORLD_IOS     = 1;//IOS
+};
+
+//跨服类型
+enum CrossState
+{
+    CROSSSTATE_OUT       = 0;   //未在跨服状态
+    CROSSSTATE_IN        = 1;   //在跨服状态
+};
+
+// 大区ID
+enum BigAreaType
+{
+    BIGAREAID_NONE                 = -1;    //没有大区
+    BIGAREAID_All                  = 0;     //全部大区
+    
+    BIGAREAID_WEBCHAT_IOS          = 1;     //微信ios区
+    BIGAREAID_WEBCHAT_ANDROID      = 2;     //微信Andriod区
+
+    BIGAREAID_QQ_IOS               = 3;     //手Q的ios区
+    BIGAREAID_QQ_ANDROID           = 4;     //手Q的Andriod区
+
+    BIGAREAID_TEST                 = 99;    //测试服
+};
+
+enum BGIP_CMD_ERRORItemType_OfflineExp
+{
+    
+
+    CMD_ERROR_LOADCHAR              = -16;   // 加载角色数据错误
+    CMD_ERROR_SAVECHAR              = -15;   // 保存角色数据错误
+    CMD_ERROR_DECODING              = -14;   // 解码失败
+    CMD_ERROR_NOYBP                 = -13;   // 没有钻石
+    CMD_ERROR_BGIP                  = -12;   // BGIP错误
+    CMD_ERROR_CONFIGURATION         = -11;   // 配置错误
+    CMD_ERROR_SERVICE_UNKOWN        = -10;   // 不存在服务
+    CMD_ERROR_SYSTEM_BUSY           = -9;    // 系统忙
+    CMD_ERROR_SYSTEM                = -8;    // 系统级错误
+    CMD_ERROR_NONEOBJECT            = -7;    // 没找到玩家对象，可能刚下线
+    CMD_ERROR_OTHER                 = -6;    // 其他错误
+    CMD_ERROR_BUSY                  = -5;    // 繁忙
+    CMD_ERROR_API                   = -4;    // API返回异常
+    CMD_ERROR_DB                    = -3;    // 数据库异常
+    CMD_ERROR_TIMEOUT               = -2;    // 超时
+    CMD_ERROR_NET                   = -1;    // 网络错误
+    CMD_SUCCESS                     = 0;     // 成功
+    CMD_SUCCESS_NOBODY              = 1;     // 成功;包体为空
+    CMD_OPENIDWRONG                 = 2;     // 账号不存在
+    CMD_ORDER_REPEAT                = 3;     // 订单重复
+    CMD_NUMBER_ERROR                = 4;     // 数量错误
+    CMD_COMMON_REPEAT               = 5;     // 重复(通用)
+    CMD_OBJECT_NOT_EXIST            = 6;     // 对象不存在(通用)
+    CMD_REPEATED_DEAL               = 7;     // 需要特殊处理（如成长守护全服踢人，该错误码内部处理，不会返回给客户端）
+};
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//性别类型
+enum GenderType
+{
+    GenderType_None             = 0;
+    GenderType_Male             = 1; //男
+    GenderType_Female           = 2; //女
+}
+
+// 服务器状态
+enum EServerState
+{
+    EST_CRASH   = 0;
+    EST_NORMAL  = 1;
+    EST_BUSY    = 2;
+    EST_FIRE    = 3;
+    EST_MAINTEN = 4;
+}
+
+// 服务器状态
+enum EImigrantState
+{
+    ETS_Close   = 0;//关闭状态
+    ETS_Open    = 1;//开放状态
+    ETS_NORMAL  = 3;//半开放状态 
+}
+
+enum PowerMode
+{
+    PM_UNKNOW                        = 0; // 微信特权
+    PM_WEIXIN                        = 1; // 微信特权
+    PM_SQGAMECENTER                  = 2; // SQGAMECENTER
+    PM_IOSVISITOR                    = 3; // 游客
+}
+
+//sdk时间设置
+enum ESdkTimeProcType
+{
+    ESdkTimeProcTypeOnlieTimeSet   = 1; // 在线时长
+    ESdkTimeProcTypeTryTimeSet   = 2; // 试玩时间
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//show string提示枚举
+// desc:所有NFED_ON_SHOW_STRING事件使用的字串
+// 字串格式中自带格式 格式全部使用%s
+// 例如： %s对%s说:你好
+// 所有字串按照模块区分，枚举ID自己控制区间
+enum MsgTip
+{
+    ////////////////////////////////////////////////////////////////////////////////
+    //从0开始是服务器相关状态
+    ////////////////////////////////////////////////////////////////////////////////
+    EGEC_SUCCESS                        = 0; // 操作成功
+    EGEC_UNKOWN_ERROR                   = 1; // 未知错误  
+    EGEC_NONE                           = 2; // 不需要报错
+    EGEC_PARSE_MSG_ERROR                = 3; // 协议解析出错
+    EGEC_NO_MSG_HANDLER                 = 4; // 协议未注册
+    EGEC_MSG_ROUTER_REQUEST_ERROR       = 5; 
+    EGEC_MSG_ROUTER_REPLY_ERROR         = 6;
+    EGEC_PLAYER_NOT_FIND                = 7; // 玩家未找到
+    EGEC_PLAYER_IS_NULL                 = 8; // 玩家对象为空
+    EGEC_RECORD_NOT_FIND                = 9; // 玩家记录未找到
+    EGEC_RECORD_IS_NULL                 = 10; // 玩家记录为空
+    EGEC_SERVER_ERROR                   = 11; // 服务器内部错误
+    
+    //登录创建相关（21-60）
+    EGEC_SIGNATURE_SUCCES               = 21; // 签名验证成功
+    EGEC_ACCOUNTPWD_INVALID             = 22; // 账号不存在或者密码错误
+    EGEC_ACCOUNT_INVALID                = 23; // 认证时无效账号
+    EGEC_ACCOUNT_USING                  = 24; // 账号正在使用
+    EGEC_ACCOUNT_LOCKED                 = 25; // 账号已封停
+    EGEC_CHARACTER_EXIST                = 26; // 创建角色时角色名重复
+    EGEC_CHARACTER_SUCCESS              = 27; // 创建角色成功
+    EGEC_CHARACTER_FAILD                = 28; // 创建角色失败
+    EGEC_DELETECHAR_SUCCESS             = 29; // 删除角色成功
+    EGEC_DELETECHAR_FAILD               = 30; // 删除角色失败
+    EGEC_CHARACTER_NUMOUT               = 31; // 创建角色时角色个数超出小区设定值
+    EGEC_CHARACTER_INVALID              = 32; // 角色名无效（非法角色名）
+    EGEC_CHARACTER_NOTEXIST             = 33; // 角色不存在
+    EGEC_CHARACTER_USING                = 34; // 角色已在游戏中
+    EGEC_CHARACTER_LOCKED               = 35; // 角色已封停
+    EGEC_REACH_REGISTER_LIMITS          = 36; // 注册人数达到上限
+    EGEC_CREATE_CHAR_TOO_MANY           = 37; // 到达账号角色数量上限
+    EGEC_CREATE_CHAR_NAME_TOO_LONG      = 38; // 创建角色名字太长
+    EGEC_CREATE_CHAR_LIMIT              = 39; // 该组服务器暂时不允许创建角色
+    EGEC_CREATE_CHAR_NAME_VALID         = 40; // 名字包含非法字符
+    EGEC_CREATE_CHAR_NAME_TOO_SHORT     = 41; // 创建角色名字太短
+    EGEC_SVRZONEID_INVALID              = 42; // 创建角色时游戏区代码无效
+    EGEC_THIS_AREA_IS_CLOSING           = 43; // 当前服务器会于%s秒后关闭
+    EGEC_FORBIDDEN_LOG_HEALTH_VALID     = 44; // 禁止登录，处于防沉迷中
+
+    EGEC_ENTERGAME_SUCCESS              = 51; // 进入游戏世界成功
+    EGEC_ENTERGAME_FAILD                = 52; // 进入游戏世界失败
+
+    EGEC_NO_GATEWAY                     = 71; //无网关
+    EGEC_MachineForbid                  = 72; //屏蔽机型
+
+    EGEC_ACCOUNT_NOTALLOW               = 81; // 不允许登陆
+    EGEC_ACCOUNT_BGIP_NOPLAY            = 82; // BGIP成长守护（禁玩）
+
+    EGEC_VERSION_NOT_MATCH              = 101; // 版本不匹配
+    EGEC_NO_LOGINSERVER                 = 102; // 找不到loginserver
+    EGEC_SERVER_MAINTEN                 = 103; // 服务器维护(找不到GameServer)
+    EGEC_SERVER_NO_REVIEW               = 104; // 没审核服
+    EGEC_VERSION_IS_GRAYVERSION         = 105; // 此服是灰度版本告知
+    EGEC_VERSION_CANT_GRAYVERSION       = 106; // 灰度服只有灰度版本才能进入
+    EGEC_SERVER_INVALID                 = 107; // 服务器宕机，或者重启
+    EGEC_LOGIN_DEQUEUE                  = 108; // 退出排队
+    EGEC_LOGIN_IN_QUEUE                 = 109; // 排队中
+    EGEC_BAN_KICKOUT                    = 110; // 被封号踢下线
+    EGEC_NEED_RELOGIN                   = 111; // 需要重新登录
+    EGEC_GAMESERVER_DISCONNECT          = 112; // GameServer服务器宕机或重启，踢人下线
+    EGEC_ENTER_SCENE_SUCCESS            = 113; // 进入场景成功
+    EGEC_ENTER_SCENE_FAIL               = 114; // 进入场景失败
+    EGEC_SHOW_TEXT_AND_DO_NEXT          = 115; // 显示文本 arg1:text arg2:donext
+    EGEC_LOGIN_NOFUND_CLIENT_CACHE_INFO = 116; // 没有找到client缓存数据
+    EGEC_LOGIN_SERVERID_INVALID         = 117; // 登录的serverid非法
+    EGEC_LOGIN_NO_SAME_RECONNECT_ROLEID = 118; // 重新登录非同一个roleid
+    EGEC_LOGIN_ROLE_BAN                 = 119; // 登录封禁
+
+    EGEC_CLENT_SEND_MSG_ERR             = 120; //前端发送协议异常
+    EGEC_GATE_TOKEN_ERROR_KICK          = 121; // token错误 ，被踢 
+    EGEC_GATE_CONFIGCLIENTID_ERROR_KICK = 122; // ConfigID错误 ，被踢 
+
+    
+    //SDK交互相关（501-540）
+    EGEC_TX_COMSUME_MONEY_FAILED                    = 501; // 消费失败  
+
+
+    // 服务器间哈希槽相关相关（2700-2799）
+    EGEC_HASHSLOT_FOLLOWER_ALREADY_ADD                    = 2700; // Follower已经添加，重复添加指定IDFollower
+    EGEC_HASHSLOT_CANNOT_UPDATE_WITH_CRASHED_NODE         = 2701; // 在有crash节点时，不能对哈希槽进行重分配
+    EGEC_HASHSLOT_HAVE_NO_FOLLOWER                        = 2702; // 没有Follower节点
+    EGEC_HASHSLOT_FOLLOWER_NOT_FIND                       = 2703; // 集群中未找到指定Follower节点
+    EGEC_HASHSLOT_NOT_FIND_SELF_IN_FOLLOWER_MAP           = 2704; // 集群中未找本服节点对应的Follower信息
+    EGEC_HASHSLOT_TOTAL_SLOT_CNT_CANNOT_CHANGE            = 2705; // 集群总槽位数量不支持变更
+    EGEC_HASHSLOT_NOT_FIND_GUID_IN_SLOT_LIST              = 2706; // 在节点Slot槽位的GUID列表中，未找到指定GUID
+    EGEC_HASHSLOT_GUID_CANNOT_ADD_THIS_FOLLOWER           = 2707; // GUID不应该在此Follower下添加
+    EGEC_HASHSLOT_OBSERVER_VER_BIGGER_THAN_FOLLOWER       = 2708; // Observer的哈希槽版本信息比Follower上的更高
+    EGEC_HASHSLOT_TOTAL_HASHSLOT_INFO_NOT_FIND            = 2709; // 指定的哈希槽集群信息未找到
+    EGEC_HASHSLOT_TOTAL_HASHSLOT_INFO_OUT_OF_DATE         = 2710; // 哈希槽集群信息过期
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //从5001开始是游戏逻辑中的成功推送
+    ////////////////////////////////////////////////////////////////////////////////
+    EGEC_CITY_BUILDING_LEVELUP_SUCCESS                    = 5001; //建筑升级成功
+    EGEC_TACTICAL_BUILDING_IN_FIGHT                       = 5002; //战术建筑处于战斗状态
+    EGEC_TACTICAL_BUILDING_RESOURSE_NOT_ENOUGHT           = 5003; //资源不足
+    EGEC_TACTICAL_BUILDING_ITEM_NOT_ENOUGHT               = 5004; //道具不足
+    ////////////////////////////////////////////////////////////////////////////////
+    //从10001开始是游戏逻辑中的错误提示
+    ////////////////////////////////////////////////////////////////////////////////
+    //通用（10001-11000）
+    EGEC_DATA_ERROR                                 = 10001; //数据错误
+    EGEC_FUNC_IS_LOCKED                             = 10002; //功能未解锁
+    EGEC_LEVEL_NOT_SATISFIED                        = 10003; //等级不满足
+    EGEC_AWARD_DRAWN                                = 10004; //奖励已经领取过
+    EGEC_SERVER_LEVEL_NOT_ENOUGH                    = 10005; //服务器等级未到
+    EGEC_ACTIVITY_DISABLED                          = 10006; //活动未开放
+    EGEC_ACTIVITY_NOT_START                         = 10007; //活动未到开放时间
+    EGEC_ACTIVITY_EXPIRED                           = 10008; //活动过期
+    EGEC_VERSION_CANT_USE_ITEM                      = 10009; //当前版本无法使用道具
+    EGEC_NOT_MEET_CONDITION                         = 10010; //条件不足
+    EGEC_SHORT_TIME_TOO_MUCH_MSG                    = 10011; //短时间太多消息
+    EGEC_GAIN_REWARD_FAILED                         = 10012; //领取奖励失败
+    EGEC_HAVE_BLOCK_WORDS                           = 10013; //含有屏蔽字 
+    EGEC_NOT_ENOUGH_CURENCY                         = 10014; //资源不足
+    EGEC_IN_CD                                      = 10015; //在冷却中
+    EGEC_UNEXPECTED_VALUE                           = 10016; //非期待的值
+    EGEC_TIME_NOT_MEET                              = 10017; //时间没到
+    EGEC_BAD_PARAMS                                 = 10018; //错误的参数
+    EGEC_NOT_ENOUGH_ITEM                            = 10019; //道具不足
+    EGEC_GM_COMMAND_NOT_EXIST                       = 10020; //GM命令不存在
+    EGEC_BAD_ITEM_TYPE                              = 10021; //错误的道具类型
+    EGEC_USE_BOX_CHOOSE_INVALID_COUNT               = 10022; //选择数量错误
+    EGEC_ALREADY_GET_REWARD                         = 10023; //已领取过奖励
+
+    EGEC_NOTE_GAMEID                                = 10024; //通知玩家所在的gameID
+    EGEC_ALLIANCE_LEADER_RECYCLE                    = 10025; //新手联盟迁城，没有联盟领土 盟主又被回收
+	EGEC_NO_SUIT_POS_FOR_CALL_MONSTER               = 10026; //没有合适的位置召唤怪物
+    EGEC_HAS_ALLIANCE                               = 10027; //已有联盟
+    EGEC_IS_TOWN_OFFICIAL                           = 10028; //是王国官员
+	EGEC_IS_EXIST_SOLDIER_IS_CHUZHENG_CAN_NOT_TEAM  = 10029; //部队正在出征，无法发起集结
+	EGEC_IS_EXIST_CAN_NOT_FAQI_MUNCH_TEAM        	= 10030; //无法对同一目标再次发起集结
+	EGEC_IS_EXIST_SOLDIER_GROUP_CAN_NOT_AGIN        = 10031; //你已经存在一只部队前往增援，无法再次派遣
+	EGEC_IS_EXIST_ALLIANCE_ATTACKED					= 10032; //您的联盟已对该目标发起组队进攻
+	EGEC_IS_TEAM_KILL_TARGET_GET_REWARD				= 10033; //组队击杀获得奖励tips
+	EGEC_IS_TEAM_IS_FULL							= 10034; //组队成员数量已满
+	EGEC_IS_TEAM_MONSTER_LEVEL_NOT_UNLOCK			= 10035; //该集结怪等级未解锁 无法攻打
+	EGEC_ASSEMBLE_SG_BE_KICKED						= 10036; //参加集结的队伍被踢
+	EGEC_ASSEMBLE_SG_MARCHING						= 10037; //集结队伍出发
+	EGEC_USE_CALL_MONSTER_ITEM_IN_CROSSAREA			= 10038; //跨服时使用召回怪物物品
+    //城建相关错误11001-11080
+    EGEC_BUILDING_ALREADY_EXIST                     = 11001; //建筑已存在
+    EGEC_BAD_BUILDING_TYPE                          = 11002; //建筑类型错误
+    EGEC_CHECK_PRECONDITIONS_FAILED                 = 11003; //建筑前置条件检查失败
+    EGEC_NO_WORKER                                  = 11004; //没有建造队列
+    EGEC_BUILDING_NOT_EXIST                         = 11005; //建筑不存在
+    EGEC_BUILDING_MAX_LEVEL                         = 11006; //建筑达到最大等级
+    EGEC_BUILDING_CANNOT_LVUP                       = 11007; //建筑不可升级
+    EGEC_BUILDING_ALREADY_UPGRADE                   = 11008; //建筑已在升级
+    EGEC_INVAILD_WORKER                             = 11009; //无效建造队列
+    EGEC_BAD_WORKER                                 = 11010; //错误建造队列
+    EGEC_BAD_BUILDING                               = 11011; //错误建筑
+    EGEC_BAD_BUILDING_LEVEL                         = 11012; //错误建筑等级
+    EGEC_BUILDING_NOT_UPGRADE                       = 11013; //建筑没在升级
+    EGEC_BAD_BUILDING_STATUS                        = 11014; //错误的建筑状态
+    EGEC_MAX_WALL_HP                                = 11015; //城防值已达到最大值
+    EGEC_BAD_BUILDING_CLASSIFICATION                = 11016; //建筑类型错误
+    EGEC_BAD_WOUNDED_NUM                            = 11017; //错误的伤兵数量
+    EGEC_HAS_CURING                                 = 11018; //医院已有兵在治疗
+    EGEC_HAS_NO_CURING                              = 11019; //医院没有兵在治疗
+    EGEC_HAS_TRAINING                               = 11020; //军营已有兵在训练
+    EGEC_HAS_NO_TRAINING                            = 11021; //军营没有兵在训练
+    EGEC_BAD_TRAIN_SOLDIER                          = 11022; //错误的训练兵种
+    EGEC_MAX_TRAIN_NUM                              = 11023; //训练量超过最大值
+    EGEC_BAD_PROMOTE_DATA                           = 11024; //错误的晋升数据
+    EGEC_SHELTER_ALREADY_UNLOCK                     = 11025; //地下城房间已解锁
+    EGEC_SHELTER_NOT_UNLOCK                         = 11026; //地下城房间未解锁   
+    EGEC_SHELTER_BAD_PROGRESS                       = 11027; //错误的房间解锁进度
+    EGEC_SHELTER_HAS_BUILDING                       = 11028; //房间里已建造了建筑
+    EGEC_HAS_STUDYING                               = 11029; //正在研究科技
+    EGEC_HAS_NO_STUDYING                            = 11030; //没有正在研究科技
+    EGEC_ALREADY_HAS_TECH                           = 11031; //已研究科技
+    EGEC_CHECK_PRETECH_FAILED                       = 11032; //科技前置条件检查失败
+    EGEC_FINISH_TECH_FAILED                         = 11033; //完成科技失败
+    
+    EGEC_FURNITURE_NOT_EXIST                        = 11034; // 家具不存在    
+    EGEC_FURNITURE_NOT_ENOUGH                       = 11035; // 家具等级不满足
+    EGEC_BUILDING_LEVEL_NOT_ENOUGH                  = 11036; // 建筑等级不满足
+    EGEC_FURNITURE_ALREADY_EXIST                    = 11037; // 家具已存在
+
+    EGEC_MAX_SOLDIER_TYPE_NUM                       = 11038; // 超出容量上限的士兵已发送到邮件    
+    EGEC_SOLDIER_CAPACITY_NOT_ENOUGH                = 11039; // 请先xx提升兵营等级提升士兵容量
+    EGEC_MAX_SOLDIER_TYPE_NUM_MAIL_TAKE             = 11040; // 请先提升兵营等级提升士兵容量
+    EGEC_MAX_SOLDIER_TYPE_NUM_MAIL_TAKE_LIMITED     = 11041; // 已达最大上限的士兵, 兵营等级达上限
+	
+	EGEC_DRESSUP_EMOJI_IN_CD     					= 11042; // 发送表情 还在CD中
+	EGEC_DRESSUP_EMOJI_NOT_UNLOCK     				= 11043; // 表情还没有解锁
+
+    EGEC_SHIELD_EXIST_BETTER                        = 11045; // 护盾已存在 更长时间
+
+    //地图相关错误11081-11100
+    EGEC_SGLIST_OUTSIDE                             = 11081; //有部队在外面
+    EGEC_CITY_IN_BATTLE                             = 11082; //城市处于战斗状态
+    EGEC_CITY_MOVE_FAILED                           = 11083; //迁城失败
+	EGEC_SET_DGNVIEW_NOT_IN_DUNGEON                 = 11084; //视野切换到副本失败，不在副本中
+	EGEC_ALREADY_IN_DUNGEON			                = 11085; //请求进入副本时已经在副本中
+	EGEC_CITY_MOVE_ALLIANCE_NO_TERRITORY			= 11086;	//联盟迁城，没有领土
+
+    //行军 11101-11110
+    EGEC_CITY_SOLDIER_NOT_ENOUGH                    = 11101; //城市内士兵数量不足
+	EGEC_NOVICE_PROTECT_ATTACK	                    = 11102; //不满足新手保护等级，不能攻打
+	EGEC_CACEL_TEAM_FOR_TIMEOUT				        = 11103; //超时取消组队
+	EGEC_CACEL_TEAM_FOR_TARGET_DISAPEAR				= 11104; //目标消失取消组队
+	EGEC_CACEL_TEAM_FOR_LOSE						= 11105; //失败取消组队
+	EGEC_SHARE_TEAM_ATTACK_SUCCESS					= 11106; //分享组队聊天成功
+
+    //聊天 11111-11120
+    EGEC_BLACK_LIMIT                                = 11111; //拉黑数量限制
+    EGEC_FRIEND_LIMIT                               = 11112; //好友数量限制
+    EGEC_APPLY_LIMIT                                = 11113; //申请数量限制
+    EGEC_APPLY_ME_LIMIT                             = 11114; //被申请数量限制
+    EGEC_OTHER_FRIEND_LIMIT                         = 11115; //对方好友数量限制
+
+    //任务 11121-11130
+    EGEC_ALREADY_FINISHED_TASK                      = 11121; //已完成任务
+    EGEC_NOT_ENOUGH_TASK_PROGRESS                   = 11122; //任务进度不足
+
+    //个人信息 11131-11150
+    EGEC_DUPLICATE_PLAYER_NAME                      = 11131; //重复的玩家名字
+    EGEC_ALREADY_HAS_DRESS_UP                       = 11132; //已拥有装扮
+    EGEC_DIRTY_WORLD                                = 11133; //敏感词检查
+
+    //英雄等级同步 11900 - <11910
+    EGEC_RESONATE_SLOT_LOCK                         = 11900;                     //槽位未解锁 
+    EGEC_RESONATE_SLOT_USED                         = 11901;                     //已经被使用 
+    EGEC_RESONATE_HERO_SETED                        = 11902;                        //该英雄已经被共鸣了 
+    EGEC_RESONATE_SLOT_CD                           = 11903;                       //还在CD中 
+    EGEC_RESONATE_HERO_NOT_EXIST                        = 11904;                        //没有该英雄 
+    EGEC_RESONATE_HERO_LEADER                       = 11905;                       //该英雄是领袖 
+    EGEC_RESONATE_SLOT_NO_HERO                      = 11906;                      //槽位未设置英雄 
+    EGEC_RESONATE_SLOT_UNLOCKED                         = 11907;                     //槽位已解锁 
+    EGEC_RESONATE_SLOT_CD_CLEARED                       = 11908;                       //CD已结束 
+
+    //英雄装备11910 - <12000
+    EGEC_EQUIP_LEVEL_CFG_NOT_FOUND          = 11910; // 装备等级不存在 
+    EGEC_EQUIP_RISE_LEVEL_NOT_ENOUGH        = 11911; // 觉醒等级不足 
+    EGEC_EQUIP_UPGRADE_LEVEL_NOT_ENOUGH     = 11912; // 强化等级不足 
+    EGEC_HERO_NOT_EXIST                     = 11913; // 没有该英雄 
+    EGEC_EQUIP_NOT_MATCH_HERO               = 11914; // 装备与英雄职业不匹配 
+    EGEC_EQUIP_NOT_ENOUGH                   = 11915; // 物品数量不足 
+    EGEC_EQUIP_CAN_NOT_RECAST               = 11916; // 已强化的装备和穿戴中的装备不可重铸 
+    EGEC_EQUIP_QUALITY_DIFF                 = 11917; // 品质不同 
+    EGEC_EQUIP_QUALITY_NOT_FOUND            = 11918; // 品质配置不存在 
+    EGEC_EQUIP_NOT_FOUND                    = 11919; // 装备不存在
+    EGEC_EQUIP_HERO_STATUS_NOT_ALLOW        = 11920; // 出征状态无法穿脱装备    
+    EGEC_EQUIP_BAG_FULL                     = 11921; // 背包中的装备已满，请清理后再领取
+
+    // 英雄派遣    
+    EGEC_DISPATCH_INVALID_HERO              = 11950; // 派遣英雄有误    
+    EGEC_DISPATCH_HERO_UESD                 = 11951;// 英雄已经被使用    
+    EGEC_DISPATCH_HERO_CONDITION            = 11952;// 英雄条件不满足    
+    EGEC_DISPATCH_REFRESH_NOT_ENOUGH        = 11953;// 刷新消耗不足    
+    EGEC_DISPATCH_REFRESH_NOT_NEED          = 11954;// 没有需要刷新的任务    
+    EGEC_DISPATCH_HELP_LIMIT                = 11955;// 帮助次数已满    
+    EGEC_DISPATCH_NOT_EXIST                 = 11956;// 该任务不存在    
+    EGEC_DISPATCH_DONE                      = 11957;// 任务已被完成    
+    EGEC_DISPATCH_ROB_DAILY_LIMIT           = 11958;// 每日掠夺次数满
+    EGEC_DISPATCH_ROB_LIMIT                 = 11959;// 已被掠夺完
+    EGEC_DISPATCH_ROB_REPEAT                = 11960;// 重复掠夺
+    EGEC_DISPATCH_HELP_REPEAT               = 11961;// 重复帮助    
+    EGEC_DISPATCH_HELPED                    = 11962;// 已被帮助
+
+    //英雄 12000-12100                              
+    EGEC_HERO_STORY_STAR_UNLOCK                     = 12000; //星级未解锁
+    EGEC_HERO_STORY_AWARD_DRAWN                     = 12001; //传记已解锁 领取
+    EGEC_HERO_UP_SKILL_NEED_HERO_LV                 = 12002; //升级技能英雄等级不足
+    EGEC_HERO_UP_SKILL_COST_NOT_ENOUGH              = 12003; //升级技能消耗道具不足
+    EGEC_HERO_UP_SKILL_NOT_FOUND                    = 12004; //升级技能还未激活
+    EGEC_HERO_NOT_UNLOCK                            = 12005; //英雄未解锁
+	EGEC_HERO_UP_EQUIP_NEED_HERO_LV                 = 12006; //升级装备英雄等级不足
+
+    EGEC_HERO_UP_STAR_COST_NOT_ENOUGH               = 12010; //升星道具不足
+
+    EGEC_HERO_CUR_STAR_LEVEL_MAX                    = 12015; //当前星级英雄等级已满
+
+    EGEC_HERO_COST_FRAGMENT_EXISTS                  = 12016; //合成英雄已存在
+    EGEC_HERO_COST_FRAGMENT_NOT_ENOUGHT             = 12017; //合成碎片不足
+
+    EGEC_HERO_UP_TALENT_UNLOCK                      = 12020; //天赋未解锁
+    EGEC_HERO_UP_TALENT_NOT_ENOUGH                  = 12021; //天赋点不足
+    EGEC_HERO_UP_TALENT_NOT_FOUND                   = 12022; //天赋不存在
+    EGEC_HERO_UP_TALENT_MAX_LV                      = 12023; //该天赋已满级
+    EGEC_HERO_UP_TALENT_HERO_LV_LIMIT               = 12024; //天赋未开启
+    EGEC_HERO_RESET_TALENT_COST_NOT_ENOUGH          = 12025; //重置天赋道具不足
+
+    //联盟 12026-12100
+    EGEC_ALLIANCE_HAS_UNPROCESSED_APPLICATION       = 12026; //联盟申请列表中有未处理的申请
+    EGEC_ALLIANCE_NAME_LEN_INVALID                  = 12027; //全称长度非法
+    EGEC_ALLIANCE_NAME_REPETITION                   = 12028; //名称或简称重复
+    EGEC_ALLIANCE_TAG_LEN_INVALID                   = 12029; //简称长度非法
+    EGEC_ALLIANCE_SHOP_ITEM_EXPIRE                  = 12030; //商品过期
+    EGEC_ALLIANCE_REPLACE_LEADER_ERROR              = 12031; //盟主离线超过x天才能被取代
+    EGEC_ALLIANCE_SCHEDULE_LIMIT                    = 12032; //日程超过上限
+    EGEC_ALLIANCE_WELCOME_ROOKIEALLIANCE            = 12033; //恭喜您加入新手联盟！
+    EGEC_ALLIANCE_CAN_NOT_JOIN_OTHER_SERVER         = 12034; //无法加入其他服联盟
+	EGEC_BUILDING_GARRISON_SOLDIERGROUP_LIMIT       = 12035; //驻守队伍数量超出建筑上限
+	EGEC_BUILDING_GARRISON_CITY_LIMIT				= 12036; //您只能派遣一支部队驻防
+	EGEC_BUILDING_GARRISON_SOLDIER_LIMIT	        = 12037; //派遣士兵数量超出建筑容量上限
+	EGEC_GARRISON_ENEMY_BUILDING				    = 12038; //无法派遣部队驻防被敌方占领的联盟建筑
+	EGEC_ATTACK_ALLIANCE_BUILDING_WITHOUT_ALLIANCE  = 12039; //攻打联盟建筑时没有加入联盟
+	EGEC_ATTACK_ALLIANCE_BUILDING_NOT_LINK		    = 12040; //攻打的联盟建筑需要领土相连
+    EGEC_ALLIANCE_NOT_FIND	                      = 12041; //找不到该联盟/联盟已解散
+    EGEC_ALLIANCE_MOVE_CITY_ERROR                   = 12042; //迁城领土不相连
+	EGEC_GARRISON_LEADER_CHANGE			            = 12043; //驻守队长变更
+	EGEC_GARRISON_KICKED_OUT			            = 12044; //驻守队伍被踢
+    EGEC_QUIT_ALLIANCE_FAILED_BY_NPC_TOWN           = 12045; //城镇退帮限制
+	EGEC_ALLIANCE_CAN_NOT_JOIN                      = 12047; //无法加入联盟
+	EGEC_ALLIANCE_APPLY_CD		                    = 12048; //已经申请过联盟
+    EGEC_ALLIANCE_CAN_NOT_APPOINT                   = 12049; //不能任命总控室未达{0}级的玩家担任此职位
+    EGEC_BUILDING_IN_SOLDIER_LIMIT	                = 12050; //建造中建筑，增援限制    
+
+	
+	EGEC_MARCHING_ENERGY_NOT_ENOUGH					= 12052; //行军体力不足提示
+    EGEC_CHARGE_BAG_TIME_LIMIT						= 12053;//购买礼包已经过期
+    EGEC_ALLIANCE_ROOKIE_MOVE_NO_PLACE              = 12054;//新手联盟迁城无可迁城的位置
+    EGEC_ALLIANCE_PLAYER_ALREADY_QUIT               = 12055;  //该成员已经离开联盟
+    EGEC_ALLIANCE_MOBILIZATION_NO_ALLIANCE          = 12056;  //总动员玩家没有联盟
+    EGEC_ALLIANCE_MOBILIZATION_JOIN_OTHER           = 12057;  //总动员玩家加入其他联盟
+    EGEC_ALLIANCE_MOBILIZATION_MEMBER_COUNT         = 12058;  //人数不足
+    EGEC_ALLIANCE_MOBILIZATION_REFRESH_CD           = 12059;  //刷新CD
+    EGEC_ALLIANCE_MOBILIZATION_CLAIM_ERROR          = 12060;  //接取任务失败
+    EGEC_ALLIANCE_CAN_NOT_DISBAND                   = 12061;  //活动期间不能解散联盟
+    EGEC_ALLIANCE_MOBILIZATION_GOTO_BIND            = 12062;  //请前往绑定的联盟
+    EGEC_ALLIANCE_MOBILIZATION_LV_LIMIT             = 12063;  //避难所等级不足
+    EGEC_ALLIANCE_MOBILIZATION_NO_MATCH             = 12064;  //你的联盟不可参与
+    EGEC_ALLIANCE_MOBILIZATION_NOT_OPEN             = 12065;  //活动未开启
+    EGEC_ALLIANCE_POSITION_LV_LIMIT                 = 12066;  //联盟职位等级不足
+    EGEC_ALLIANCE_MOVE_NIL_POS                      = 12067;  //迁城失败，没有找到合适的位置
+    EGEC_ALLIANCE_MOVE_ITEM_LCAK                    = 12068;  //迁城道具不足
+    EGEC_ALLIANCE_JOIN_SGLIST_OUTSIDE               = 12069;  //加入联盟部队在外
+	EGEC_ALLIANCE_GET_REWARD_BOX_TOP				= 12070;  //领取宝箱达到上限
+	EGEC_ALLIANCE_OTHER_MEMBER_SET_BOSS_INFO		= 12071;  //有其他联盟成员正在设置联盟BOSS信息
+    EGEC_ALLIANCE_FAST_JOIN_ALLIANCE_NIL            = 12075;  //找不到可以加入的联盟
+
+    EGEC_ALLIANCE_LEADER_ONLINE                     = 12076;  //盟主已在线
+    EGEC_ALLIANCE_LEADER_CHANGE                     = 12077;  //盟主已变更
+
+    EGEC_ALLIANCE_CASTLE_LV_LIMIT                   = 12078;  //避难所等级{0}级解锁
+    EGEC_ALLIANCE_MEMBER_LIMIT                      = 12079;  //联盟人数已满
+    
+    EGEC_ALLIANCE_APPLY_REFUSE                      = 12080; //联盟申请被拒绝
+	
+	//VIP 12101-12110
+	EGEC_VIP_DAILY_EXP								= 12101; // 每日免费点数已领取
+	EGEC_VIP_PAY_PACK								= 12102; //付费礼包已购买
+	EGEC_VIP_LEVEL_NOT_ENOUGH						= 12103; //VIP等级不足
+	EGEC_VIP_FREE_PACK								= 12104; //免费礼包已领取
+	EGEC_VIP_BUY_VIP_EXP							= 12105; //购买获得vip经验
+	EGEC_ENERGY_NOT_ENOUGH							= 12106; //体力不足
+    EGEC_DAILY_CHARGE_LIMIT                         = 12107; //每日充值上限
+	
+	EGEC_RPG_DUNGEON_CHEAT_ERROR                    = 12108; //rpg副本作弊检测不通过
+    //移民相关错误 12111-12130
+    EGEC_MIGRATING                                  = 12111; //正在移民中
+    EGEC_MIGRATE_SAME_AREA                          = 12112; //目标小区和本小区一样
+    EGEC_BAD_MIGRATE_TYPE                           = 12113; //错误的移民类型
+    EGEC_MIGRATE_AREA_TOO_NEW                       = 12114; //移民小区太新
+    EGEC_MIGRATE_RANK_LIMIT                         = 12115; //排名限制
+    EGEC_MIGRATE_AREA_JOIN_LIMIT                    = 12116; //加入小区限制
+    EGEC_MIGRATE_FUNCTION_CLOSE                     = 12117; //移民功能已关闭
+
+    //竞技场错误提示 12131 - 12150
+    EGEC_ARENA_NOT_SET_SOLDIERS                     = 12131;  //请先设置部队再发起挑战
+    EGEC_ARENA_ATTEMPTS_NOT_ENOUGH                  = 12132;  //挑战次数不足
+    EGEC_ARENA_TARGET_RECYCLE                       = 12133;  //用户不存在(被回收)
+    EGEC_ARENA_SETTLEING                            = 12134;  //竞技场正在结算中
+
+	//NPCTownattack
+	EGEC_ATTACK_NPC_TOWN_WITHOUT_ALLIANCE			= 14001;
+	EGEC_NPC_TOWN_LINK_ERROR						= 14003;
+    EGEC_KING_KILL_BAD_TARGET                       = 14004;
+    EGEC_NPC_TOWN_DECLARE_WAR_ERROR                 = 14005; // 未宣战
+    EGEC_NPC_TOWN_PROTECT_ERROR                     = 14006; // 城镇保护中
+
+    EGEC_NPC_TOWN_DECLARE_WAR_MEMBER_LIMIT          = 14007; // 宣战人数限制
+    EGEC_NPC_TOWN_DECLARE_WAR_NEED_NEAR             = 14008; // 需要相邻的中立城镇
+    EGEC_NPC_TOWN_OCCUPY_FULL                       = 14009; // 占领已满
+    EGEC_NPC_TOWN_DECLARE_WAR_LEVEL_LIMIT           = 14010; // 宣战等级限制
+
+    //雷达电台 14300
+    EGEC_EXPLORE_RADAR_FULL                         = 14300; // 雷达电台已满    
+
+    //居民
+    EGEC_RESIDENTS_NOT_IN_CURE                      = 15001; //已无生病居民,无法使用此选项
+    EGEC_RESIDENTS_LOW_ELEC                         = 15002; //低电力    
+    EGEC_RESIDENTS_OVER_ELEC_CAPACITY               = 15003; // 已超出电力上限
+    //mail
+    EGEC_BATTLE_REPORT_INVALID                      = 16001; //战报失效
+    EGEC_BATTLE_WIN                      = 16002; //战斗胜利
+	EGEC_BATTLE_LOG_INVALID                      	= 16003; //战斗日志失效
+    
+    //押镖
+    EGEC_ESCORT_UNLOCK                              = 17001; //功能未解锁
+    EGEC_ESCORT_UNLOCK_SLOT                         = 17002; //未解锁的押镖队列
+    EGEC_ESCORT_ESCORTING_REFRESH                   = 17003; //无法刷新正在护送的镖车
+    EGEC_ESCORT_REFRESH_COST_ID                     = 17004; //刷新道具错误
+    EGEC_ESCORT_NOT_FIND_CAR                        = 17005; //找不到的镖车
+    EGEC_ESCORT_ROB_SELF_ALLIANCE                   = 17006; //不能劫镖同联盟镖车(客户端显示？)
+    EGEC_ESCORT_BE_ROB_MAX                          = 17007; //镖车已被劫最大
+	
+	EGEC_WORLDBOSS_MAX_ATTACK_COUNT                 = 17008; //世界boss已经到达最大攻击次数
+    
+    //联盟对决
+    EGEC_ALLIANCE_DULE_SETTLEING                    = 17100; //联盟对决结算中
+    EGEC_ALLIANCE_DULE_CROSS_AREA_CD                = 17101; //联盟对决跨服CD
+    EGEC_ALLIANCE_DULE_NO_RIVAL                     = 17103; //联盟对决没有竞争对手
+    
+    //聊天
+    EGEC_CHAT_DATA_EXPIRED                          = 17201; //聊天内容已过期(或者不存在)
+}
+
+enum SdkMsgTip
+{
+	SMT_SUCCESS                        = 0; // 操作成功
+
+}
+
+enum EAwardSource
+{
+    AWARD_SOURCE_DEFAULT                = 0; //
+    AWARD_SOURCE_DECOMPOSE              = 1; //
+}
+
+// Log原因枚举（包含TLog等使用）
+enum ELReason
+{
+    ELREASON_GM_ADD_ITEM                = 1; // GM增加物品
+};
+
+enum EBClassification
+{
+    CASTLE = 1; //主城
+    GUARD_HOUSE = 2; //守卫室
+    BUILD_ATOWER = 3;// 哨塔
+    SABER_BARRACK = 5; //步兵军营
+    RIDER_BARRACK = 6; //骑兵军营
+    ARCHER_BARRACK = 7; //弓兵军营
+    HOSPITAL = 11; //医院
+    FOOD_FACTORY = 13; //食物加工厂
+    WOOD_FACTORY = 14; //水加工厂
+    IRON_FACTORY = 15; //金属加工厂
+    OIL_FACTORY = 16; //石油加工厂
+    TECH = 17; //研究基地
+    RECRUIT = 20; //招募 (探索基地)
+    RESIDENT_CABIN = 100; //居民小屋
+    CANTEEN = 101; //食堂
+    RESCUE_CENTER = 102; //救护中心
+}
+
+enum EBStatus
+{
+    INACTIVE = -1; //建筑初始化后处于未激活状态，无法使用功能
+    FREE = 0; //普通状态
+    ON_FIRE = 1; //守卫室:着火中
+    CURING = 2; //医院:治疗中
+    TRAINING = 3; //军营:训练中
+    STUDYING = 4; //研究基地:研究中
+    UPGRADING = 5; //升级中
+    CREATING = 6; //建筑建造中
+    STUDYING_EXT = 7; //研究基地:研究中 额外队列
+}
+
+enum ESoldierSource
+{
+    SS_UNKNOWN = 0; //未知来源
+    SS_HOSPITAL = 1; //医院
+    SS_BARRACK = 2; //军营
+    SS_BARRACK_CANCEL = 3; //军营取消训练返回晋升兵
+	SS_TATICALBUILDING = 4; //战术建筑治疗好的士兵
+	SS_ITEM_GIVE = 5; //战术建筑治疗好的士兵
+}
+
+enum EChannel
+{
+    CL_AREA = 1; //世界频道
+    CL_ALLIANCE = 2; //帮会频道
+    CL_GROUP = 3; //聊天室频道
+    CL_PLAYER = 4; //私聊频道
+    CL_NEW_HAND = 5; //新手频道
+    CL_LANGUAGE = 6; //多语言频道
+    CL_ALLIANCE_R4 =7; //帮会R4频道
+    CL_ALLIANCE_NOTICE = 8; //帮会公告频道
+    CL_MAX = 9;
+}
+
+enum EMoveTye
+{
+    MT_SENIOR = 1; //定点迁城
+    MT_RANDOM = 2; //随机迁城
+    MT_ALLIANCE = 3; //联盟迁城
+    MT_NEW_HAND = 4; //新手迁城
+    MT_BURN_DOWN = 5; //烧毁迁城
+    MT_BORN = 6; //出生时随机迁城
+	MT_FORCE_RANDOM = 7; //强制随机迁城
+    MT_ALLIANCE_ROOKIE = 8; //新手联盟迁城
+    MT_GM = 9; //GM迁城
+    MT_JOIN_ALLIANCE = 10; //加入联盟迁城
+    MT_CREATE_ALLIANCE = 11; //创建联盟迁城    
+    MT_ALLIANCE_LEADER = 12; // 联盟整体迁城
+    MT_ALLIANCE_FREE = 13; // 免费联盟迁城
+    MT_MAX = 14;
+}
+
+enum ESceneType  //场景类型
+{
+    EScene_Invalid          			= 0;  //无效的
+    EScene_Main    			            = 1;  //主场景
+    EScene_Race       			        = 2;  //赛车副本
+    EScene_NewHand         			    = 3;  //新手副本
+	EScene_ClientNewbeeDungeon          = 4;  //客户端使用的新手关卡场景
+	EScene_DungeonServer	            = 5;  //副本服场景
+    EScene_Arena                        = 6;  //竞技场
+};
+
+enum EBroadcastRangeType
+{
+	ERange_All = 1; //通知全服玩家
+	ERange_Alliance = 2; //通知联盟成员
+};
+
+enum EBroadcastType
+{
+	EBroadcast_OccupyNeuTralCity = 219000001; // 中立城镇占领
+	EBroadcast_AppointOfficial = 219000002; // 任命官员
+	EBroadcast_OtherAreaCityComeIn = 219002013; // 跨服
+};
+
+enum EEquipMaterialsOperateType
+{
+	EOperate_Produce = 1;	//材料生产
+	EOperate_StopProduce = 2;	//材料取消生产
+	EOperate_Synthesis = 3;	//材料合成
+	EOperate_Decompose = 4;	//材料分解
+};
+
+enum EPlayerDataRefreshType
+{
+    PDRT_NONE = 0;
+    PDRT_WEEKLY = 1; // 周刷新
+    PDRT_DAILY = 2; // 日刷新
+};
+
+enum EHttpAddItemSourceType
+{
+    EHAIST_None = 0;
+    EHAIST_Activity = 1;
+	EHAIST_VIP = 2;
+    EHAIST_PUSH_GIFT = 3; 
+    EHAIST_DOLLAR_TOKEN = 4; //代币
+};
+
+enum ETaskBigType
+{
+    ETaskBigType_None = 0;
+    ETaskBigType_Main = 1;  //主线
+    ETaskBigType_Branch = 2;  //支线
+    ETaskBigType_Chapter = 3;  //章节任务
+    ETaskBigType_Daily = 4;  //每日任务
+};
+
+enum EGender
+{
+    EGender_None = 0;
+    EGender_Male = 1; 
+    EGender_Female = 2; 
+}
+
+// 邮件ID 枚举
+enum MailID
+{
+	MAILID_REWARD_MAX			= 197204001; // reward士兵满了等等 发送的邮件
+}
+
+enum ESpecialTaskData
+{
+    STD_CalcParamDiffScore				 = 1;	//活动用来通过两个 param 差计算积分
+}

@@ -1,0 +1,1017 @@
+syntax = "proto2";
+
+package SGMsg;
+
+import "SGDefine.proto";
+import "SGMsgBase.proto";
+import "SGMsgDB.proto";
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////DB/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//消息子结构体
+//上线和进入视野同步数据 MSG_S2C_SYNC_RECORD_FULL = 399
+
+
+// 读Mysql更新Redis MSG_PUBLIC2DB_REQ_UPD_REDIS_CHAR_INFO        = 6901;
+message Public2DBReqUpdRedisCharInfo
+{
+	repeated GUID  role_id = 1; // 角色ID
+}
+
+// MSG_GS2DB_NOTIFY_FLUSH_CACHE                = 7074; //GAME通知DB清空缓存
+message GS2DBNotifyFlushCache
+{
+
+}
+
+// MSG_GS2DB_LOGIN_LOGOUT_LOG                  = 7080; //GAME 登录登出日志记录
+message GS2DBLoginLogoutLog
+{
+	optional string	procedure = 1; // 存储过程
+	optional PbDataList data = 2; // 存储过程参数
+}
+
+// 回复角色基础数据 MSG_GD_LOAD_CHAR_PB = 7063
+// 存储角色基础数据 MSG_GD_SAVE_CHAR_PB = 7064
+
+// 回复角色其余数据 MSG_DB2GS_RSP_LOAD_CHAR_INFO = 7002
+// 存储角色其余数据 MSG_GS2DB_SAVE_ALL_CHAR_PB = 7065
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////登录相关/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+// 回复客户端登陆MSG_S2C_RSP_ACCOUNT_LOGIN = 118登录结果
+message S2CRspAccountLogin
+{
+	enum LoginRet
+	{
+		LOGIN_FAIL = 0;	//失败
+		LOGIN_SUCEESS    = 1;	//成功
+		LOGIN_BAN     = 2;  //封号
+	}
+	required int32 result	= 1; // 现在不管成功失败都发送该协议
+	required string account = 2;
+	required int32 login_mode = 3;
+	optional int32	ban_time = 4; //
+	optional string	error_code = 5; //
+	optional string	accountID = 6; //UC的账号ID
+	optional string	ban_reason = 7; //封号原因
+	optional bool is_in_disconnect = 8;	// 是否之前断线了
+	optional int32 cur_game_id = 9;		// 当前所在的GameServer
+	optional GUID cur_role_id = 10;		// 当前断线的角色ID
+	optional GUID client_id = 11;		// 登录成功才有, 客户端记录一下client_id
+}
+
+message C2SReqReconnectGate
+{
+	required GUID client_id = 1;		// 之前的客户端ID
+	required string account = 2;		// 账号名
+	required bytes token = 3;			// 之前的token
+	required int64 nMsgIndex = 4;			// 之前收到的消息Index
+}
+
+message S2CRspReconnectGate
+{
+	required bool success = 1;			// 是否成功
+	optional GUID client_id = 2;		// 重连成功才有, 客户端记录一下client_id
+	optional int32 ReSendMsgStatus = 3;	// 重发协议，0开始重发。1重发结束
+	optional int32 clientSerial = 4;	// 协议的系列号
+}
+
+message ReqCloseAccount						//    MSG_GL_CLOSE_ACOUNT                    = 136,  // 封账号
+{
+	required GUID player_id		 		= 1;//玩家ID
+	required int32 target_account		 	= 2;//账号
+}
+
+//MSG_GAME2BSDK_SDK_PROC_TIME
+message Game2BSDKSdkProcTime
+{
+	required GUID player_id		 			= 1;//玩家ID
+	required string account		 	= 2;//账号
+	required int64 tm						= 3;	// 时间
+	required int32 type_proc			= 4;	// 设置类型
+}
+
+//MSG_SERVER_INIT = 103,  // 前端的逻辑服务器在启动服务进程的时候，要往后端的DB服务器报告初始化状态
+//服务器之间报告服务器状态
+message S2SServerInfoReport
+{
+	optional int32 server_id = 1;
+	optional int32 server_type = 2;
+	optional bytes server_ip = 3;
+	optional int32 server_port = 4;
+	optional int32 server_max_online = 5;
+	optional int32 server_cur_count = 6;
+	optional SGDefine.EServerState server_state = 7 [default = EST_CRASH];
+	optional int32 big_area = 8;
+	optional int32 area = 9;
+	optional int32 for_client_port = 10;
+	optional string dns = 11;
+	optional string auth = 12;
+    optional bytes server_out_ip = 13;
+    optional bytes area_name = 14;
+    optional bytes area_desc = 15;
+	optional int32 reconnecttime = 16;
+	optional int32 reconnectcount = 17;
+	optional int32 default_area = 18;
+	optional int32 area_power = 19;
+	optional int32 is_visitor = 20;
+	optional int32 vport = 21;
+	optional int32 isgary = 22;
+	optional string strVersion = 23;
+	optional int32 disconn_num = 24;
+	optional int32 wait_queue_num = 25;
+	optional int32 game_online_num = 26;
+	optional int32 for_client_port_out = 27;//单独的对外端口
+	optional bool is_register = 28;//是否是连接上报
+	optional int32 server_city_count = 29;//城市数量
+	optional AreaInfoReport area_info = 30;
+	optional int32 server_config_type = 31;	//0 默认配置 1 小服配置
+}
+
+
+message ServerInfoByLanguageID
+{
+	optional int32 language_id = 1; // language_id
+	optional int32 cur_online = 2; // 该language当前在线人数
+}
+
+message ServerInfoByGameID
+{
+	optional int64 game_id = 1; // game_id
+	optional int32 cur_online = 2; // 该GameID当前在线人数
+}
+
+message ServerInfoReport
+{
+	optional int32 server_id = 1;
+	optional int32 server_type = 2;
+	optional string ip = 3;
+	optional int32 port = 4;
+	optional int32 cur_online = 5;
+	repeated ServerInfoByLanguageID language_id_list = 6; // deprecated(废弃)
+	repeated ServerInfoByGameID game_id_list = 7;	
+}
+
+message AreaInfoReport
+{
+	required int32 big_area = 1;
+	required int32 area = 2;
+	required int32 server_max_online = 3;
+	required int32 server_cur_count = 4;
+	required SGDefine.EServerState server_state = 5 [default = EST_CRASH];
+	repeated ServerInfoReport server_list = 6;
+	optional int64 scene_server_id = 7;
+	optional int64 server_open_time = 8;
+	optional int32 server_config_type	= 9;
+}
+
+//每个小服的信息:放Redis（王国信息）
+message AreaInfoDB
+{
+	required int32 big_area 					= 1; //大区id
+	required int32 area 						= 2; //小服ID
+	required bytes area_name 					= 3; //小服名称
+	required SGDefine.EImigrantState immigrant_state = 4 [default = ETS_Close];//状态:移民上限，半开放，
+	required GUID xKingID						= 5;////国王
+	required bytes KingName						= 6;////国王姓名
+	required int32 immigrantPowerLimit			= 7;////移民战力上限
+}
+
+//请求加载 MSG_RPC_S2S_REQ_LOAD_AREAINFO_KING			= 50011;// 请求加载王国信息	
+message S2SReqLoadAreainfoKing
+{
+	enum EResult
+	{
+		ERT_FAIL	= 0;//失败
+		ERT_SUCESS	= 1;//开放状态
+		ERT_NOTEXIT	= 3;//半开放状态	
+	}
+	
+	optional AreaInfoDB areaInfo				= 1; //
+	optional int32 nResult						= 2; //0，加载失败，1加载成功，2key不存在
+}
+
+//MSG_RPC_S2S_REQ_UPDATE_AREAINFO_KING		= 50012;// 请求更新王国信息
+message S2SReqUpdateAreainfoKing
+{
+
+	optional AreaInfoDB areaInfo			= 1;//小服ID
+	optional int32 nResult					= 2;//增加
+}
+
+// 客户端断开连接 MSG_S2S_USER_DISCONNECT = 121
+message S2SUserDisconnect
+{
+	enum DisconnectEventType
+	{
+		DET_Disconnect =  0;		// 真正下线了，带重连也没等到，下线落地DB
+		DET_Reconnect = 1;			// 重新连上来了
+		DET_SessionTimeOut = 2;		// 断线重连超时，session超时。强制disconnect
+		DET_WaitReconnect = 3;		// 等待断线重连
+		DET_connect = 4;			// 正常连上来了
+	}
+	optional int32 type = 1;
+	optional string account = 2;
+	optional int32 areaID = 3;
+	optional GUID role_id = 4;
+    optional GUID client_id = 5;
+	optional int32 gateid = 6;		// GateServerID 用于断线重连时设置玩家所在Gate
+	optional string client_ip = 7;
+}
+
+// Login发起踢人
+// Login -> Gate : MSG_LOGIN2GW_REQ_KICK_PLAYER
+message Login2GWReqKickPlayer
+{
+    optional string account = 1;            // 账号
+    optional GUID role_id = 2;              // 通过玩家ID踢
+    optional GUID client_id = 3;            // 通过客户端ID踢
+    optional int32 reason		= 4;            // kick 原因
+}
+
+//MSG_BSDK2GAME_REQ_KICK_PLAYER
+message BSDK2GAMEKickPlayer
+{
+	optional string account = 1;            // 账号
+	optional GUID role_id = 2;              // 通过玩家ID踢
+}
+
+//MSG_GAME2S_NTF_LINE_INFO
+message Game2ServerNtfLineInfo
+{
+	enum ERoleLineState
+    {
+        ONLINE = 1; // 上线
+        OFFLINE = 2; // 下线
+    }
+
+    optional ERoleLineState line_state = 1; // 角色上线状态
+    optional GUID guid_player			= 2; // 角色guid
+    optional string account				= 3; // 角色账号
+}
+
+// GameServer设置Gate上token保活时间  MSG_REQ_SET_TOKEN_EXPIRED_TIEM
+message GM2GWReqSetTokenExpiredTime
+{
+	optional GUID role_id = 1;	
+	optional int64 time = 2;
+}
+
+//在线时间
+message OnlineTmInfo
+{
+	optional GUID guid_player = 1;	
+	optional string account = 2;            // 账号
+	optional int64 tm_online = 3;//在线时间
+}
+
+message Game2BSDKOnlineTmInfo
+{
+	repeated OnlineTmInfo online_tms = 1; // 所有的在线信息
+}
+
+//其他地方登录,告知客户端，您的账号已经在其它地方登陆，请保护好您的账号密码
+//MSG_S2C_NTF_KICK = 125
+message S2CNtfKick
+{
+	required GUID player_id 	    = 1;	//GUID
+	required int64 new_fd 			= 2;	//newUserFd
+	required int64 old_gateID		= 3;	//已经登录的gateID
+	required int32 reason = 4;		//踢人原因
+}
+
+//通过临时客户端ID踢人
+//MSG_NOTIFY_USER_LOGON_OTHER_PLACE        = 138
+message LoginOtherPlace
+{
+	required GUID client_id 	    = 1;	//GUID
+	required string account 		= 2;	//账号
+}
+
+// 玩家下线 Gate和Game通知Login开始下线踢人
+// MSG_S2S_KICK_PLAYER                     = 113;  // 服务器内部T人
+message S2SKickPlayer
+{
+    optional int32 type         = 1;
+	optional string account     = 2;
+	optional int32 areaID       = 3;
+	optional GUID role_id       = 4;
+    optional GUID client_id     = 5;
+    optional int32 game_id      = 6;
+	//原因
+    optional int32 reason      = 7;
+}
+
+enum KickType
+{
+    KT_Offline          = 1;    // 正常离线
+    KT_Relogin          = 2;    // 登录顶号
+    KT_Kick             = 3;    // 服务器主动踢人
+}
+
+// MSG_LOGIN2GS_REQ_KICK_PLAYER         = 130;  // Login向Game发起踢人的请求
+message Login2GSReqKickPlayer
+{
+    optional int32 type = 1;        // 踢人类型
+    optional string account = 2;    // 账号
+    optional GUID role_id = 3;      // 角色ID
+    optional GUID client_id = 4;    // ClientID 暂时不用
+	optional int32 areaID  = 5;     // 小区ID
+}
+
+// MSG_GS2LOGIN_RSP_KICK_PLAYER         = 131;  // Login向Game发起踢人的回复
+message GS2LoginRspKickPlayer
+{
+    optional Login2GSReqKickPlayer req = 1;     // 请求带回来
+    optional bool success = 2;              // 是否成功
+}
+
+// MSG_GS2LOGIN_SWITCH_LANGUAGE                = 134; // 切换语言
+message GS2LoginSwitchLanguage
+{
+	optional GUID role_id       = 1;   // 角色ID
+	optional string account     = 2;   // 账号
+	optional int32 areaID       = 3;	// 小区ID
+	optional int64 language		= 4;	// 语言
+}
+
+
+//MSG_S2S_REQ_REGISTER_ACCOUNT           = 1082, // 请求注册账号
+message S2SReqRegisterAccount
+{
+	enum RegisterType
+	{
+		RT_INVALID                       = -1;
+		RT_NORMAL                        = 0; // 注册正常账号
+		RT_GUEST                         = 1; // 注册游客账号
+		RT_FACEBOOK                      = 2; // 注册facebook
+		RT_TOTAL                         = 3;
+	}
+
+	required int32 big_area_id                   = 1;
+	required int32 reg_type                      = 2;
+	required string account                      = 3;
+	required string password                     = 4;
+	required string mail_addr                    = 5;
+}
+
+//MSG_S2S_RSP_REGISTER_ACCOUNT           = 1083, // 回复请求注册账号
+message S2SRspRegisterAccount
+{
+	required int32 result                        = 1;
+	required string account                      = 2;
+	required string mail_addr                    = 3;
+}
+
+//MSG_CONF2DB_REQ_QUERY_LOCAL_ACCOUNT        = 1084, // 请求查询本地账号
+message Conf2DBReqQueryLocalAccount
+{
+	required int32 big_area_id                   = 1;
+	required string userid                       = 2;
+}
+
+//MSG_DB2CONF_RSP_QUERY_LOCAL_ACCOUNT        = 1085, // 回复请求查询本地账号
+message DB2ConfRspQueryLocalAccount
+{
+	required int32 result                        = 1; //0-没找到，1-找到
+	required string local_account                = 2; //result=0时为空，result=1时为本地账号
+}
+
+
+// 请求角色数据进入游戏[login -> GameServer] MSG_LOGIN2GS_LOAD_ACCOUNT_DETAIL_INFO = 7308
+// 机器人登录 MSG_LOGIN2GS_LOAD_ACCOUNT_DETAIL_INFO_ROBOT = 7309; 
+message Login2GSLoadAccountDetailInfo
+{
+	required string account = 1;
+	required int32 last_gateway_id = 2;
+	required GUID role_id = 3;
+    optional string client_ip = 4;
+	optional SGDefine.PowerMode power_mode = 5 [default = PM_UNKNOW];//游戏中心特权
+	optional string area_line_id = 6;  // 分线编号
+    optional GUID client_id = 7;        // 客户端ID
+	required string device_info     = 8; // 客户端登录的机器mac地址信息
+    optional S2CNtfHealthInfo health_info		   = 9;//防沉迷信息（用于直接访问，缓存在game上）
+    optional int32 gm_level = 10; // GM等级
+	optional GUID city_id = 11;
+	//optional int64 scene_type = 12;  //场景类型
+	optional C2SReqAccountLogin login_data = 13; // 登录验证时提供的数据
+	optional int64 language_id = 14; // 语言id
+	optional GUID config_client_id = 15;
+	optional string player_name = 16;
+}
+
+//MSG_C2S_REQ_CREATE_CHAR = 7410,         //创建角色申请,返回通用事件
+message C2SReqCreateChar
+{
+	required string account     = 1; //[nfmark][note]账号，本字段服务器不信任客户端，服务器会再设置一个值
+    required int32 career       = 2; //职业
+    required int32 sex          = 3; //性别
+    required bytes charName     = 4; //名字
+	optional int32 areaid       = 5; //小区ID(服务器赋值)
+    optional string head_id     = 6; //头像
+    optional string out_fit     = 7; //时装
+	optional int32 uic_result   = 9; //UIC校验结果 0-合法 1-不合法
+}
+
+//MSG_C2S_REQ_CREATE_CHAR = 7410,         //创建角色申请,返回通用事件
+message RpcReqCreateChar
+{
+	optional GUID clientID		= 1;	//client id
+	required string account     = 2; //[nfmark][note]账号，本字段服务器不信任客户端，服务器会再设置一个值
+    required int32 career       = 3; //职业
+    required int32 sex          = 4; //性别
+    required bytes charName     = 5; //名字
+	optional int32 areaid       = 6; //小区ID(服务器赋值)
+    optional string head_id     = 7; //头像
+    optional string out_fit     = 8; //时装
+	optional int32 uic_result   = 9; //UIC校验结果 0-合法 1-不合法
+    optional GUID   role_id		= 10; // 创建成功的角色ID
+	optional int32 	err_code	= 11; // 是否成功
+	optional int32  robot		= 12; // 是否机器人 0:不是 1:是
+	optional int64 flag_language_id = 13; // 联盟语言(机器人用)
+	optional string name_tag		= 14; // (机器人用)
+}
+
+// MSG_S2C_RSP_CREATE_CHAR = 7411 // 创建角色回馈
+message S2CRspCreateChar
+{
+	required string 	account = 1; // 帐号
+	required int32 		success = 2; // 是否成功
+    required GUID       role_id = 3; // 创建成功的角色ID
+}
+
+// MSG_C2S_REQ_DELETE_CHAR = 7412,删除角色,返回通用事件
+// EGEC_DELETECHAR_SUCCESS      = 10,          // 删除角色成功
+// EGEC_DELETECHAR_FAILD      = 11,              // 删除角色失败
+message C2SReqDeleteChar
+{
+	required string account = 1;
+	required GUID role_id = 2;
+    optional int32 area_id  = 3; //玩家出生服务器ID，取玩家的Key会用上
+}
+
+// 恢复删除的角色 MSG_C2S_REQ_RECOVER_CHAR = 7414
+message C2SReqRecoverChar
+{
+	required string account = 1;
+}
+
+//MSG_C2S_REQ_ENTER_GAMESERVER 			= 7420, //申请进入游戏世界，成功回复MSG_REQ_ENTER_TRANSCRIPTION = 600
+message C2SReqEnterGameServer
+{
+    required int32 serverID = 1;
+	required GUID role_id = 2;
+	optional int32 gateID = 3;
+	optional string account = 4;
+	optional string client_IP = 5;//IP
+	optional SGDefine.PowerMode power_mode = 6 [default = PM_UNKNOW];//游戏中心特权
+	optional string area_line_id = 7;		// 分线信息
+	optional bool is_relogin = 8;		// 是否为顶号
+}
+
+//MSG_RPC_ENTER_GAME
+message RpcEnterGameServer
+{
+	optional int32 serverID = 1;
+	optional GUID role_id = 2;
+	optional GUID id_client = 3;
+	optional int32 gateID = 4;
+	optional string account = 5;
+	optional string client_IP = 6;//IP
+	optional SGDefine.PowerMode power_mode = 7 [default = PM_UNKNOW];//游戏中心特权
+	optional string area_line_id = 8;		// 分线信息
+	optional bool is_relogin = 9;		// 是否为顶号
+	optional int32 gate_id = 10;  //登陆的gate
+
+	optional int32 result = 11; // 0失败 1成功
+	optional int32 career = 12; // 玩家职业
+	optional int32 platformworld_type = 13;
+	optional int64 chat_language = 14;  //聊天语言
+	optional int32 gm_level = 15;
+}
+
+// 进入游戏服务器回馈协议login->gateway MSG_S2C_RSP_ENTER_GAMESERVER= 7421
+message S2CRspEnterGameServer
+{
+	required string account = 1;
+	required int32 server_id = 2;
+	required GUID role_id = 3;
+	required int32 result = 4; // 0失败 1成功
+	optional int32 career = 5; // 玩家职业
+	optional int32 platformworld_type = 6;
+	optional int32 gm_level = 7;	//0 没有gm权限，> 0 有gm权限
+	optional GUID client_id	= 8;
+}
+
+// 请求退出登陆排队
+message ReqLoginDequeue
+{
+}
+
+message OnlinePlayerInfo
+{
+	optional GUID player_id                 = 1;    //玩家ID
+	optional int32 gate_id					= 2;	//Gate
+	optional bool is_online 				= 3; 	//是否在线 
+	optional int64 player_language 			= 4;  	//玩家语言
+	optional int32 castle_level 			= 5;	//主堡等级
+	optional int32 login_count 				= 6;	//登录次数
+	optional int32 game_id            		= 7;    //GameID
+	optional GUID city_id                   = 8;    //城市ID
+	optional int64 power                    = 9;    //战力
+	optional string client_version		    = 10;   //客户端版本
+}
+
+// 通知其他Server上下线协议 MSG_GS2S_NTF_PLAYER_ONLINE = 7518
+message GS2SNtfPlayerOnline
+{
+	optional OnlinePlayerInfo player_info 	= 1; 	//玩家信息
+}
+
+//MSG_GS2S_NTF_ALL_ONLINE_PLAYER_INFO         = 7521;  //通知所有在线玩家信息
+message GS2SNtfAllOnlinePlayerInfo  //同步所有玩家在线信息
+{
+	repeated OnlinePlayerInfo online_player_info_list = 1;  //在线状态列表
+}
+
+// 通知pub 断线重连协议 MSG_GS2PUB_NTF_PLAYER_RECONNECTED = 7520
+//message GS2PUBNtfPlayerReconnected
+//{
+	//required GUID player_id 		= 1; // 玩家ID
+	//optional int32 gate_id				 = 2;
+//}
+
+//消息子结构体
+message ServerInfo
+{
+    required int32  		server_id = 1;
+	required int32 			user_count = 2;
+	required int32	 		capacity = 3;
+	required int32			type = 4;
+    required string 		name = 5;
+	required int32			wait_count = 6;
+	required int32			status = 7;
+	required int32			form_server = 8;
+	required int32			new_server = 9;
+	required int32			priority_server = 10;
+}
+
+// 请求角色列表 MSG_C2S_REQ_CHAR_LIST = 7406
+message C2SReqCharList
+{
+	optional string account = 1;
+	optional int32 real_id = 2;//这是old area id，
+}
+
+//MSG_RPC_CHAR_LIST
+message RpcReqCharList
+{
+	optional GUID id_client = 1;
+	optional string account = 2;
+	optional int32 real_id = 3;//这是old area id，
+	repeated CharFullData char_list = 4;
+	optional bool is_gm = 5; // 是否GM账号
+	optional int64 language_id = 6; // 语言ID
+}
+
+//MSG_S2C_RSP_CHAR_LIST                           = 7407,//发送角色列表给客户端
+message S2CRspCharList
+{
+	required string account = 1;
+	repeated CharFullData char_list = 2;
+	optional bool is_gm = 3; // 是否GM账号
+	optional int64 language_id = 4; // 语言ID
+}
+
+//MSG_C2S_REQ_GATE_SERVER_INFO                          = 65005, // 查询网关信息
+message C2SReqGateServerInfo
+{
+	required int32 big_area_id     = 1;
+	required int32 area_id         = 2;
+    optional string client_version = 3; // 废弃
+	optional string device_info    = 4; // 废弃
+}
+
+//MSG_S2S_REQ_SERVER_DATA = 65002, // 服务器查询
+//MSG_C2S_REQ_BIG_AREA_SERVER = 65007; // 查询大区内所有小区信息
+message S2SServerInfoQuery
+{
+	required int32 server_id = 1;
+    //optional string client_version = 2;
+	optional string 		device_info = 2;
+	optional string 		openid_info = 3;
+	//required string         account     = 4;  /*角色账号*/
+}
+
+//服务器之间报告服务器状态  MG_PTOTOCOL_TYPES MSG_S2S_SERVER_REGISTERED = 65000
+//返回大区内所有小区信息 MSG_S2C_RSP_BIG_AREA_SERVER = 65008
+message S2SServerInfoReportList
+{
+	repeated S2SServerInfoReport server_list 			  = 1;
+	optional int32 last_login_area_id   			  = 2;   /*最近登陆Area*/  //客户端专用
+	optional RegisterArea register_area  	          = 3;   /*注册过的Area*/  //客户端专用
+    optional int32 reconnect_big_area_id              = 4;   // 可以断线重连的区
+    optional int32 reconnect_area_id                  = 5;   // 可以断线重连的区
+}
+
+/*注册过的服务器*/
+
+message AreaList
+{
+	required int32 	area_id 	= 1;  /*area ID*/
+	required int32  char_level 	= 2;  /*角色等级*/
+}
+
+message RegisterArea
+{
+	repeated AreaList area_list = 1;  
+}
+
+// Gate->Master->Config查询小区的开关情况 MSG_GW2CONF_REQ_AREA_INFO = 65010
+// 回复 MSG_CONF2GW_RSP_AREA_INFO = 65011
+message GW2CONFQueryAreaInfo
+{
+    required int32 server_id = 1;
+	required int32 big_area_id = 2;
+	required int32 area_id = 3;
+    optional SGDefine.EServerState area_state = 4 [default = EST_CRASH];
+}
+
+//	MSG_C2S_REQ_VERSIONINFO                 	= 132; // 获取版本信息
+message ReqVersionInfo
+{
+	optional int32 big_area_id = 1;
+	optional int32 account = 2;
+	optional int32 update_step = 3; // 热更新步骤
+	optional string device_info = 4; // 设备信息
+	optional string client_version = 5; // 客户端版本
+}
+
+//	MSG_C2S_RSP_VERSIONINFO                 	= 133; // 获取版本信息返回
+message VersionInfoQuery
+{
+	message VersionInfo
+	{
+		optional string AllowLowVer = 1;
+		optional string CurrentVer = 2;
+		optional string ReviewVer = 3;
+		optional string ReviewAddress = 4;
+		optional string ReviewResourceAddress = 5;
+		optional string updateAddress = 6;//更新地址		
+		optional string updateAddressDNS = 7;//更新地址
+		optional int32 openreiew = 8;//是否开启预审
+		optional string GrayVer = 9;// 灰度版本
+		repeated string checkMd5List = 10;
+		optional string appstoreurl = 11;//整包更新地址
+		optional int32 OpenClientCrashReport = 12;//客户端是否打开上报开关
+		optional int32 OpenPackageVerify = 13;//客户端是否打开包的完整性校验
+		optional string AllowMaxVer = 14;
+		optional string MinReviewVer = 15;
+	}
+	
+	optional int32 big_area_id = 1;
+	optional VersionInfo ver_data	 = 2;
+	optional int32 nResult = 3;//0（SGDefine::EGEC_SUCCESS）成功。大于0失败，没服
+}
+
+//	MSG_C2S_REQ_MAINTAININFO                    = 135; // 服务器维护信息
+message ReqMaintainInfo
+{
+	optional int32 big_area_id = 1;
+}
+
+//	MSG_C2S_RSP_MAINTAININFO                 	   = 136; // 服务器维护信息返回
+message MaintainInfo
+{
+	optional int64 server_time 	= 1;
+	optional int32 time_zone 	= 2;
+	optional int64 startServerTime=3;
+	optional string MaintainNote = 4;
+	optional int32 nHaveNormalArea = 5;
+}
+
+////////////////////CTS-STC///////////////////////////////
+// 否则返回错误事件
+message C2SReqAccountLogin
+{
+	optional string account         = 1;
+	optional string password        = 2;
+	optional string security_code   = 3;
+    optional string signBuff        = 4;
+	optional string access_token	= 5; //IGG SDK 玩家认证token
+    optional int32  loginMode       = 6;
+	optional string accountInner  	= 7; // (账号唯一ID:服务端赋值)
+	optional string device_info     = 8;
+	optional string extra_info      = 9;
+	optional string systemsoftware  = 10;//移动终端操作系统版本
+	optional string systemhardware 	= 11;//移动终端机型
+	optional string telecomoper 	= 12;//运营商
+	optional string network 		= 13;//3G/WIFI/2G
+	optional string client_version  = 15;//登录版本（前面那个版本废弃'5'）
+	optional string client_IP       = 16;//登录IP（前面那个版本废弃'7'）
+	optional string qq_head         = 17;//qq头像
+	optional int32  real_id         = 18;//真实区服
+	optional int32 u_last_ScreenWidth	= 19;//显示屏宽度
+	optional int32 u_last_ScreenHight	= 20;//显示屏高度
+	optional int32 u_last_Density       = 21;//像素密度
+	optional string u_last_CpuHardware	= 23;//(可选)cpu类型-频率-核数
+	optional string u_last_GLRender		= 24;//(可选)opengl render信息
+	optional string u_last_GLVersion	= 25;//(ANDROID必填)opengl版本信息
+	optional int32 platform_world_type	= 27;// 0:android 1:IOS
+	optional int32 big_area_id          = 28; // 想要进入的大区ID
+	optional bool ignore_client_version_check = 29; // 是否忽略客户端版本的检测，默认不需要填写，即进行匹配检测
+	optional int64 language_id 			= 30; // 语言ID
+	optional string DeviceQualityLevel  = 31; //(必填)设备分级结果[默认分级/CPU/GPU/Memory]
+	optional string AndroidCpuInfo  	= 32; //(ANDROID必填)设备Cpu信息字符串
+	optional string GraphicsDeviceName  = 33; //(ANDROID必填)设备Gpu信息：SystemInfo.graphicsDeviceName
+	optional int32 GraphicsMemory 		= 34; //(必填)SystemInfo.graphicsMemorySize单位M
+	optional int32 AndroidTotalMemory 	= 35; //(ANDROID必填)AndroidTotalMemory 单位M
+	optional int32 GpuInstancing 			= 36; //(必填)是否支持GpuInstancing：SystemInfo.supportsInstancing
+	optional string ScreenSafeArea 		= 37; //(必填)异形屏安全区：Screen.safeArea
+	optional string AstcSupport 		= 38; //(必填)ASTC支持情况
+	optional int32 target_server_type 	= 39; // 连接服务器类型 0:普通服务器 1:测试服务器
+	optional string country_code 		= 40;//国家/地区编码(仅服务端赋值)
+	optional int32 auto_select_area		 = 41;	//0 客户端请求服务器列表选择流程，1 服务器自动选择区服 流程
+	optional int32 cpm					= 42; // 支持cpm版本 0:否 1:是
+}
+
+// MSG_S2C_RSP_CONFIG_LOGIN_RESULT             = 114; // Config回复客户端登录（SDK）验证结果
+message S2CRspConfigLoginResult
+{
+	required bool success = 1; // 登录验证是否成功
+	optional S2SServerInfoReportList server_list = 2; // 如果登录验证成功，这个字段表示区服列表
+}
+
+// MSG_CONFIG2AUTH_REQ_ACCOUNT_LOGIN            = 111; // 请求Auth服进行SDK验证
+// MSG_GS2LS_ENTER_LOGIN                  = 106;  // 进入LoginServer
+message S2SReqAccountAuth
+{
+	// 验证结果类型
+	enum EAuthResult
+	{
+		AUTH_RESULT_SERVER_ERROR		 = 1; // 服务器错误导致无法验证
+		AUTH_RESULT_SUCCESS				 = 2; // 验证成功
+		AUTH_RESULT_FAILED				 = 3; // 验证失败
+		AUTH_RESULT_HEALTH_FAILED       = 4; // 防沉迷不符合
+	}
+
+	optional GUID config_client_id         = 1; // 客户端在Config上面的ID
+	optional C2SReqAccountLogin login_data = 2; // 登录验证时提供的数据
+	optional EAuthResult result            = 3; // 是否验证成功
+	optional int32 gm_level                = 4; // 账号的GM等级，默认是0
+    optional bool reconnect                = 5; // 是否断线重连，仅在MSG_GS2LS_ENTER_LOGIN时用
+    optional S2CNtfHealthInfo health_info		   = 6;//防沉迷信息
+	optional string country_code		   = 7;//国家/地区编码
+}
+
+//MSG_BSDK2GAME_NTF_HEALTHINFOS
+message HealthInfosUpdate
+{
+    repeated GUID guids_player						= 1;//玩家信息
+    repeated S2CNtfHealthInfo health_infos			= 2;//防沉迷信息
+    repeated string accounts_player = 3;//玩家账号
+}
+
+// MSG_SS_REQ_ASSIGN_GATE                 = 107;  // Config发给Master，请求给客户端分配Gate
+message S2SReqAssignGate
+{
+	optional GUID id_client					= 1; // 发出消息的ConfigServer的ID
+	optional int32 config_server_id		 = 2; // 发出消息的ConfigServer的ID
+	optional S2SReqAccountAuth auth     = 3; // 登录验证的信息，result字段可以忽略
+	optional int64 assign_gate_count	= 4; // 累计给这个账号分配Gate次数
+	optional int32 old_gate_id			= 5; // 账号之前登录的GateID，只针对当前小区。如果之前登录的其他小区，则不会有值。
+
+	optional bool success                = 6; // 是否成功分配
+	optional GateInfoForClient gate_info = 7; // 如果成功，则返回Gate的信息，如果失败，则缺失
+	optional bytes token                 = 8; // 如果成功，则表示设置在Gate的Token
+	optional int32 error_server_id       = 9; // 如果发生错误的话，这里存储发生错误的服务器（可以根据这个serverID查日志）
+	optional int32 error_message         = 10; // 如果发生错误的话，这里存储错误消息的内容
+}
+
+// MSG_SS_REQ_ASSIGN_GATE_RELAY                 = 107;  // Config发给Master，请求给客户端分配Gate
+message S2SReqAssignGateRelay
+{
+	optional GUID id_client			= 1; // 发出消息的ConfigServer的ID
+	optional int32 config_server_id		 = 2; // 发出消息的ConfigServer的ID
+	optional S2SReqAccountAuth auth     = 3; // 登录验证的信息，result字段可以忽略
+	optional int64 assign_gate_count	= 4; // 累计给这个账号分配Gate次数
+	optional int32 old_gate_id			= 5; // 账号之前登录的GateID，只针对当前小区。如果之前登录的其他小区，则不会有值。
+
+	optional bool success                = 6; // 是否成功分配
+	optional GateInfoForClient gate_info = 7; // 如果成功，则返回Gate的信息，如果失败，则缺失
+	optional bytes token                 = 8; // 如果成功，则表示设置在Gate的Token
+	optional int32 error_server_id       = 9; // 如果发生错误的话，这里存储发生错误的服务器（可以根据这个serverID查日志）
+	optional int32 error_message         = 10; // 如果发生错误的话，这里存储错误消息的内容
+}
+
+// 客户端需要知道的Gate的信息的结构体
+message GateInfoForClient
+{
+    optional int32 gate_id   = 1; // GateServer的ID
+	optional string gate_ip  = 2; // GateServer的IP
+	optional int32 gate_port = 3; // GateServer的端口
+	optional int32 big_area				 = 4;
+	optional int32 area_id				 = 5;
+}
+
+// MSG_SS_ACK_ASSIGN_GATE                 = 108;  // Master返回给Config，分配客户端的情况
+message S2SRspAssignGate
+{
+	required int32 config_server_id      = 1; // 发出消息的ConfigServer的ID
+	required bool success                = 2; // 是否成功分配
+	optional GateInfoForClient gate_info = 3; // 如果成功，则返回Gate的信息，如果失败，则缺失
+	optional bytes token                 = 4; // 如果成功，则表示设置在Gate的Token
+	optional int32 error_server_id       = 5; // 如果发生错误的话，这里存储发生错误的服务器（可以根据这个serverID查日志）
+	optional int32 error_message         = 6; // 如果发生错误的话，这里存储错误消息的内容
+}
+
+// MSG_S2S_REQ_KICK_PLAYER_MASTER                 = 109;  // 请求客户端断线 Config->Master //rpc则可以去除S2SRspKickClient协议
+message S2SReqKickClient
+{
+	optional GUID id_client				 = 1; // 需要踢掉的client
+	optional int32 config_server_id      = 2; // 发出消息的ConfigServer的ID
+	optional int32 target_gate_id        = 3; // 目标GateServerID
+	optional string account              = 4; // 要踢的账号
+	optional bool success				 = 5; // 是否成功
+}
+
+// MSG_S2S_REQ_KICK_PLAYER_GATE                 = 109;  // 请求客户端断线 Master->Gate //rpc则可以去除S2SRspKickClient协议
+message S2SReqKickClientGate
+{
+	optional GUID	id_client			 = 1; // 需要踢掉的玩家
+	optional int32 config_server_id      = 2; // 发出消息的ConfigServer的ID
+	optional int32 target_gate_id        = 3; // 目标GateServerID
+	optional string account              = 4; // 要踢的账号
+	optional bool success				 = 5; // 是否成功
+}
+
+// 客户端查询网关，回复的内容
+// MSG_S2C_RSP_GATE_SERVER_INFO                            = 65006; // 返回网关信息
+message S2CRspGateServerInfo
+{
+	required bool success                = 1; // 是否成功分配了Gate
+	optional GateInfoForClient gate_info = 2; // 如果成功，则返回Gate的信息，如果失败，则缺失
+	optional bytes token                 = 3; // 客户端需要提供给Gate的Token
+}
+
+// MSG_C2S_REQ_IDENTIFICATION_IN_GATE         = 104;  // 在Gate申请身份验证，通过后可以继续使用Gate。（向Gate提供Token）
+message C2SReqIdentificationInGate
+{
+	required GUID config_client_id = 1; // 在Config时的GUID
+	required bytes token           = 2; // token
+    optional bool reconnect        = 3; // 是否重连。大重连。基本没设么用。处于排队的时候，重连可以直接连上。
+}
+
+//MSG_GS2LOGIN_REQ_CHECK_NAME_CAN_USE                           = 7310,         //验证名字是否一样,
+message GS2LoginReqCheckNameCanUse
+{
+	required GUID player_id = 1;
+	required bytes str_name = 2;
+}
+
+//MSG_LOGIN2GS_RSP_CHECK_NAME_CAN_USE                           = 7311,         //名字一样ACK
+message Login2GSRspCheckNameCanUse
+{
+    enum ReType
+	{
+		NAME_INVALID = 0;
+		NAME_CAN_USE = 1;
+	}
+	required GUID player_id = 1;
+	required bytes str_name = 2;
+	required int32  re_value = 3;
+}
+
+//MSG_GS2LOGIN_REQ_RENAME_PLAYER                           = 7312;         //加入名字库
+message GS2LoginReqRenamePlayer
+{
+	required GUID player_id = 1;
+	required bytes str_old_name = 2;
+	required bytes str_new_name = 3;
+    optional int32 pre_area_id  = 4; //合服的时候，带上前一个服务器ID
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////存档数据规划/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//MSG_SYNC_PLAYER_IP_LIST      		             = 144;  // 玩家登录过的IP历史记录
+message PlayerIPList
+{
+	required  GUID  player_id		                = 1; //玩家ID
+	repeated  string ip_list                    	= 2; //登录的IP列表
+	optional  string account                        = 3; //账号
+}
+
+//    MSG_S2S_REPORT_RECONEECT_INFO           = 148;  // 上报断线重连信息到Config
+message S2SReportReconnectInfo
+{
+    optional string account     = 1;    // 账号
+    optional GUID role_id       = 2;    // 玩家ID
+    optional int32 big_areaid   = 3;    // 大区ID
+    optional int32 areaid       = 4;    // 小区ID
+    optional int64 time         = 5;    // 时间,单位秒
+}
+
+//   MSG_S2S_REPORT_CLIENT_DISCONNECT        = 149;  // 上报客户端断线到Config
+message S2SReportClientDisconnect
+{
+    optional string account = 1;        // 账号
+    optional int32 gateid = 2;          // GateID
+}
+
+//MSG_S2C_NTF_HEALTHINFO
+message S2CNtfHealthInfo
+{
+  	// 本次上报需要的处理类型：0无需操作；1提醒；2强制下线；3当天禁玩；4宵禁；5强制实名认证；6提醒实名认证；7强制下线前提醒
+	optional int32 operation = 1;
+    //当前累计在线时间，单位秒
+	optional int64 accumu_time = 2;
+    //如果是实名未成年用户，那么有这个字段，表示当天最多可玩时间，单位秒
+	optional int64 max_time = 3;
+    //试玩时间，单位秒
+	optional int64 try_time = 4;
+	// 如果operation是1或2或6或7，则有这个字段，表示本次操作满足的时间节点
+	optional int32 time_node = 5;
+	// 如果operation是2，那么有这个字段，表示本次需要下线的时间
+	optional int64 force_exit_rest_time = 6;
+	// 如果operation是2，那么有这个字段，表示本次休息结束时间
+	optional int64 force_exit_rest_end_time = 7;
+	// 如果operation是3，那么有这个字段，表示本次禁玩结束的时间
+	optional int64 ban_end_time = 8;
+	// 如果operation是4，那么有这个字段，表示宵禁开始时间
+	optional int64 curfew_begin_time = 9;
+	// 如果operation是4，那么有这个字段，表示宵禁结束时间
+	optional int64 curfew_end_time = 10;
+	//年龄段(年龄段)
+	optional int32 age_type = 11;
+}
+
+
+// MSG_S2C_NOTE_LOGINDATAPROCESS				= 122; // Loaddatafinish 属性类似(当是单独加协议，player，city不太合适用属性。前端登录之后才有player)
+message S2CNoteLoginDataProecess
+{    
+	// 验证结果类型
+	enum ELoginDataStage
+	{
+		ELOGINDATASTAGE_LOADINGDATA		 = 1; // 正在加载数据阶段
+		ELOGINDATASTAGE_FINISHLOADING	 = 2; // 完成完整数据传输
+	}
+	required GUID player_id 					= 1;	// player_Id
+	optional int32 loginDate_Stage  	= 2;    // 加载数据阶段 0 正在加载数据阶段。1.完成完整数据传输
+}
+
+//MSG_GS2GATE_CHANGE_SCENETYPE = 7200;
+message GS2GateChangeSceneType
+{
+	optional int64 scene_type = 1;
+}
+
+//MSG_GS2GATE_MUST_RELOGIN_SWITCH = 7201; // 设置强制大重连开关
+message GS2GateMustReloginSwitch
+{
+	optional int32 status = 1; // 1:强制大重连 0:关闭强制大重连
+}
+
+
+// 离线暂存 
+message NTFStashOffline
+{
+	repeated ItemInfo items = 1; // 物品
+	optional C2SReqAccountLogin login_data = 2; // 登录验证时提供的数据
+}
+
+// 与账号在线相关信息
+message OutsideAccountNowInfo
+{
+	optional bool online = 1; // 是否在线
+	optional int32 big_area_id = 2; // 大区ID
+	optional int32 area_id = 3; // 小区ID
+	optional int32 gate_server_id = 4; // GateServer的ID
+	optional string account         = 5; // sdk账号
+    optional int32  login_mode       = 6; // 登录方式
+	//
+	optional int32 last_area_id		 = 7;
+	optional int32 reconnect_big_area		 = 8;
+	optional int32 reconnect_area		 = 9;
+	optional int64 reconnect_end_time		 = 10;
+}
+//	MSG_S2S_REQ_TOUCH_QUEUE_PLAYER					= 7428;	//gate 通知 login 排队的玩家，延长login中的 cache过期时间
+message ReqTouchQueuePlayer
+{
+	repeated GUID players			 = 1;
+}
+
+message S2SReqQueryIP
+{
+    optional string ip = 1;
+    optional string country_code = 2;
+}
+message S2CClientUpdate						//      MSG_S2C_NTF_CLIENT_UPDATE                   = 138; // 通知前端，定时重启，热更新
+{
+	optional int32 WaitTime		 		= 1;//小于等于0，或者没有设置值，立即更新，大于0，等待更新的秒数
+}

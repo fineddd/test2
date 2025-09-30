@@ -1,0 +1,839 @@
+syntax = "proto2";
+
+
+package SGMsg;
+import "SGMsgBase.proto";
+import "SGMsgMapData.proto";
+
+enum EActivityType
+{
+	AT_GROUP_MONSTER		 = 1;
+}
+
+
+//	MSG_S2C_NTF_UPDATE_ACTIVITY				  = 3101;	//通知玩家活动信息
+message NTFUpdateActivity
+{
+	enum EUPDTType
+	{
+		UPDT_ALL		 = 1;	//所有活动 -- 清空之前的活动，使用这次下发的内容
+		UPDT_ADD		 = 2;	//添加活动
+	}
+	
+	required int32 update_type					 = 1;	//EUPDTType
+	repeated ActivityInfo activity_list			 = 2;	//活动列表
+}
+message ActivityInfo
+{
+	required int32 type 						 = 1;	//EActivityType
+	optional int64 activity_id					 = 2;	//活动id 暂时没用	activityTemp表id
+	optional int64 start_time					 = 3;	//开始时间
+	optional int64 end_time						 = 4;	//结束时间
+	optional int64 type_id						 = 5;	//activityTemp表typeID, AT_GROUP_MONSTER 类型活动 是activityGroupMonster 表id  
+	optional ACTGroupMonster group_monster		 = 6;	//AT_GROUP_MONSTER
+}
+message ACTGroupMonster
+{
+	required int64 id							 = 1;	//activityGroupMonster 表id
+}
+
+//	MSG_GS2SS_RPC_DO_CALL_MONSTER_ITEM		 	 = 50121;	//game server to 场景服 使用召唤怪物物品
+message ReqDoCallMonsterItem
+{
+	optional int32 result						 = 1;
+	optional GUID city_id						 = 2;	//使用道具的city
+	optional int64 monster_id					 = 3;	//monster 表配置ID
+	optional int64 activity_id					 = 4;	//活动id
+	optional GUID monster_guid					 = 5;
+	optional Point2D monster_pos				 = 6;
+}
+//	MSG_S2C_NTF_ITEM_CREATE_MONSTER_POS		  = 3104;	//通知玩家物品创建的怪物位置
+message NTFItemCreateMonsterPos
+{
+	required GUID monster_id					 = 1;	//
+	required Point2D position					 = 2;	//坐标
+}
+	//活动（礼包）
+//	MSG_C2S_REQ_GET_CHARGE_BAG				  = 3105;	//购买充值礼包，现阶段临时协议没有接sdk
+message ReqGetChargeBag
+{
+	required int64 charge_main_id				 = 1;
+	required int64 charge_group_id				 = 2;
+	required int64 charge_bag_id				 = 3;
+}
+//	MSG_S2C_NTF_CHARGE_MAIN					  = 3107;	//通知充值礼包活动开启内容
+//	MSG_PS2GS_NTF_CHARGE_MAIN				  = 3108;	//通知gameserver充值礼包活动开启内容
+message NtfChargeMain
+{
+	repeated ChargeMainInfo charge_main_list		 = 1;
+}
+enum ChargeMainType
+{
+	CMT_PERMANENT = 1;      //常驻
+    CMT_TIME_LIMIT = 2;     //限时
+}
+message ChargeMainInfo
+{
+	required int64 charge_main_id		 = 1;
+	required int64 type					 = 2;	//charge main 表 type
+	optional int64 start_time			 = 3;	//开始时间 单位 秒
+	optional int64 duration				 = 4;	//持续时间 单位 秒
+}
+
+///////////////////////////////////////////////////////////////////////////////
+message ActivityConf
+{
+	optional int64 activity_id 			= 1;	//活动唯一ID
+	optional int32 activity_type 		= 2;	//活动类型
+	optional int64 start_time       	= 3;    //开始时间
+	optional int64 end_time         	= 4;    //结束时间
+	optional int32 client_show          = 5;    //客户端限制
+	optional int64 group_id             = 6;    //组ID
+	repeated int64 group_array          = 7;    //组ID数组
+	optional int64 free_reward			= 8;	//触达奖励
+	optional int64 activity_switch      = 9;    //活动开关
+	optional int64 time_type            = 10;   //时间类型
+	optional bool is_settle				= 11;	//是否已经结算过（服务器使用）
+	optional int32 preview              = 12;   //活动提前几天显示预告
+    optional bool is_data_cache         = 13;   //是否客户端缓存配置数据
+	optional int64 function_unlock_id	= 14;   //功能解锁ID
+    optional int32 end_show             = 15;   //活动结束后展示几天
+    optional int32 loop_count           = 16;   //活动循环次数
+}
+
+//MSG_S2C_NTF_ACTIVITY_CONF                 = 3109;   //通知活动配置
+//MSG_PS2GS_UPDATE_ACTIVITY_CONF              = 3112;   //通知GAME活动配置
+//MSG_PS2GS_UPDATE_SINGLE_ACTIVITY_CONF       = 3119;   //通知单条活动配置更新
+message NtfActivityConf    //通知客户端Activity配置
+{
+	repeated ActivityConf activity_conf_list 				= 1;  //活动大表配置列表
+	//repeated ActivityDetailConf activity_detail_conf_list 	= 2;  //活动小表详细配置
+}
+
+message ActivityEverConf
+{
+	optional int64 activity_id 			= 1;	//活动唯一ID
+	optional int64 first_begin_time     = 2;    //活动第一次开始时间
+}
+
+// MSG_S2C_NTF_ACTIVITY_EVER_CONF            = 3100;   //通知活动ever配置
+message NtfActivityEverConf
+{
+	repeated ActivityEverConf activity_ever_conf_list 	= 1;  //活动ever配置列表
+}
+
+message ActivityParam
+{
+	optional int64 config_id 			= 1;	//配置ID
+}
+
+//MSG_C2S_REQ_ACTIVITY_OPERATE              = 3110;   //请求活动操作
+message C2SReqActivityOperate   //通用活动常规操作
+{
+	optional int64 activity_id 		= 1;  //活动唯一ID
+	optional int64 button_index 	= 2;  //Button索引
+	repeated string param_list      = 3;  //额外参数, 老版本用的，建议使用ActivityParam
+	// optional ActivityParam param 	= 4;  //额外参数
+}
+//	MSG_S2C_RSP_ACTIVITY_OPERATE                = 3124;   //活动操作返回
+message S2CRspActivityOperate
+{
+	optional int32 result				 = 1;	//SGDefine.MsgTip
+	optional int64 activity_id			 = 2;	//活动id
+	optional int64 button_index			 = 3; 	//Button索引
+	repeated int64 int_params			 = 4;	//int 类型参数返回
+	repeated string string_params		 = 5;	//string 类型参数返回
+}
+	
+message PlayerActivityInfo  //玩家活动数据用于服务器存储
+{
+	repeated ActivityProgress progress_list 		= 1; 	//活动进度信息
+	//optional string general_param        			= 2;    //通用参数 (可以自定义PB数据存储)
+	repeated ActivityConf trigger_activity_list  	= 3;    //触发类活动列表
+}
+
+message ActivityProgress   //玩家活动进度
+{
+	message ProgressInfo
+	{
+		optional int64 unique_id 		= 1;  //唯一ID (通过唯一ID存储玩家的活动数据)
+		optional int64 value  			= 2;  //进度(数值)
+		optional int32 state     		= 3;  //状态
+		optional string extra_param 	= 4;  //额外参数
+	}
+
+	optional int64 activity_id     			 = 1;  //活动ID
+	repeated ProgressInfo info_list			 = 2;  //进度列表
+	optional int64 time						 = 3;  //记录时间
+	optional int64 activity_start_time		 = 4;  //活动开始时间
+	optional int32 activity_type			 = 5;  //
+	optional int32 free_reward_state		 = 6;	//0 未领取，1 已领取
+	optional bool settle_flag				 = 7;	//是否已经结算过
+	optional KVP   extra_kvp_param			 = 8;	//额外的参数
+}
+
+//MSG_S2C_NTF_ACTIVITY_PROGRESS             = 3111;   //通知活动数据
+message S2CNtfActivityProgress  //活动进度推送
+{
+	enum NotifyType
+	{
+		All 					= 1;
+		Del 					= 2;  
+		Update 					= 3;
+		FreeRewardUpdate 		= 4;
+	}
+
+	optional int32 notify_type 						= 1;   //通知类型
+	repeated ActivityProgress activity_progress 	= 2;   //玩家活动进度
+}
+
+//MSG_PS2GS_NOTIFY_ACTIVITY_STATE                    = 3113;   //通知活动状态
+//message PS2GSNotifyActivityState
+//{
+	//enum EState
+	//{
+		//OPEN 	= 1;  //开启
+		//CLOSE 	= 2;  //关闭
+	//} 
+
+	//optional int32 activity_id = 1;  //活动ID
+	//optional EState state = 2;  //状态
+//}
+
+//MSG_C2S_REQ_ACTIVITY_DETAIL_CONF            = 3114;   //请求活动小表配置
+message C2SReqActivityDetailConf
+{
+	optional int64 activity_id = 1; //活动ID(此处废弃，不删除，为了兼容之前版本)
+	optional string table_name = 2; //传配置表名(此处废弃，不删除，为了兼容之前版本)
+    repeated int64 activity_id_list = 3; //活动ID列表
+    repeated string table_name_list = 4; //传配置表名
+}
+
+//MSG_S2C_RSP_ACTIVITY_DETAIL_CONF            = 3115;   //活动小表配置返回
+//MSG_S2C_UPDATE_ACTIVITY_DETAIL_CONF         = 3116;   //更新活动小表配置
+message S2CActivityDetailConf  //活动小表详细内容，支持重载的内容，用于发送客户端
+{
+	 message DetailConf
+	 {
+	 	optional int32 activity_type 		= 1;	//活动类型
+		repeated string config_name_list    = 2;    //配置字段名字列表
+		optional string table_name          = 3;    //配置表名
+
+		message RowConfigValue  //一行配置数据
+		{
+			message Value
+			{
+				enum EValueType
+				{
+					INT 	= 1;
+					STRING  = 2;
+					VECTOR  = 3;
+				}
+				optional int32 type 			= 1;  //值类型
+				optional int64 int_value 		= 2;  //int值
+				optional string string_value 	= 3;  //string值
+			}
+			repeated Value value_list = 1;  //配置值列表
+		}
+		repeated RowConfigValue config_table = 4;  //配置表
+	 }
+	 repeated DetailConf detail_config_list = 1;  //配置数据列表
+}
+
+//指挥官活动随机任务
+//MSG_PS2GS_NTF_COMMANDER_ACT_RANDTASK        = 3114;   //通知Game指挥官活动随机任务
+//MSG_S2C_NTF_COMMANDER_ACT_RANDTASK          = 3115;   //通知客户端指挥官活动随机任务
+message WDayTaskType  //每天任务类型
+{
+	optional int32 wday = 1;   //周几
+	optional int32 task_type = 2;  //任务类型
+}
+
+message S2CNtfActivityCommanderTask
+{
+	repeated WDayTaskType wday_task_type_list = 1;  //任务列表
+}
+
+message ActivityCommanderInfo
+{
+	repeated WDayTaskType wday_task_type_list = 1; //任务列表
+	optional int32 area_id = 2;  //小区ID
+	optional int64 opend_time = 3;  //活动开启时间
+	optional int64 activity_id = 4;  //活动ID
+}
+
+//	MSG_C2S_REQ_ACTIVITY_COMMON_FREE_REWARD     = 3120;   //领取活动通用触达奖励
+message ReqActivityCommonFreeReward
+{
+	optional int64 activity_id			 = 1;	
+}
+
+//	末日试炼活动
+//	MSG_C2S_REQ_DOOMSDAY_DIFFICULTY_SELECT				  = 3330;// 难度选择
+message ReqDoomsdayDifficultySelect
+{
+	optional int64 activity_id						 = 1;
+	optional int64 difficulty_id					 = 2;	//难度表id
+	optional MOSoldierGroup soldiers				 = 3;	//选择难度时用来计算战力的 队伍阵容
+}
+
+enum EDDChallengeType
+{
+	DDCT_Personal		 = 1;
+	DDCT_Alliance		 = 2;
+	DDCT_DifficultyPage	 = 3;	//
+}
+
+//	MSG_C2S_REQ_DOOMSDAY_MONSTER_CHALLENGE				  = 3331;// 怪物挑战按钮 创建怪物
+message ReqDoomsdayMonsterChallenge
+{
+	optional int64 activity_id						 = 1;
+	optional int32 monster_type						 = 2;	//EDDChallengeType 1 个人怪物 2 联盟怪物 3 难度页面
+}
+//	MSG_C2S_REQ_DOOMSDAY_HELP							  = 3332;// 请求帮助
+message ReqDoomsdayHelp
+{
+	optional int64 activity_id						 = 1;
+	optional DoomsdayHelp help_info					 = 2;	//服务器使用
+	optional int64 result							 = 3;	//服务器使用
+	optional GUID city								 = 4;	//服务器使用
+}
+//message DoomsdayBossBoxInfo
+//{
+//	optional int64 boss_id							 = 1;	//bossid
+//	optional int64 box_time							 = 2;	//宝箱消失时间
+//	optional Point2D box_pos						 = 3;	//宝箱单位位置
+//}
+//	MSG_S2C_NTF_DOOMSDAY_ALLIANCE_HELP_INFO				  = 3333;// 通知联盟求助信息
+message NtfDoomsdayAllianceHelpInfo
+{
+	enum EInfoType
+	{
+		All			 = 1;	//所有求助信息
+		Add			 = 2;	//添加求助信息
+		Delete		 = 3;	//删除求助信息
+	}
+	optional int64 activity_id						 = 1;
+	optional int32 info_type						 = 2;	//EInfoType
+	repeated DoomsdayHelp help_list					 = 3;
+	//repeated DoomsdayBossBoxInfo boss_box			 = 4;	//所有还没过期的boss宝箱 info_type = All 的时候会有这个字段
+}
+message DoomsdayHelp
+{
+	optional GUID player							 = 1;	//发起求助的玩家guid
+	optional int64 personal_monster_id				 = 2;	//求助的活动怪物id
+	optional GUID monster_guid						 = 3;	//怪物guid
+	optional Point2D monster_pos					 = 4;	//怪物坐标
+}
+//	MSG_C2S_REQ_DOOMSDAY_ALLIANCE_PROGRESS		           = 3339;// 请求联盟进度信息 联盟奖励解锁状态
+message ReqDoomsdayAllianceBossProgress
+{
+	optional int64 activity_id						 = 1;
+}
+//	MSG_S2C_RSP_DOOMSDAY_ALLIANCE_PROGRESS				  = 3340;// 请求联盟进度信息
+message RspDoomsdayAllianceProgress
+{
+	repeated DDAllianceProgress progress_list				 = 1;
+}
+message DDAllianceProgress
+{
+	optional int64 progress_id							 = 1;	//联盟进度id
+	optional int32 lock_state						 = 2;	//0 未解锁  1 已解锁
+	optional int32 unlock_member					 = 3;	//达成关卡条件人数
+}
+//	MSG_C2S_REQ_DOOMSDAY_ALLIANCE_INFO					  = 3334;// 请求联盟信息 联盟成员进度
+message ReqDoomsdayAllianceInfo
+{
+	optional int64 activity_id						 = 1;
+}
+//	MSG_S2C_RSP_DOOMSDAY_ALLIANCE_INFO					  = 3335;// 回复联盟信息
+message RspDoomsdayAllianceInfo
+{
+	repeated DoomsdayPersonalData personal_data_list				 = 1;
+}
+message DoomsdayPersonalData
+{
+	optional GUID player							 = 1;	//玩家guid
+	optional int64 personal_monster_id				 = 2;	//活动怪物id	//废弃
+	optional int64 difficulty_id					 = 3;	//难度表id
+	optional int64 activity_id						 = 4;	//活动id
+	optional int64 monster_level					 = 5;	//已经打过的等级
+}
+////	MSG_S2C_NTF_DOOMSDAY_ALLIANCE_BOSS_INFO				  = 3336;// 通知联盟boss信息 坐标 guid
+//message NtfDoomsdayAllianceBossInfo
+//{
+//	optional GUID monster_guid						 = 1;	//怪物guid
+//	optional Point2D monster_pos					 = 2;	//怪物坐标
+//	optional GUID player_id							 = 3;	//召唤的玩家guid  服务器使用
+//}
+////	MSG_S2C_NTF_DOOMSDAY_BOSS_DEFEAT					  = 3330;// 联盟boss 被击败
+//message NtfDoomsdayBossDefeat
+//{
+//	optional int64 boss_id							 = 1;
+//	optional Point2D box_pos						 = 2;	//宝箱位置
+//	optional int64 box_time							 = 3;	//宝箱消失时间
+//}
+//	MSG_C2S_REQ_TAKE_DOOMSDAY_REWARD					  = 3337;	//领取奖励
+message ReqTakeDoomsdayReward
+{
+	enum EDDRewardType
+	{
+		DDRT_Personal			 = 1;	//个人进度奖
+		DDRT_Help				 = 2;	//帮助其他人次数奖
+		DDRT_Alliance			 = 3;	//联盟进度奖
+	}
+	optional int64 activity_id					 = 1;
+	optional int32 type							 = 2;	//EDDRewardType
+	optional int64 reward_id					 = 3;	//个人进度奖 DoomsdayPersonalMonster 表id，联盟进度奖 DoomsdayAllianceReward id， 帮助奖不需要
+}
+
+////	MSG_S2S_REQ_CREATE_DOOMSDAY_MONSTER					  = 3337;	//创建怪物
+//message ReqCreateDoomsdayMonster
+//{
+//	optional int32 monster_type							 = 1;	//EDDChallengeType 1 个人怪物 2 联盟怪物
+//	optional int64 activity_id							 = 2;
+//	optional int64 activity_monster_id					 = 3;
+//	optional GUID alliance_id							 = 4;
+//	optional GUID city_id								 = 5;
+//	optional int32 monster_level						 = 6;
+//	optional int64 activity_begin						 = 7;
+//	optional int64 activity_end							 = 8;
+//}
+////	MSG_S2S_NTF_DOOMSDAY_MONSTER_DEFEAT					  = 3338;	//怪物被打败
+//message NtfDoomsdayMonsterDefeat
+//{
+//	optional int64 monster_id							 = 1;
+//	optional GUID obj_id								 = 2;
+//	optional Point2D box_pos							 = 3;	//宝箱位置
+//	optional int64 box_time								 = 4;	//宝箱消失时间
+//}
+message DoomsdayAllianceData
+{
+	optional int64 activity_id										 = 1;
+	optional int64 activity_start_time								 = 2;
+	repeated DoomsdayPersonalData personal_data_list				 = 3;
+	repeated DDAllianceProgress progress_list						 = 4;
+	repeated DoomsdayHelp help_list									 = 5;
+}
+//	MSG_S2S_REQ_DOOMSDAY_PERSONAL_DATA_UPDATE			  = 3341;// 通知联盟服更新个人数据
+message ReqDoomsdayPersonalDataUpdate
+{
+	optional GUID alliance_id					 = 1;
+	optional int64 difficulty_id				 = 2;
+	optional int64 monster_level				 = 3;
+	optional int64 activity_id					 = 4;
+}
+//	MSG_S2S_NTF_DOOMSDAY_OPERATE_RESULT			 		  = 3342;// 通知跨服操作结果
+message NtfDoomsdayOperateResult
+{
+	enum DDOpType
+	{
+		DDOPT_ASK_HELP		 = 1;	//请求帮助
+	}
+	optional DDOpType type				 = 1;
+	optional int32 error_code			 = 2;	//0 成功 其他失败
+	optional GUID city_id				 = 3;
+}
+//	MSG_S2S_NTF_DOOMSDAY_HELP_UPDATE			 		  = 3343;// 通知帮助信息变化
+message NtfDoomsdayHelpUpdate
+{
+	enum EDDHelpUpdateType
+	{
+		DDHUT_Add			 = 1;	//添加求助信息
+		DDHUT_Delete		 = 2;	//删除求助信息
+	}
+	optional EDDHelpUpdateType type					 = 1;
+	optional DoomsdayHelp help_info					 = 2;	//服务器使用
+}
+//	MSG_RPC_DOOMSDAY_CHECK_ALLIANCE_PROGRESS				= 50143;	//末日试炼检查联盟奖励进度
+message ReqDoomsDayCheckAllianceProgress
+{
+	optional int32 result							 = 1;
+	optional GUID alliance							 = 2;
+	optional GUID city								 = 3;
+	optional int64 progress_reward					 = 4;
+	optional int64 activity_id						 = 5;
+}
+//TimedRaceActivity 协议  -------------------------------begin
+
+//MSG_C2S_REQ_TIMED_RACE_ACTIVITY_RANK = 3351;  //限时比赛排行榜信息
+message C2SReqTimedRaceActivityRanking
+{
+
+}
+
+//MSG_S2C_RSP_TIMED_RACE_ACTIVITY_RANK = 3352; //限时比赛排行榜信息返回
+
+message S2CRspTimedRaceActivityRanking   //限时竞赛排行榜
+{
+	optional TimedRaceActivityRanking ranking_info = 1;  
+}
+
+message TimedRaceSingleRankData  //单条排行榜数据
+{
+	optional GUID player_id 			= 1;  //玩家ID
+	optional int64 value                = 2;  //通用数值
+	optional int64 time                 = 3;  //上榜时间
+	optional string player_name      	= 4;  //玩家名字 
+	optional int64 avatar_id 			= 5;  //头像
+	optional int64 avatar_box 			= 6;  //头像框
+	optional string alliance_tag        = 7;  //联盟简称
+	optional bool robot                 = 8;  //是否是机器人
+	optional string avatar_url 			= 9;  //头像
+}
+
+message TimedRaceActivityRanking
+{
+	optional int64 stage_type 				= 1;  	//阶段类型
+	optional int32 rank_type 				= 2;  	//排行榜类型
+	repeated TimedRaceSingleRankData rank_data_list 	= 3;  	//排行榜列表
+}
+
+//请求拉取排行榜
+//MSG_GS2PS_RPC_PULL_ONLINE_PLAYER_RANKING = 20122;   //拉取配置排行榜
+message RpcReqPullOnlinePlayerRanking
+{
+	optional int32 timed_race_level = 1;  //阶段
+	optional int32 timed_race_type = 2;
+	optional GUID player_id = 3;
+	optional TimedRaceActivityRanking ranking_info  = 4;
+	optional int64 rank_value = 5;  //排行榜值
+}
+
+
+//
+message TimedRaceActivityDB
+{
+	message TriggerInfo
+	{
+		optional int64 timed_race_type = 1;   //类型
+		repeated int64 trigger_list = 2;   //触发列表
+	}
+	
+	repeated TriggerInfo trigger_type_list = 1;
+	repeated TimedRaceSingleRankData rank_list = 2;
+	optional int64 cur_trigger_type = 3;
+	optional int64 last_refresh_rank_time = 4;
+	optional int64 last_trigger_time = 5;
+}
+
+
+
+//TimedRaceActivity 协议  -------------------------------end
+
+//	MSG_S2S_NTF_ACTIVITY_CLOSE				    = 3121;   //通知活动结束
+message NtfActivityClose
+{
+	optional int64 activity_id							 = 1;
+	optional int32 activity_type					     = 2;
+}
+//	MSG_S2S_NTF_ACTIVITY_MONSTER_DISAPPEAR	    = 3122;   //通知场景服活动怪消失
+message NtfActivityMonsterDisappear
+{
+	optional int64 activity_id				 = 1;
+	optional int64 param_id					 = 2;
+	optional int32 help_state				 = 3;	//末日试炼怪的被帮助状态
+	optional int32 disappear_reason			 = 4;	//1 战斗失败，0 其他
+}	
+
+//	MSG_GS2SS_RPC_CREATE_ACTIVITY_MONSTER		 	 = 50122;	//game server to 场景服 召唤活动怪物
+message RPCCreateActivityMonster
+{
+	optional GUID player_id								 = 1;
+	optional GUID city_id								 = 2;
+	optional int32 error_code							 = 3;
+	optional int64 activity_id							 = 4;
+	optional int64 monster_id							 = 5;
+	optional int64 param_id								 = 6;
+}
+
+
+//	MSG_C2S_REQ_ALLIANCE_BOSS_SET_INFO				 	 = 3812;	//请求联盟boss设置信息
+
+//  MSG_S2C_RSP_ALLIANCE_BOSS_SET_INFO				 	 = 3813;	//响应联盟boss设置信息
+message RspAllianceBossSetInfo
+{
+	optional int32 boss_level = 1;	//boss难度等级
+	optional int64 open_time = 2;	//开启时间
+	optional Point2D boss_pos = 3;	//放置boss的x坐标
+	optional int32 unlock_boss_level = 4;	//已经解锁的boss等级
+	optional GUID  boss_guid 		 = 5;	//召唤boss的guid
+	optional int32 reason			 = 6;	//设置信息广播原因 1:召唤或者是更新boss开启时间或者是位置 2：客户端主动请求boss设置信息
+}
+
+//	MSG_C2S_REQ_SET_ALLIANCE_BOSS_INFO				 = 3814;	//请求设置联盟boss信息
+message ReqSetAllianceBossInfo
+{
+	optional int32 boss_level = 1;	//boss难度等级
+	optional int32 open_time = 2;	//开启时间
+}
+
+//	MSG_S2C_RSP_SET_ALLIANCE_BOSS_INFO				 = 3815;	//响应设置联盟boss信息
+
+
+//	MSG_C2S_REQ_CALL_ALLIANCE_BOSS					 = 3801;	//召唤联盟boss
+message ReqCallAllianceBoss
+{
+	optional int32 boss_level = 1;	//boss难度等级
+	optional int64 open_time = 2;	//开启时间
+	optional Point2D boss_pos = 3;	//boss坐标
+}
+
+//	MSG_C2S_REQ_ALLIANCE_BOSS_ACTIVITY_INFO			 = 3802;	//联盟boss 活动相关信息 请求
+message ReqAllianceBossActivityInfo
+{
+	optional int32 source_num						 = 1;
+}
+//	MSG_S2C_RSP_ALLIANCE_BOSS_ACTIVITY_INFO			 = 3803;	//联盟boss 活动相关信息 应答
+message RspAllianceBossActivityInfo
+{
+	optional int64 strengthen_score					 = 1;	//强化积分
+	optional int32 boss_level						 = 2;	//当前解锁最大boss等级
+	optional int64 last_boss_time					 = 3;	//上一次召唤boss时间
+	optional int32 source_num						 = 4;
+}
+//	MSG_C2S_REQ_ALLIANCE_BOSS_STRENGTHEN			 = 3804;	//联盟boss 强化 请求
+//message ReqAllianceBossStrengthen
+//{
+//	optional int32 item_count						 = 1;	//使用强化物品数量
+//}
+////	MSG_S2C_RSP_ALLIANCE_BOSS_STRENGTHEN     		 = 3805;	//联盟boss 强化 应答
+//message RspAllianceBossStrengthen
+//{
+//	optional int64 cur_score						 = 1;	//强化后的积分
+//}
+//	MSG_C2S_REQ_ALLIANCE_BOSS_GET_PERSONAL_REWARD	 = 3808;	//联盟boss 领取个人奖励
+message ReqAllianceBossGetPersonalReward
+{
+	optional GUID box_guid					 = 1;	//奖励宝箱id
+}
+//联盟boss存储结构（后端用）
+message AllianceBossData
+{
+	optional int64 strengthen_score							 = 1;	//强化积分
+//	optional int32 boss_level								 = 2;	//当前解锁最大boss等级
+	optional int64 last_boss_time							 = 3;	//上一次召唤boss时间
+	repeated AllianceBossContributeData contri_rank			 = 5;	//贡献排行榜
+	optional AllianceBossRankList damage_rank				 = 6;	//伤害排行榜
+	optional int32 boss_level 								 = 7;	//boss难度等级
+	optional int64 open_time 								 = 8;	//开启时间
+	optional Point2D boss_pos 								 = 9;	//放置boss的x坐标
+	optional int32 unlock_boss_level 						 = 10;	//已经解锁的boss等级
+	optional GUID boss_id									 = 11;	//boss的guid
+	optional int64 alliance_damage					 	 	 = 12;	//联盟伤害
+	optional int64 history_top_alliance_damage				 = 13;	//联盟历史最高伤害
+	optional GUID schedule_guid								 = 14;	//联盟boss日程id
+	optional string activity_id								 = 15;	//活动id(活动开始的年月日)
+}
+
+message AllianceBossContributeData
+{
+	optional GUID player_id					 = 1;
+	optional int64 score					 = 2;
+	optional int64 time						 = 3;
+}
+
+//	MSG_C2S_REQ_ALLIANCE_BOSS_RANK					 = 3806;	//联盟boss 排行榜 请求
+message ReqAllianceBossRank
+{
+	//optional int32 rank_type 		= 1;   // 1个人伤害 2个人贡献
+	optional GUID alliance_id = 1;	
+}
+//	MSG_S2C_RSP_ALLIANCE_BOSS_RANK		     		 = 3807;	//联盟boss 排行榜 应答
+message RspAllianceBossRank  //通用返回排行榜消息体
+{
+	optional AllianceBossRankList contribute_rank				 = 1;
+	optional bytes damage_rank									 = 2;	//AllianceBossRankList
+	optional int64 last_total_damage							 = 3;	//总的伤害
+	
+}
+message AllianceBossRankList
+{
+	enum EAllianceBossRankType
+	{
+		ABRT_Damage			 = 1;
+		ABRT_Contribute		 = 2;
+	}
+	optional int32 rank_type 							= 1;   // 1个人伤害 2个人贡献 EAllianceBossRankType
+	repeated AllianceBossRankData rank_data				= 2;	
+}
+
+//	MSG_RPC_CALL_SCENCE_ALLIANCE_BOSS				= 50132;// 召唤联盟boss
+message RpcCallScenceAllianceBoss
+{
+	optional int32 result					= 1;
+	optional GUID alliance_id				= 2;
+	optional int32 boss_level				= 3;	//boss 等级
+	optional int64 strengthen_score			= 4;	//当前捐献积分
+	optional int64 call_time				= 5;	//
+	optional Point2D boss_pos 				= 6;	//放置boss的x坐标
+	optional GUID boss_guid					= 7;	//放置boss的guid
+	optional GUID player_id					= 8;
+	optional string act_id					= 9;	//活动id
+}
+//	MSG_S2S_REQ_ALLIANCE_BOSS_SETTLE				 = 3809;	//联盟boss 打完数据结算
+message ReqAllianceBossSettle
+{
+	optional int32 result						 = 1;	//0 放弃挑战 其他挑战完成
+	optional int32 unlock_boss_level			 = 2;	//解锁boss等级
+	optional AllianceBossRankList damage_rank	 = 3;	//个人伤害排行榜	RspAllianceBossRank
+	optional int64 alliance_reward				 = 4;	//联盟boss伤害奖励
+	optional int64 monster_id					 = 5;	//联盟boss 怪物id
+	optional int64 bonus_damage					 = 6;	//boss奖励伤害
+	optional int64 alliance_damage				 = 7;	//联盟本次总伤害
+	optional int64 reward_time					 = 8;
+	optional int64 history_top_alliance_damage   = 9;	//联盟历史最高伤害
+	optional int32 success  					 = 10;	//是否成功
+}
+//	MSG_S2S_NTF_ALLIANCE_MEMBER_REWARD				 = 3810;	//联盟boss 结算联盟伤害奖励
+message NtfAllianceMemberReward
+{
+	optional int64 reward					 = 1;
+	optional int64 reward_time				 = 2;	//可领取的个人cd时间
+	repeated GUID member_list				 = 3;
+	optional int64 monster_id					 = 4;	//联盟boss 怪物id
+	optional int64 bonus_damage					 = 5;	//boss奖励伤害
+	optional int64 alliance_damage				 = 6;	//联盟本次总伤害
+	optional string mvp_name				 = 7;	//mvp name
+	optional int64 boss_level				 = 8;	//boss level
+	optional string alliance_name			 = 9;	//alliance name
+	optional AllianceBossRankList rank_list  = 10;
+	optional int32 success  = 11;					//是否成功
+}
+//	MSG_S2C_NTF_ALLIANCE_BOSS_INFO					 = 3811;	//联盟boss 通知玩家联盟boss 剩余时间
+message NtfAllianceBossInfo
+{
+	optional int32 state						 = 1;	//0 准备阶段 1 战斗阶段
+	optional int64 finish_time					 = 2;	//boss 消失时间
+}
+
+/////////////////////////////////////世界BOSS协议////////////////////////////////////////////
+//世界BOSS伤害排名
+message WorldBossRankData
+{
+	optional GUID player_id				= 1;
+	optional string player_name      	= 2;  //玩家名字
+	//optional int64 avatar_id 			= 3;  //头像
+	optional int64 avatar_box 			= 4;  //头像框
+	optional string avatar_url 			= 5;  //头像
+	optional int64 score				= 6;	//积分
+	optional int64 time                 = 7;	//达成积分的时间
+}
+
+//玩家世界boss活动数据(数据库存储)
+message PlayerWorldBossDB
+{
+	message PlayerAchievementInfo
+	{
+		repeated KV kv_list = 1;	//可用士兵列表信息	1:奖励未领取 2：奖励已领取
+		required int32 achievement_type = 2;	//成就类型EWorldBossAchievementType
+	}
+	
+	repeated PlayerAchievementInfo player_achievement_info_list = 1;	//玩家成就列表
+	repeated KV player_history_max_damage_list 					= 2;	//玩家历史最高伤害列表
+	optional int64 worldboss_cnf_id			   					= 3;	//上期活动的boss cnf id
+	optional int64 attack_count									= 4;	//攻击次数
+	optional int64 pre_attack_count								= 5;	//预先攻击次数
+	repeated KV player_today_history_max_damage_list 			= 6;	//玩家历史最高伤害列表
+}
+
+//MSG_C2S_REQ_WORLD_BOSS_RANK               	= 4100; //请求世界BOSS排名
+message ReqWorldBossRank
+{
+}
+
+//MSG_S2C_RSP_WORLD_BOSS_RANK               	= 4101; //响应世界BOSS排名
+message RspWorldBossRank  //通用返回排行榜消息体
+{
+	optional WorldBossRankData world_boss_data				 = 1;
+}
+
+//成就类型
+enum EWorldBossAchievementType
+{
+	WB_DAILY_ACHIEVEMENT		 = 1;	//每日成就类型
+	WB_LIFE_ACHIEVEMENT			 = 2;	//生涯成就类型
+}
+
+//MSG_C2S_REQ_WORLD_BOSS_ACHIEVEMENT_INFO		= 4102; //请求世界BOSS成就（包括每日和生涯）
+message ReqWorldBossAchievementInfo
+{
+	required int32 achievement_type	= 1;	//成就类型EWorldBossAchievementType
+}
+
+//MSG_S2C_RSP_WORLD_BOSS_ACHIEVEMENT_INFO		= 4103; //响应世界BOSS成就（包括每日和生涯）
+message RspWorldBossAchievementInfo
+{
+	repeated KV kv_list = 1;	//可用士兵列表信息	1:奖励未领取 2：奖励已领取
+	required int32 achievement_type = 2;	//前端发来什么值，返回什么值
+}
+
+//MSG_S2C_NTF_WORLD_BOSS_ACHIEVEMENT_INFO		= 4104; //主动通知世界BOSS成就（包括每日和生涯）
+message NtfWorldBossAchievementInfo
+{
+	repeated KV kv_list = 1;	//可用士兵列表信息	1:奖励未领取 2：奖励已领取
+	required int32 achievement_type = 2;	//前端发来什么值，返回什么值
+}
+
+//MSG_C2S_REQ_WORLD_BOSS_INFO					= 4105; //请求世界BOSS活动数据
+message ReqWorldBossInfo
+{
+}
+
+//MSG_S2C_RSP_WORLD_BOSS_INFO					= 4106; //响应世界BOSS活动数据
+message RspWorldBossInfo
+{
+	required GUID  boss_guid		= 1;				//世界Boss GUID
+	required int64 boss_config_id	= 2;				//世界Boss配置ID
+	required int32 attack_count 	= 3;				//攻击BOSS次数
+	repeated KV single_history_max_damage_list = 4;	//单次攻击BOSS历史最大伤害
+	optional int64 pre_attack_count = 5;				//预攻击次数
+	optional int32 boss_status		= 6;				//怪物状态 0：未激活 1：激活
+}
+
+//MSG_S2C_NTF_WORLD_BOSS_INFO					= 4107; //主动通知更新世界BOSS活动数据
+message NtfWorldBossInfo
+{
+	required int32 attack_count = 1;				//攻击BOSS次数
+	repeated KV single_history_max_damage_list = 2;	//单次攻击BOSS历史最大伤害
+	optional int64 pre_attack_count = 3;				//预攻击次数
+}
+
+//MSG_C2S_REQ_WORLD_BOSS_ACHIEVEMENT_REWARD	= 4108; //请求领取世界BOSS活动奖励
+message ReqWorldBossAchievementReward
+{
+	required int32 achievement_type = 1;	//成就类型
+	required int32 config_id = 2;			//配置id
+}
+
+//MSG_S2C_RSP_WORLD_BOSS_ACHIEVEMENT_REWARD	= 4109; //响应领取世界BOSS活动奖励
+message RspWorldBossAchievementReward
+{
+	required int32 achievement_type = 1;	//成就类型
+	required int32 config_id = 2;			//配置id
+}
+
+//MSG_RPC_RSP_WORLD_BOSS_ATTACK_DAMAGE		= 4110; //同步世界BOSS伤害
+message RpcWorldBossAttackDamage
+{
+	required GUID player_id = 1;
+	required int32 worldboss_config_id = 2;	//世界boss配置
+	required int64 max_damage = 3;			//最大伤害
+	optional int32 result = 4;
+	optional MOSoldierGroup soldier_group = 5;	//阵容信息
+}
+
+//MSG_RPC_REQ_SETTLE_DAILY_WORLD_BOSS			= 4111; //请求结算世界BOSS
+message RpcReqSettleWorldBoss
+{
+	optional GUID player_id = 1;
+	optional int32 worldboss_config_id = 2;	//世界boss配置
+}
+
+//联盟对决活动数据process对应枚举
+enum EAllianceDuleProgress
+{
+    DAY_SCORE       = 1;    //每日积分
+    WEEK_SCORE      = 2;    //每周积分
+    SEASON_SCORE    = 3;    //赛季积分(第一期不做)
+}

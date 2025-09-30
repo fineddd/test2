@@ -1,0 +1,612 @@
+syntax = "proto2";
+
+package SGMsg;
+
+import "proxy_model.proto";
+
+message IntPair
+{
+    optional int64      pbfirst = 1;
+    optional int64      pbsecond = 2;
+}
+//消息子结构体(因客户端Lua不支持64位的处理，所以修改为两个bytes)
+message GUID
+{
+    optional int64      head = 1;
+    optional int64      data = 2;
+}
+//消息子结构体
+message Point3D
+{
+    optional float      x = 1;
+    optional float      y = 2;
+    optional float      z = 3;
+}
+message Point2D
+{
+	optional float x				 = 1;
+    optional float y				 = 2;
+}
+
+message AllianceSymbol  //联盟标志
+{
+	optional int64 background 		= 1; //背景
+	optional int64 territory_color 	= 2; //图腾背景颜色
+	optional int64 pattern 		= 3; //图案
+	optional int64 pattern_color 	= 4; //图案颜色
+	optional int32 land_color 	= 5; // land领土颜色
+}
+
+// 统一字串回馈MSG_SHOW_STRING = 501,string_id -> ResultInfo
+message S2CShowString
+{
+    //需要缓存提示的模块
+	enum EModuleType
+	{
+	    MODULE_NONE		    = 0;      //枚举起始值
+	    MODULE_TROOP		= 1;      //关卡队伍
+		MODULE_EFFECT		= 2;      //关卡效果
+		MODULE_TREASURE	    = 3;      //秘宝
+		MODULE_BLESS	    = 4;      //祝福
+		MODULE_ITEM	        = 5;      //道具
+		MODULE_EVENT	    = 6;      //事件
+	}
+
+	required uint32 	string_id = 1;	// result ID
+	repeated string 	args	  = 2;	// 参数
+	optional GUID       target_id = 3;  //目标ID		
+}
+
+// 通用的返回结果
+message S2CResultResponse
+{
+	required uint32 	req_msg_id 		= 1;	// 返回结果对应的协议号	
+	required uint32 	result 			= 2;	// 结果id
+	repeated string 	args	  		= 3;	// 参数
+}
+
+// 通用转发事件
+message S2STransferEvent
+{
+	required uint32 	event_id 		= 1;	//事件ID
+	optional int64      monster_id      = 2;    //怪物id
+}
+
+message ObjectRecordDB
+{
+	repeated ObjectRecordBase record = 1;
+	optional GUID player_id = 2;
+	optional GUID obj_id = 3;
+	optional int32 object_type				 = 4;	//ObjectType
+}
+/*
+message ObjectRecordPause
+{
+	required string  record_name			 = 1;
+	required int32 col_size					 = 2;
+	repeated RecordPauseRow  record_row_list = 3;
+}
+
+message RecordPauseRow
+{
+	required int32 row					 = 1;
+	repeated pbTdata col_data			 = 2;
+}
+*/
+
+//public server对象数据
+message CharacterData
+{
+	required GUID player_id 	        = 1;//CRC64的ID
+	required int32 u_game_id            = 2;//游戏区
+	required string name                = 3;//名字
+	required ObjectRecordDB    record   = 4;//表
+	required ObjectPropertyDB property  = 5;//属性
+	required int64 last_off_time        = 7;
+	required int64 last_login_time      = 8;
+	optional int64 area_id              = 9;
+    optional int32 player_level         = 10;
+    optional string head_id             = 11;
+	optional string open_id             = 12;
+}
+
+//Tlog相关reason信息
+message ReasonInfo
+{
+	required int32 reason_type   = 1;
+	required int32 sub_reason   = 2;
+	optional string str_describe  = 3; 
+	optional string str_task_id  = 4;
+}
+
+//客户端创建数据实例MSG_SYNC_OBJECT_CREATE
+message S2CSyncObjectCreate
+{
+	required GUID obj_id	= 1;
+	optional string class_name = 2;
+	optional int64 class_type = 3;
+}
+
+//MSG_S2C_SYNC_OBJECT_DESTORY
+message S2CSyncObjectDestroy
+{
+	required GUID obj_id = 1;
+	optional string class_name = 2;
+	optional int64 class_type = 3;
+}
+
+//通知
+message PropertyIndex
+{
+	required string  property_name  = 1;
+	required int32   property_index = 2;
+}
+
+message Record_index
+{
+	required string   record_name  = 1;
+	required int32    record_index = 2;
+}
+
+message SyncObjectIndex    //同步Object属性索引
+{
+	required string          object_name         = 1;
+	repeated PropertyIndex   property_index_list = 2;
+	repeated Record_index    record_index_list   = 3;
+}
+
+
+
+// 广播消息 MSG_GS2GW_BROADCAST_MSG2PLAYERS
+message GS2GWBroadcastMsg2Players
+{
+	required int32 msg_id 		= 1; // 消息ID
+	required bytes msg_data 	= 2; // 消息内容
+	repeated GUID recipient_list = 3; //角色列表
+	optional int64 chat_language = 4;  //聊天语言
+}
+
+// 发送消息 MSG_GS2GW_SEND_MSG2PLAYER
+message GS2GWSendMsg2Player
+{
+	required int32 msg_id 		= 1; // 消息ID
+	required bytes msg_data 	= 2; // 消息内容
+}
+
+// 自动兑换后的一种物品
+message ExchangedItemInfo
+{
+	required int64 config_id = 1; // 物品ID
+	required int64 count      = 2; // 数量
+	required int32 type       = 3; // 类型
+}
+
+// 自动兑换后的物品
+message AfterAutoExchange
+{
+	repeated ExchangedItemInfo exchange_list = 1; // 自动兑换后的物品列表
+}
+
+// 物品结构
+// 如果增加了属性，则必须修改NFIItemModule的DoMergeItemVec函数，修改合并逻辑!!!!!!!!!!!!
+message ItemInfo
+{
+	required int64 config_id           = 1; // 对应配表ID
+	required int64 count                = 2; // 数量
+	optional int32 type                 = 3; // 道具类型，为Item表或者其他表的Type字段	
+	optional GUID guid                  = 4; // 物品guid
+	optional int64 box_type             = 5; // 掉落宝箱类型 客户端使用
+	optional AfterAutoExchange exchange = 6; // 自动兑换后的物品列表
+	optional int64 broadcast_id          = 7; // 跑马灯ID
+}
+
+//确认或者取消
+enum OperationCommond
+{
+    COMMOND_CANCEL = 1;// 取消命令
+	COMMOND_OK     = 2;// 确认命令
+}
+
+//	MSG_C2S_NTF_ENTER_MAIN_WORLD				 = 3714;	//跨服切换视野通知服务器已经进入大地图----联盟、地图解锁、npc城镇等
+message EmptyMsg
+{
+
+}
+
+//--------------------------角色信息Begin-----------------------------
+// 角色信息分两级 基本角色信息、详细角色信息
+
+// 基本角色信息
+message BasicRoleInfo
+{  
+
+	enum EPlayerState
+	{
+	    STATE_OFFLINE		    = 0;//玩家离线
+	    STATE_ONLINE			= 1;//玩家在线	
+		STATE_DISCONNECT		= 2;//断线重连状态
+	}
+	
+    required GUID 		player_id 		= 1; // 角色GUID
+    optional string 	header 			= 2; // 头像
+	optional string 	name 			= 3; // 用户名
+    optional int32 		level 			= 4; // 等级
+    optional int32 		area_id 		= 5; // 小区ID
+	optional int32 		online 			= 6; // 是否在线
+	optional int64 		last_online 	= 7; // 上次上线时间
+	optional int64 		last_offline 	= 8; // 上次下线时间
+	optional string 	header_frame 	= 9; // 头像框
+	optional GUID   	guild_id 		= 10;//公会的GUId
+	optional string		guide_name 		= 11;//公会名字
+	optional int32		guide_job		= 12;//公会职务
+	
+}
+
+//--------------------------角色信息End-------------------------------
+
+
+//----------------------角色基本信息-------------------------//
+
+message AchievementShowList
+{
+	repeated int64 achievement_ids 				= 1;
+}
+
+message PlayerBasicInfo   //简要信息
+{
+	optional string _id 						= 1; 	// 角色GUID  默认唯一索引
+	optional int32 area_id         				= 2;    //小区ID
+	optional string name      					= 3;  	//名字
+	optional int32 level      					= 4;  	//等级,目前用城堡等级
+	optional GUID alliance_id 					= 5;  	//联盟ID
+	optional GUID game_city_id      			= 6;    //城市CityID
+	optional bool is_online 					= 7;  	//是否在线
+	optional int64 last_offline_time            = 8; 	//上次离线时间
+	optional int64 power                        = 9;    //战力
+	optional Point2D cur_pos                    = 10;   //玩家坐标  //待删除**********
+	optional int64 avatar_id 					= 11;  	//头像
+	optional string alliance_tag 				= 12;  	//帮会简称
+	optional int64 language_id 					= 13;   //语言ID
+	optional int64 avatar_box 					= 14;  	//头像框
+	optional string alliance_name 				= 15;  	//帮会名字
+	optional AllianceSymbol alliance_symbol 	= 16;  	//帮会旗帜
+	optional AchievementShowList achievement_show_list 	= 17;  	//玩家展示的成就列表
+	optional int64 pvp_kill_soldier_count       = 18;  //pvp击杀数量
+	optional int64 total_score                  = 19;  //个人累计积分
+	optional int64 scene_type                   = 20;  //场景类型
+	optional int64 finished_dungeon_list_index  = 21;  //RPG关卡进度
+	optional int64 tech_power 					= 22;  //科技战力
+	optional int64 hero_power 					= 23;  //英雄战力
+	optional int64 building_power 				= 24;  //建筑战力
+	optional int64 soldier_power 				= 25;  //士兵战力
+	optional bool is_alliance_open              = 26;  //联盟功能开启
+	optional int64 npctown_official             = 27;   //npc城镇的官员ID
+	optional string avatar_url 					= 28;  	//头像
+	optional int64 arena_power                  = 29;  //竞技场防守战力
+	optional int64 charge 						= 30;  //充值金额
+
+	optional int32 gender 						= 31; // 性别
+	optional string signature 					= 32; // 签名
+	optional int64 vip_level 					= 33;  //vip等级
+	optional int64 arena_soldier_level          = 34;   //竞技场兵阶等级
+
+	optional int64 apc_power 					= 35;  //改装车战力
+	optional int32 robot	 					= 36;  //机器人 0:否 1:是
+
+	optional int64 resident_power               = 37;  //幸存者战力
+}
+
+//----------------------角色基本信息-------------------------//
+
+
+// 资源数据
+message ResourseInfo
+{
+	optional int64 item_type = 1;
+	optional int64 num = 2;
+}
+
+//////////////////////////数据结构////////////////////////////////////
+
+message pbTdata
+{
+	//enum TDATA_TYPE
+	enum eDataType					
+	{
+		eDataType_TDATA_UNKNOWN= 0;      //64位整数	enum TDATA_TYPE
+	    eDataType_INT		= 1;      //64位整数	enum TDATA_TYPE
+		eDataType_FLOAT		= 2;    //float单精度
+		eDataType_DOUBLE	= 3;   //双精度
+		eDataType_STRING	= 4;   //字符串
+		eDataType_OBJECT	= 5;   //对象ID
+		eDataType_POINT3D	= 6;  //3D坐标
+		eDataType_POINT2D	= 7;  //3D坐标
+	}
+
+	required int64 nType				 		= 1;	//  eDataType
+	optional bytes stringValue					= 2;
+	optional int64 intValue				 		= 3;	//
+	optional Point3D posValue				 	= 4;	//
+	optional float floatValue				 	= 5;	//
+	optional double doubleValue				 	= 6;	//
+	optional GUID guidValue				 		= 7;	//
+	optional Point2D pos2Dvalue					= 8;
+}
+
+message PbDataList
+{
+	repeated pbTdata		datalist				= 1;
+}
+
+// MSG_C2S_REQ_CHANGE_PROPERTY = 2292;  //修改玩家属性 性别、签名等 协议体PropertyData
+message PropertyData
+{
+    optional string     property_name = 1;
+	required pbTdata       data = 2;	
+    optional int32    property_index = 3;
+}
+
+message RecordRowData
+{
+    required int32     		  nRow = 1;
+	required PbDataList       data = 2;	
+}
+
+message RecordCellData
+{
+    required int32      row = 1;
+	required int32      col = 2;
+	required pbTdata    data = 3;
+}
+
+//消息子结构体
+//原来有的结构修改
+message ObjectRecordBase
+{
+	optional string     	 record_name = 1;
+	repeated RecordRowData       row_data = 2;	
+    optional int32    record_index = 3;
+}
+
+message ObjectPropertyDB
+{
+	optional GUID player_id = 1;
+	optional GUID obj_id = 2;
+	repeated PropertyData property_data_list = 3;
+	optional int32 object_type				 = 4;	//ObjectType
+
+}
+
+//MSG_PARAMPROPERTY                  = 3010,// 配置开关参数
+message PublicParamProperty
+{
+	repeated PropertyData property_data_list = 1;
+}
+
+message RecordUpdate
+{	
+	optional string     		record_name = 1;		//record的名字
+	repeated RecordRowData 		add_rowdata_list = 2;	//新增加的Record的行
+	repeated RecordCellData  	update_Cell_list = 3;	//只修改了部分字段的行（不会包括，新增加行和删除的行）	
+	repeated int32 				remove_row_list = 4;	//删除的行（行不能换位置）
+	optional int32 				is_clear_all = 5 [default=0];	//删除的行（行不能换位置）1就是删除
+	optional int32    record_index = 6;
+}
+//MSG_S2C_SYNC_UPDATE_OBJECTDATA				 = 422;   //更新变化的property和record。合包发送
+message ObjectUpdate								//对象的属性和record属性变化
+{		
+	required GUID obj_id = 1;						//对象ID
+	repeated PropertyData property_data_list = 2;	//属性的更新数据
+	repeated RecordUpdate record_data_list = 3;		//record的更新数据
+	optional int32 object_type				 = 4;	//ObjectType
+}
+
+//MSG_S2C_OBJECT_UPDATE_STACK_NOTIFY			= 423;   //通知前端update可以堆叠处理
+message ObjectUpdateStackNotify
+{
+	enum StackNotifyType
+	{
+		STACK_START	 	 = 0;	//开始堆叠
+		STACK_END		 = 1;	//结束堆叠
+	}
+	optional GUID obj_id  = 1;	//对象ID
+	optional int32 status = 2;	//StackNotifyType
+}
+
+// MSG_MAP_OBJECT_UPDATE_PM                    = 11; // 对象model 数据增量更新
+message MapObjectUpdatePM
+{
+	optional GUID obj_id = 1; // 对象ID
+	optional PMUpdatesDTO updates = 2;
+	optional int32 object_type = 3; // 对象类型
+}
+
+//  玩家基础信息等
+message MailPlayerBasic
+{
+	optional string Name = 1;// 名字	
+	optional int64 AvatarID = 2;// Icorn		
+	optional string AllianceTag = 3;// 联盟简称		
+	optional int32 Level = 4;// 玩家等级
+	optional string AllianceName = 5;// 帮会名字	
+	optional Point2D  Pos = 6;// 坐标	
+	optional int32 AreaID = 7;// 小区ID 	
+	optional int64 ScenceID = 8;// 场景ID	
+	optional int32 ObjectType = 9;// 目标类型（服务器使用）	
+	optional int64 Power = 10;// 战力		
+	optional GUID PlayerID = 11;// 玩家ID	
+	optional GUID CityID = 12;// 城市ID	
+	optional int64 GameServerID = 13;// gameserverid	
+	optional int64 AvatarBox = 14;// 玩家头像框
+	optional AllianceSymbol symbol = 15;// 联盟旗帜 
+	optional int64 npctown_official  = 16;   //npc城镇的官员ID
+	optional string AvatarUrl = 17;// 头像	
+}
+
+// MSG_C2S_DATA_FLOW                           = 2020; // 埋点数据
+message DataFlowParam
+{
+	optional string key = 1; // 字段名
+	optional string value = 2; // 字段值
+}
+
+message DataFlow
+{
+	optional string event_name = 1; //
+	repeated DataFlowParam dataflow_param_list = 2; // 参数列
+}
+
+message EventRpgDungeonParam
+{
+	repeated int64 heros				 = 1;	//上阵英雄
+	repeated int32 hero_pos				 = 2;	//英雄站位
+	repeated int32 dramas				 = 3;	//系统英雄的配置ID
+	optional int64 power				 = 4;
+}
+
+message CarInfo
+{
+	optional int64 CarID 					= 1;// 配置ID
+	optional int32 Level 					= 2;// 等级
+	optional int32 Star 					= 3;// 星级
+	optional int64 Exp 						= 4;// 经验
+
+	optional int32 Status 					= 6;// 载具状态 0 初始，1 行军在外, 2 驻守在城墙
+}
+
+message ScenceCarInfo
+{
+	optional int64 CarID 					= 1;// 配置ID
+	optional int32 Level 					= 2;// 等级
+	optional int32 Star 					= 3;// 等级
+	optional int64 LevelConfigID 			= 4;// 配置ID
+	optional int64 StarConfigID 			= 5;// 配置ID
+
+	optional int64 Power					= 11;// 战力
+	optional int64 SkillID					= 12;// 主动技能
+	optional int64 SkillLevel				= 13;// 技能等级
+}
+
+message ServerOpenTime
+{
+	optional int32 _id  				= 1;    //小区ID
+	optional int64 server_open_time 	= 2;    //开服时间
+}
+
+
+// 采集信息
+message GatherMail
+{
+	optional int64 ConfigID = 1;	// 资源配置ID
+	optional Point2D Pos = 2;		// 坐标
+	optional int64 ResourseID = 3;	// 资源ID
+	optional int64 Num = 4;			// 采集资源数量
+	// 联盟领土增益
+}
+
+enum EGPSourceType
+{
+	GPST_Other					 = 1;	//其他
+	GPST_Soldier				 = 2;	//士兵
+	GPST_Hero					 = 3;	//英雄养成
+	GPST_HeroEquip				 = 4;	//英雄装备
+	GPST_Building				 = 5;	//建筑
+	GPST_Technology				 = 6;	//科技
+	GPST_HeroHonor				 = 7;	//荣誉殿堂
+	GPST_APC					 = 8;	//载具
+	GPST_DressUp				 = 9;	//装扮
+	GPST_AllianceTech			 = 10;	//联盟科技
+	GPST_AllianceTerritory			 = 11;	//联盟领地
+	GPST_VIP					 = 12;	//vip
+	GPST_ServerOfficer				 = 13;	//官职
+	GPST_Survivor				 = 14;	//幸存者
+}
+
+message GeneralProperty
+{
+	optional int32 property_type								 = 1;	//GeneralProperty 表 type
+	optional int64 property_value								 = 2;
+	optional int32 property_value_type							 = 3;	//0 万分比 1 绝对值
+	optional int32 source_type									 = 4;	//来源类型 GPSourceType
+}
+
+message S2CNtfGeneralProperty
+{
+	optional GUID id							 = 1;
+	repeated GeneralProperty propertys			 = 2;
+	optional int32 object_type				 	 = 3;	//ObjectType
+}
+
+//押镖护送道具
+message EscortItem
+{
+	optional ItemInfo item_info = 1;
+	optional int64 lose_count = 2;
+}
+
+//镖车数据
+message EscortCar
+{
+    enum EscortState
+	{
+		NIL	 	        = 0;        //初始状态
+        ESCORTING 		= 1;        // 押镖中
+        FINISH          = 2;        //押镖完成
+        END             = 3;        //押镖结束(已领取奖励)
+	}
+    optional uint32 slot = 1;       //第几队列
+    optional int32 escort_id = 2;     //EscortCar护送配置id 
+    repeated EscortItem escort_items = 3; // 护送道具
+    optional int64 target_time = 4; // 抵达目标时间
+    optional GUID sg_id = 5;     //大地图镖车GUID
+    optional uint32 be_attack_count = 7;  //被劫镖次数
+    optional int32 escort_state = 8;    //护送状态
+    optional int64 escort_time = 9; //押镖持续时间 
+    optional int32 refresh_count = 10;  //刷新货物次数
+    optional int32 power = 11;  //镖车部队战力
+}
+
+message KV
+{
+	optional int64 key   = 1;
+	optional int64 value = 2;
+	repeated string param_list = 3;
+}
+
+message KVP
+{
+	optional int64 key   = 1;
+	optional int64 value = 2;
+	optional int64 param = 3;
+	repeated string param_list = 4;
+}
+
+message AllianceBossRankData
+{
+
+	optional GUID player_id				= 1;
+
+	optional string player_name      	= 2;  //玩家名字
+
+	//optional int64 avatar_id 			= 3;  //头像
+
+	optional int64 avatar_box 			= 4;  //头像框
+
+	optional string avatar_url 			= 5;  //头像
+
+	optional int64 score				= 6;	//积分
+
+	optional int64 time                 = 7;	//达成积分的时间
+
+}
+
+//战斗士兵信息
+message PlayerBattleSoldierInfo
+{
+	optional int64 soldier_id		= 1;	//士兵配置id
+	optional int64 minor_injuries	= 2;	//轻伤兵数量
+	optional int64 seriously_injured	= 3;	//重伤兵数量
+	optional int64 dead_count	= 4;	//死亡数量
+	optional int64 left_count	= 5;	//剩余数量
+}
+

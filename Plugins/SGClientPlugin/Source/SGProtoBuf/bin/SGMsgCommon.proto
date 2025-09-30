@@ -1,0 +1,148 @@
+syntax = "proto2";
+
+package SGMsg;
+
+import "SGMsgBase.proto";
+
+message PlayerServerPair
+{
+	required GUID player_id									= 1;
+	required int32 server_id								= 2;
+}
+//	MSG_S2ROUTER_BROADCAST_MSG2PLAYERS			   = 252;	//广播消息route->gamess
+message S2RouterBroadcastMsg2Players
+{
+	required int32 msg_id									= 1;	//消息ID
+	required bytes msg_data									= 2;	//消息体
+	repeated PlayerServerPair target_player_list			= 3;	//目标玩家列表
+}
+
+//MSG_S2S_GAMESERVER_STOP_WORK				    = 12108; //gameserver停服通知
+message S2SGameServerStopWork
+{
+	required int32  server_id									= 1;	//gameserver的服务器id
+}
+
+
+message CostItem
+{
+	required int64 item_id = 1;
+	required int64 item_cout = 2;
+}
+
+message SS2GSReqCostItem
+{
+	required GUID player_id 	= 1;
+	required GUID city_id 		= 2;
+	repeated CostItem item_list = 3;
+}
+
+//MSG_RPC_SS2GS_REQRSP_COSTITEM				= 50023;	//场景向gameserver发送消耗物品
+message SS2GSReqRspCostItem
+{
+	enum EResult
+	{
+		ERT_SUCESS	= 0;//开放状态
+		ERT_FAIL	= 1;//失败				
+	}
+	optional SS2GSReqCostItem req = 1; //请求的信息
+	optional int32 nResult 			= 2; //处理结果	
+}
+
+message CostCurency
+{
+	required int64 Curency_Type = 1;
+	required int64 Curency_cout = 2;
+}
+
+message PreCostCurency
+{
+	required GUID precost_id = 1;
+	repeated CostCurency Curency_Data = 2;
+}
+
+message AllPreCostCurency
+{
+	repeated PreCostCurency data_list = 1;	
+}
+
+message GS2SSReqCostCurencyAndItem
+{
+	required GUID player_id 	= 1;
+	required GUID city_id 		= 2;
+	repeated CostCurency Curency_list = 3;
+	repeated CostItem item_list = 4;
+}
+
+//MSG_RPC_GS2SS_REQRSP_COSTCURENCY_AND_ITEM				= 50024;	//gameserver向场景发送消耗货币资源，如果有道具有货币，先去扣货币
+message GS2SSReqRspCostCurencyAndItem
+{
+	enum EResult
+	{
+		ERT_SUCESS	= 0;//开放状态
+		ERT_FAIL	= 1;//失败				
+	}
+	optional GS2SSReqCostCurencyAndItem req = 1; //请求的信息
+	optional int32 nResult 			= 2; //处理结果	
+}
+
+//MSG_GS2SS_PROPERTY_CHANGE						 = 2610;	//属性变化同步
+message GS2SSReqPropertyChanged
+{
+	optional int32 nPropertyType = 1;
+    optional int64 nNewPercent = 2;
+    optional int64 nNewValue = 3;
+	optional int32 source_type									 = 4;	//来源类型 GPSourceType
+}
+
+message GPSourceData
+{
+	optional int32 source_type = 1;	//来源类型 GPSourceType
+	optional int64 percent = 2;
+    optional int64 value = 3;
+}
+message GenProperty
+{
+	optional int32 nPropertyType = 1;
+    optional int64 nNewPercent = 2;
+    optional int64 nNewValue = 3;
+	repeated GPSourceData source_data = 4;	//
+}
+//MSG_S2S_SET_PROPERTYS						 = 2609;	//同步城建属性
+message S2SReqInitPropertys
+{
+	repeated GenProperty propertys = 1;
+    optional bool bResetAll = 2; //是否重置所有属性
+	optional int32 version		 = 3;
+}
+
+message Tm    //名字来自 C++ std::tm
+{
+	optional int32 tm_sec 		= 1;   // seconds after the minute - [0, 60] including leap second
+    optional int32 tm_min 		= 2;   // minutes after the hour - [0, 59]
+    optional int32 tm_hour 		= 3;  // hours since midnight - [0, 23]
+    optional int32 tm_mday 		= 4;  // day of the month - [1, 31]
+    optional int32 tm_mon 		= 5;   // months since January - [0, 11]
+    optional int32 tm_year 		= 6;  // years since 1900
+}
+
+message GlobalBuffInfo
+{
+	optional int64 nConfigID = 1;	// 配置ID
+	optional int64 nEndTime = 2;	// 结束时间
+	optional int32 nBuffType = 3;	// Buff类型
+}
+
+// MSG_S2C_NTF_GLOBAL_BUFF_LIST
+message NTFGlobalBuffList
+{
+	repeated GlobalBuffInfo xBuffList = 1;
+	
+}
+
+//MSG_S2S_GLOBAL_BUFF_CHANGE
+message S2SGlobalBuffChange
+{
+	optional int32 nOptType = 1;	// 操作类型 0：新增 1替换 2删除
+	optional GlobalBuffInfo xBuff = 2;
+}

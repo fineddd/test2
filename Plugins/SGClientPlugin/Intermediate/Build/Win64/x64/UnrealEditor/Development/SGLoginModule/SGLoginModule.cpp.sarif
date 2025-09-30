@@ -1,0 +1,44 @@
+{
+    "version": "2.1.0",
+    "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+    "runs": [
+        {
+            "results": [
+                {
+                    "ruleId": "C4996",
+                    "message": {
+                        "text": "'IMPLEMENT_MODULE_SGClientPlugin::FStaticWarningMsg_21::condition': Module name mismatch (SGClientPlugin != SGLoginModule). Please ensure module name passed to IMPLEMENT_MODULE is SGLoginModule to avoid runtime errors in monolithic builds."
+                    },
+                    "analysisTarget": {
+                        "uri": "file:///D:/Workspace/ue/test2/Plugins/SGClientPlugin/Source/SGLoginModule/Private/SGLoginModule.cpp"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "file:///D:/Workspace/ue/test2/Plugins/SGClientPlugin/Source/SGLoginModule/Private/SGLoginModule.cpp"
+                                },
+                                "region": {
+                                    "startLine": 21,
+                                    "startColumn": 1,
+                                    "snippet": {
+                                        "text": "IMPLEMENT_MODULE(FSGLoginModule, SGClientPlugin)"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tool": {
+                "driver": {
+                    "name": "MSVC",
+                    "shortDescription": {
+                        "text": "Microsoft Visual C++ Compiler Warnings/Errors"
+                    },
+                    "informationUri": "https://docs.microsoft.com/cpp/error-messages/compiler-errors-1/c-cpp-build-errors"
+                }
+            }
+        }
+    ]
+}

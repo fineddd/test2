@@ -1,0 +1,352 @@
+syntax = "proto2";
+
+package SGMsg;
+
+import "SGMsgBase.proto";
+import "SGMsgMapData.proto";
+import "SGMsgOther.proto";
+
+message ArenaPlayerBasicInfo  //竞技场玩家基础信息
+{
+	optional GUID player_id					 = 1;	
+	optional string player_name				 = 2;
+	optional string alliance_tag			 = 3;
+	optional string avatar_url               = 4; 
+	optional int64 avatar_box 				 = 5;  //头像框
+	optional int64 power 					 = 6;  //战力
+	optional int32 rank                      = 7;  //排名
+	optional int64 score				     = 8;  //积分
+	optional bool is_robot					 = 9;  //是否是机器人
+	optional int64 robot_id                  = 10; //机器人ID
+	optional string alliance_name            = 11; //联盟名称
+    optional int64 arena_soldier_level       = 12;   //竞技场兵阶等级
+    optional int64 apc_level                 = 13;   //载具等级
+}
+
+//MSG_C2S_REQ_ARENA_INFO                  = 3903;   //竞技场信息请求
+message C2SReqArenaInfo
+{
+}
+
+//MSG_S2C_RSP_ARENA_INFO                  = 3904;   //竞技场信息返回
+message S2CRspArenaInfo
+{
+	optional int32 rank = 1;  //排名
+	repeated ArenaPlayerBasicInfo rank_list  = 2;  //排名列表
+	optional DungeonSoldiers attack_soldiers 	 = 3;   //攻击阵容
+	optional DungeonSoldiers defense_soldiers	 = 4;   //防守阵容
+    optional bool bfirst_loop_open = 5; //是否开启的第一轮
+    optional bool bHasMatchTarget = 6;  //是否已经有匹配目标
+}
+
+//MSG_C2S_REQ_REFRESH_TARGET_LIST         = 3905;   //刷新对手请求
+message C2SReqRefreshTargetList
+{
+
+}
+
+//MSG_S2C_RSP_REFRESH_TARGET_LIST         = 3906;   //刷新对手返回
+message S2CRspRefreshTargetList
+{
+	optional int32 err_code = 1;  //错误码
+}
+    
+//MSG_C2S_REQ_ARENA_BATTLE_START        = 3901;  //请求竞技场开始战斗
+message C2SReqArenaBattleStart
+{
+	optional GUID player_id = 1;  //目标PlayerID
+	optional DungeonSoldiers arena_soldiers = 2;  //阵容
+	optional GUID record_id = 3;  //记录ID(反击需要)
+}
+
+//MSG_S2C_RSP_ARENA_BATTLE_START        = 3902;  //返回竞技场开始战斗
+message S2CRspArenaBattleStart
+{
+	optional int32 err_code = 1;  //错误码
+}
+
+
+//MSG_C2S_REQ_SET_DEFENSE_SOLDIERS        = 3907;   //设置防守阵容请求
+message C2SReqSetDefenseSoldiers
+{
+	optional DungeonSoldiers arena_soldiers = 1;   //阵容
+}
+
+//MSG_S2C_RSP_SET_DEFENSE_SOLDIERS        = 3908;   //设置防守阵容返回
+message S2CRspSetDefenseSoldiers
+{
+	optional int32 err_code = 1;  //错误码
+}
+
+//MSG_S2C_NOTIFY_ARENA_SOLDIERS           = 3910;   //通知阵容更新
+message S2CNotifyArenaSoldiers
+{
+	optional bool is_attack = 1;   //是否攻击阵容
+	optional DungeonSoldiers arena_soldiers = 2;   //阵容
+}
+
+//MSG_S2C_ARENA_BATTLE_RESULT             = 3909;   //战斗结果
+//MSG_S2S_NOTIFY_ARENA_BATTLE_RESULT      = 3916;   //竞技场战斗结果(TO GAMESERVER)
+message S2CArenaBattleResult
+{
+	optional DungeonBattleReportInfo battle_report = 1;  //战报 废弃
+	optional bool is_win = 2;  //是否胜利
+	repeated ItemInfo item_list = 3;  //奖励
+
+	message SettleInfo //结算信息
+	{
+		optional int32 old_rank 	= 1;
+		optional int32 cur_rank 	= 2;
+		optional int32 old_score 	= 3;
+		optional int32 cur_score 	= 4;
+	}
+	optional SettleInfo attack_settle 	= 4;  //攻击方结算
+	optional SettleInfo defense_settle 	= 5;  //防守方结算
+	//服务器用
+	optional ArenaPlayerDetailInfo attack_detail_info = 6;
+	optional ArenaPlayerDetailInfo defense_detail_info = 7;
+    optional GUID record_id = 8;    //记录ID
+    optional bool is_counter = 9;  //是否反击
+    optional bool bfirst_loop_open = 10; //是否开启的第一轮(是否替换制)
+	optional GUID attack_battlemail_id = 11;  //攻击方的
+	optional GUID defense_battlemail_id = 12;  //防守方的
+}
+
+//MSG_C2S_REQ_ARENA_BATTLEREPORTLIST      = 3911;   //请求战报列表
+message C2SReqArenaBattleReportList
+{
+
+}
+
+//MSG_S2C_RSP_ARENA_BATTLEREPORTLIST      = 3912;   //战报列表返回
+message S2CRspArenaBattleReportList
+{
+	repeated DungeonBattleReportInfo battle_report_list = 1;  //战报列表
+}
+
+message ArenaPlayerDetailInfo  //竞技场玩家详细信息
+{
+	optional ArenaPlayerBasicInfo basic_info = 1;  //基础信息
+	optional DungeonSoldiers arena_soldiers	 = 2;   //阵容
+}
+
+
+//MSG_C2S_REQ_ARENA_MATCH_INFO            = 3927;   //竞技场匹配目标请求
+message C2SReqArenaMatchInfo
+{
+}
+
+//MSG_S2C_RSP_ARENA_MATCH_INFO            = 3928;   //竞技场匹配目标请求
+message S2CRspArenaMatchInfo
+{
+	repeated ArenaPlayerBasicInfo match_target_list  = 1;  //匹配列表
+    optional bool bfirst_loop_open = 2; //是否开启的第一轮(是否替换制)
+}
+
+//MSG_C2S_REQ_ARENA_DATA                  = 3929;   //竞技场数据请求
+message C2SReqArenaData
+{
+}
+
+//MSG_S2C_RSP_ARENA_DATA                  = 3930;   //竞技场数据返回
+message S2CRspArenaData
+{
+    repeated int64 task_got_ids = 1;   //竞技场任务奖励领取列表
+    optional int64 first_settle_time = 2;   //第一轮结算时间
+}
+
+//MSG_C2S_REQ_ARENA_TASK_REWARD           = 3931;   //领取竞技场任务奖励
+message C2SReqArenaTaskReward
+{
+    repeated int64 task_ids = 1;   //竞技场奖励领取列表
+}
+
+//MSG_S2C_RSP_ARENA_TASK_REWARD           = 3932;   //领取竞技场任务奖励返回
+message S2CRspArenaTaskReward
+{
+    repeated int64 task_ids = 1;   //竞技场奖励领取列表
+}
+
+//MSG_S2S_RPC_ARENA_RANK_LIST                  = 50401;  //竞技场排行列表
+message S2SReqArenaRankListRpc
+{
+	optional GUID player_id = 1;
+	repeated ArenaPlayerBasicInfo rank_list = 2;  //匹配列表
+	optional int32 player_rank = 3;  //玩家排名
+
+}
+
+//MSG_S2S_RPC_ARENA_MATCH_TARGET                  = 50401;  //竞技场请求匹配
+message S2SReqMatchArenaTargetRpc
+{
+	optional GUID player_id = 1;
+	repeated ArenaPlayerBasicInfo match_targets = 2;  //匹配列表
+    optional int32 history_wins = 3;    //竞技场历史胜利次数
+    optional GUID last_match_targetid = 4;   //上一次匹配目标ID
+}
+
+//MSG_S2S_RPC_ARENA_UPDATE_MATCH_TARGET           = 50406;  //竞技场更新匹配目标
+message S2SReqArenaUpdateMatchTargetRpc
+{
+	optional GUID player_id = 1;
+	repeated ArenaPlayerBasicInfo match_targets = 2;  //匹配列表
+}
+
+//MSG_S2S_RPC_ARENA_RANKING_LIST                  = 50405;  //竞技场上榜列表
+message S2SOnReqArenaRankingListRpc
+{
+	repeated GUID id_list = 1;
+}
+
+//MSG_GS2S_REQ_ARENA_BATTLE_START         = 3913;   //竞技场战斗
+message GS2SReqArenaBattleStart
+{
+	optional ArenaPlayerDetailInfo attack = 1;  //攻击方
+	optional ArenaPlayerDetailInfo defense = 2;  //防守方
+    optional bool is_counter = 3;         //是否反击
+}
+
+//MSG_S2GS_RPC_GET_ARENA_DEFENSE_SOLDIERS         = 50402;  //请求竞技场防守阵容
+message S2GSReqGetArenaDefenseSoldiersRpc
+{
+	optional GUID player_id = 1;
+	optional ArenaPlayerDetailInfo defense = 2;  //防守方
+	optional GUID record_id = 3;
+	optional int32 err_code = 4;  //错误码
+}
+
+message ArenaPlayerDataDB  //竞技场玩家数据
+{
+    message TaskGotList
+    {
+        optional int32 arena_task_type = 1;
+        repeated int64 task_got_ids = 6;   //竞技场任务奖励领取列表
+    }
+	repeated ArenaPlayerBasicInfo match_target_list  = 2;  //匹配目标
+	optional DungeonSoldiers attack_soldiers 	 = 3;   //攻击阵容
+	optional DungeonSoldiers defense_soldiers	 = 4;   //防守阵容
+	repeated ArenaBattlePastRecord record_list = 5;  //历史记录列表	
+    optional GUID las_match_targetid = 7;   //上一次匹配目标ID
+    repeated TaskGotList task_got_list = 8;
+}
+
+//MSG_C2S_REQ_ARENA_TARGET_SOLDIERS_INFO  = 3914;   //请求目标阵容信息
+message C2SReqArenaTargetSoldiersInfo
+{
+	optional GUID player_id = 1;  //目标PlayerID
+	optional bool is_challenge = 2;  //是否挑战(挑战只要阵型信息)
+	optional GUID record_id = 3;  //记录ID(反击需要)
+}
+
+//MSG_S2C_RSP_ARENA_TARGET_SOLDIERS_INFO  = 3915;   //返回目标阵容信息
+message S2CRspArenaTargetSoldiersInfo
+{
+	optional DungeonSoldiers arena_soldiers = 1;
+	optional GUID player_id = 2;  //目标PlayerID
+	optional bool is_challenge = 3;
+	optional GUID record_id = 4;  //记录ID(反击需要)
+	optional ArenaPlayerBasicInfo basic_info = 5;  //基础信息
+    optional PlayerApcInfo apc_info = 6;    //载具信息
+}
+
+message ArenaBattlePastRecord  //竞技场战斗历史记录
+{
+	optional DungeonBattleReportInfo battle_report = 1;  //战报 废弃
+	//简要信息
+	optional bool is_win = 11;  //是否胜利
+	optional ArenaPlayerBasicInfo target_basic_info = 12; 	//目标信息
+	optional int64 score_change = 13;  //积分变换
+	optional int64 time = 14;  //记录时间
+	optional GUID record_id = 15;  //记录ID 
+	optional bool is_attacker = 16;  //是否攻击方
+	optional bool is_counter = 17;  //是否反击过
+    optional bool bfirst_loop_open = 18;    //是否开启的第一轮(是否替换制)
+
+	//详细信息
+	message DetailInfo
+	{
+		optional ArenaPlayerDetailInfo player_info 	= 1;   
+		optional int64 cur_score = 4;  //当前积分
+	}
+
+	optional DetailInfo attack 	= 21;   //攻击方 废弃
+	optional DetailInfo defense  = 22;	//防守方 废弃
+	optional GUID report_id = 23;  //战报ID  废弃
+	optional GUID slg_battlemail_id = 24;  //SLG 战报ID  
+}
+
+//MSG_C2S_REQ_ARENA_BATTLE_PAST_RECORDS   = 3919;   //请求战斗历史记录
+message C2SReqArenaBattlePastRecords
+{
+
+}
+
+//MSG_S2C_RSP_ARENA_BATTLE_PAST_RECORDS   = 3920;   //战斗历史记录返回
+message S2CRspArenaBattlePastRecords
+{
+	repeated ArenaBattlePastRecord record_list = 1;  //历史记录列表	
+}
+
+//MSG_C2S_REQ_ARENA_BATTLE_DETAIL_PAST_RECORD = 3921;   //请求竞技场战斗历史详情
+message C2SReqArenaBattleDetailPastRecord
+{
+	optional GUID record_id = 1;
+    optional GUID player_id = 2;    //玩家id, 服务器使用
+}
+
+//MSG_S2C_RSP_ARENA_BATTLE_DETAIL_PAST_RECORD = 3922;   //竞技场战斗历史详情返回
+message S2CRspArenaBattleDetailPastRecord
+{
+	optional ArenaBattlePastRecord record = 1;
+}
+
+//MSG_C2S_REQ_ARENA_BATTLE_REPORT = 3923;  //请求战报
+message C2SReqArenaBattleReport
+{
+	optional GUID report_id = 1;  //战报ID
+    optional GUID player_id = 2;    //玩家id, 服务器使用    
+}
+
+// MSG_S2C_RSP_ARENA_BATTLE_REPORT = 3924;  //战报返回
+message S2CRspArenaBattleReport
+{
+	optional DungeonBattleReportInfo battle_report = 1;  //战报
+}
+
+//MSG_S2S_ARENA_SOCRE_INIT = 3925;  //竞技场积分初始化
+message S2SArenaScoreInit
+{
+    message ArenaScore
+    {
+        optional GUID player_id = 1;
+        optional int64 score = 2;
+    }
+    optional bool bSettle = 1;  //是否结算
+	repeated ArenaScore arena_score_list = 2;  
+}
+
+//MSG_S2GAME_RETURN_ATTEMPTS = 3926;  //返还挑战次数
+message S2GameReturnAttempts
+{
+
+}
+
+//MSG_GS2WS_REQ_SDK_ARENA_REPORT_PUSH                  = 3356; //请求竞技场战报push
+message GS2WSReqSdkArenareportPush
+{
+    optional DungeonBattleReportInfo battle_report = 1;  //战报
+}
+
+//MSG_C2S_ARENA_BUY_ATTEMPTS              = 3917;   //购买挑战次数
+message C2SArenaBuyAttempts
+{
+	optional int32 num = 1;  //数量
+}
+
+
+
+
+
+
+
+

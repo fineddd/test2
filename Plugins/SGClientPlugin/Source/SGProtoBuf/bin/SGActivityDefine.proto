@@ -1,0 +1,177 @@
+﻿syntax = "proto2";
+
+package SGActivityDefine;
+
+enum EActivityType
+{
+	ACTIVITY_ASSEMBLE       = 1;  	//集结活动
+	ACTIVITY_SEVEN_DAY 		= 2;  	//七日活动
+	ACTIVITY_SIGN_IN		= 3;  	//新手签到活动
+	ACTIVITY_SPRINT_RANK 	= 4;  	//开服冲榜
+	ACTIVITY_ALLIANCE_RANK 	= 5;  	//联盟竞赛
+	ACTIVITY_DAILY_SIGN_IN  = 6;  	//常规签到活动
+	ACTIVITY_COMMANDER      = 7;  	//最强指挥官
+	ACTIVITY_REPEATED_PAY   = 9;  	//连续充值
+	ACTIVITY_ROULETTE       = 10;  	//大转盘
+	ACTIVITY_RED_PACKET     = 11;  	//红包
+	ACTIVITY_DOOMSDAY       = 12;  	//末日试炼
+	ACTIVITY_SHELTER_BUILD  = 13;  	//避难所建设
+	ACTIVITY_TIMED_RACE     = 14;   //限时比赛
+	ACTIVITY_MOBILIZATION   = 18;   //总动员
+	ACTIVITY_MOBILIZATION_PREVIEW = 19;   //总动员预告
+
+	ACTIVITY_CYCLE_TASK 	= 21;	//周循环活动
+    ACTIVITY_TIME_LIMIT_MATCH = 22;	//限时比赛(沙海突围)
+	ACTIVITY_ALLIANCE_BOSS  = 25;	//联盟boss
+	ACTIVITY_BATTLEROYALE 	= 26;	//大逃杀活动
+	ACTIVITY_ASSEMBLE_TASK 	= 27;	//集结活动
+    ACTIVITY_ALLIANCE_DUEL  = 29;   //联盟对决
+	ACTIVITY_HERO_TRIAL 	= 30;	//英雄试炼
+    ACTIVITY_ALLIANCE_DUEL_PREVIEW = 31;   //联盟对决预告
+	ACTIVITY_SHOWONLY 		= 98;	//展示活动
+	ACTIVITY_CALENDAR       = 99; 	//活动日历
+	
+	CHARGE_ACTIVITY_CHARGE_BAG			 = 101;	//礼包
+	CHARGE_ACTIVITY_CHARGE_BAGSP		 = 102;	//特殊礼包
+	
+	CHARGE_ACTIVITY_MOON_CARD			 = 103;	//月卡
+	CHARGE_ACTIVITY_SUBSCRIBE			 = 104;	//订阅
+	CHARGE_ACTIVITY_BATTLE_PASS			 = 105;	//通行证
+	CHARGE_CUSTOM_CHARGE				 = 106;	//自选礼包
+	CHARGE_ACTIVITY_REPAY				 = 107; //充值回馈活动
+	CHARGE_ACTIVITY_DAILY_PACK        	 = 108; //每日礼包
+	CHARGE_ACTIVITY_BASIC_CURRENCY       = 109; //基础货币
+	CHARGE_TITLE_CHARGE_BAG		         = 110; //主题礼包
+	CHARGE_ULTIMATE_CHARGE_BAG		     = 111; //精选礼包
+	CHARGE_GROWTH_FUND				 	 = 120;	//成长基金
+	CHARGE_FIRST_CHARGE                  = 121;  //首充	
+	CHARGE_ACTIVITY_CHARGE_WEEKLY        = 122;  //每周礼包
+	CHARGE_ACTIVITY_NEW_SUBSCRIBE        = 123;  //新订阅
+	ACTIVITY_FREE_PURCHASE		         = 124;  //零元购
+	ACTIVITY_COME_BACK 					 = 125;  	//回归	
+	ACTIVITY_BATTLE_PASS_NEW 			 = 126;  	//新通行证
+	ACTIVITY_WORLD_BOSS			 		 = 127;  	//世界BOSS	
+	CHARGE_ACTIVITY_COUNT				 = 128;	//累计充值
+	CHARGE_ACTIVITY_TREASURE_MARKET		 = 129;	//珍宝集市		
+
+	ACTIVITY_HERO_MANUAL				 = 130;	//英雄手册
+	
+	ACTIVITY_SHARANNA_FLOP		 		 = 131;	//莎兰娜占卜
+	ACTIVITY_SHARANNA_PUZZLE		 	 = 132;	//莎兰娜礼包
+	ACTIVITY_SHARANNA_GIFT		 	 	 = 133;	//莎兰娜拼图
+
+	WEEKLYPAY_EVENTS_MONSTER             = 1001;  //末日研究所&末日劫匪
+	WEEKLYPAY_EVENTS_TASK				 = 1002;  //博士的委托&赏金猎人
+	WEEKLYPAY_EVENTS_SHOP				 = 1003;  //研究所的酬谢&征讨商会
+
+	WEEKLYPAY_EVENTS_NEW				 = 2001;  //周循环付费新
+}
+
+enum EActivityEvent   //活动事件
+{
+	EACTIVITY_PLAYER_ONLINE 			= 1;   	//玩家上线
+	EACTIVITY_CASTLE_LEVEL  			= 2;   	//玩家主城堡等级
+	EACTIVITY_KILL_MONSTER_TOP_LV 		= 3;   	//击杀怪物最高等级
+	EACTIVITY_CARUPGRADE_POWER 			= 4;   	//载具总战力
+	EACTIVITY_HERO_TOTAL_POWER      	= 5;   	//英雄总战力
+	EACTIVITY_HERO_POWER_1 				= 6;	//英雄:朵拉
+	EACTIVITY_HERO_POWER_2 				= 7;	//英雄:丽萨&博拉
+	EACTIVITY_HERO_POWER_3 				= 8;	//英雄:吉米 福克斯
+	EACTIVITY_ALLIANCE_POWER			= 9;	//联盟总战力
+	EACTIVITY_PERSONAL_POWER			= 10;	//个人总战力
+	EACTIVITY_TRAIN_SOLDIER         	= 11;   //训练士兵
+	EACTIVITY_KILL_MONSTER          	= 12;   //击杀怪物
+	EACTIVITY_GATHER_RESOURCE       	= 13;   //资源采集(指挥官用)
+	EACTIVITY_TECH_BUILDING_ADD_POWER   = 14;   //科技和建筑提升战力(指挥官用)
+	EACTIVITY_PVP_KILL_SOLDIER    		= 15;   //PVP击杀
+	EACTIVITY_DAILLY_REFRESH			= 16;	//日刷新事件
+	EACTIVITY_WEEKLY_REFRESH			= 17;	//周刷新事件
+	EACTIVITY_MONTHLY_REFRESH			= 18;	//月刷新事件
+	EACTIVITY_AFTER_CHARGE_EVENT		= 19;	//充值事件
+	EACTIVITY_GAME_CITY_INIT			= 20;	//GameCity初始化
+	EACTIVITY_SETTLE_EVENT				= 21;	//活动关闭 结算
+	EACTIVITY_CLEAR_PLAYER_DATA			= 22;	//清理玩家活动数据
+	EACTIVITY_ALL_MODULE_POWER       	= 23;   //通用战力模块
+	EACTIVITY_ENERGY_COST       		= 24;   //体力扣除
+	EACTIVITY_SPEED_UP_BY_ITEM       	= 25;   //加速道具
+	EACTIVITY_SPEED_UP_ANY              = 26;   //加速任意道具
+	//EACTIVITY_USE_ITEM                 = 26;  //使用道具
+	EACTIVITY_CHARGE_COUNT          	= 27;  //充值次数
+	EACTIVITY_TASKTYPE_UPDATE			= 28;// 任务事件更新
+	EACTIVITY_HERO_UP_STAR_BY_ITEM      = 29;  //升星消耗英雄碎片
+	EACTIVITY_CAR_UP_STAR_BY_ITEM       = 30; //载具升星指定消耗
+	EACTIVITY_CAR_UP_STAR_ANY           = 31; //载具升星任意消耗
+	EACTIVITY_USE_CAR_EXP_ITEM          = 32; //消耗载具经验
+	EACTIVITY_HERO_UP_EQUIP_BY_ITEM     = 33; //装备升级指定消耗
+	EACTIVITY_HERO_UP_EQUIP_ANY         = 34;  //装备升级任意消耗
+	EACTIVITY_BEFORE_MIGRATE         	= 35;  //移民前
+	EACTIVITY_AFTER_MIGRATE         	= 36;  //移民后
+	EACTIVITY_COMMANDER_ACTIVITY_POWER	= 37;	//最强指挥官活动模块战力变化
+	EACTIVITY_ROTATE_ROULETTE			= 38;  //转动大转盘(指挥官用)
+	EACTIVITY_BUILDING_POWER			= 39; //建筑战力
+	EACTIVITY_TECH_POWER				= 40; //科技战力
+	EACTIVITY_INCIDENT					= 41; //完成雷达事件
+	EACTIVITY_KILL_ASSEMBLE_MONSTER		= 42; //击杀集结怪物
+    EACTIVITY_TIME_LIMIT_MATCH_ITEM     = 43;   //限时匹配类道具变动
+    EACTIVITY_TIME_LIMIT_MATCH_SETTLE   = 44;   //限时匹配活动结算
+	EACTIVITY_PROPERTY_INIT				= 45;	//属性初始化
+    EACTIVITY_STUDY_TECH     			= 46;  	//学习科技
+}
+
+enum EActivityCommanderIntegral  //最强指挥官积分系数类型
+{
+	TRAIN_SOLDIER 				= 1;  //训练士兵
+	KILL_MONSTER 				= 2;  //击杀野怪
+	GATHER_RESOURCE 			= 3;  //资源采集
+	PERSONAL_POWER 				= 4;  //个人总战力
+	TECH_BUILDING_UPLV       	= 5;  //领地发展(科技建筑升级)
+	PVP_KILL_SOLDIER 			= 6;  //PVP击杀(灭敌)
+	//USE_ITEM                    = 7;  //使用道具
+	SPEED_UP_BY_ITEM     	  	= 8;  //加速道具
+	HERO_UP_STAR_BY_ITEM        = 9;  //升星消耗英雄碎片
+	CAR_UP_STAR_ANY             = 10; //载具升星任意消耗
+	CAR_UP_STAR_BY_ITEM         = 11; //载具升星指定消耗
+	USE_CAR_EXP_ITEM            = 12; //消耗载具经验
+	HERO_UP_EQUIP_ANY           = 13; //装备升级任意消耗
+	HERO_UP_EQUIP_BY_ITEM       = 14; //装备升级指定消耗
+	SPEED_UP_ANY                = 15; //加速任意道具
+	ROTATE_ROULETTE				= 16; //转动大转盘
+	BUILDING_POWER				= 17; //建筑战力
+	TECH_POWER					= 18; //科技战力
+	INCIDENT					= 19; //完成雷达事件
+}
+
+enum EChargeBagType
+{
+	CBT_FREE_CHARGE_BAG				 = 3;	//免费礼包
+}
+
+enum EPowerModuleType
+{
+    PMT_None                         = 0;
+    PMT_Hero                         = 204000001;
+    PMT_CityBuild                    = 204000103;
+    PMT_Tech                         = 204000204;
+    PMT_Soldier                      = 204000305;
+    PMT_Car                          = 204000406;
+};
+
+enum EActivityTimeType
+{
+    EACTIVITY_TIME_NONE             = 0;    //无
+    EACTIVITY_TIME_PERMANENT        = 1;    //常驻
+    EACTIVITY_TIME_LIMIT_TIME       = 2;    //限时活动
+    EACTIVITY_TIME_SERVER_OPEN      = 3;    //开服活动
+    EACTIVITY_TIME_CIRCLE           = 4;    //循环活动
+    EACTIVITY_TIME_TRIGGER          = 5;    //触发类(玩家等等)
+    EACTIVITY_TIME_WEEK             = 6;    //周循环
+    EACTIVITY_TIME_LOOP             = 7;    //连续循环
+};
+
+enum EActivityBattlePassAction
+{
+	ACTION_SPEED_UP_FOR_BUILDING     	  	= 1;  //建筑加速
+	ACTION_SPEED_UP_FOR_TECH     	  	    = 2;  //科技加速
+	ACTION_SPEED_UP_FOR_TRAIN_SOLDIER	 	= 3;  //训练加速
+	ACTION_KILL_MONSTER 					= 4;  //击杀野怪
+};

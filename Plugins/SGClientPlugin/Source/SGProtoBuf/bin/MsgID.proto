@@ -1,0 +1,2158 @@
+﻿syntax = "proto2";
+
+package MsgID;
+
+
+enum MsgID
+{
+    MSG_INVAILD                                 = 0;
+    MSG_PACK_COMPLETE_PM                        = 2; // 整包协议
+    MSG_PACK_UPDATE_PM                          = 3; // 更新包协议
+
+    MSG_PACK_COMPLETE_PM_CSHARP                 = 4; // csharp 整包协议
+    MSG_PACK_UPDATE_PM_CSHARP                   = 5; // csharp 更新包协议
+
+    MSG_MAP_OBJECT_UPDATE_PM                    = 11; // 对象model 数据增量更新
+
+    //通用协议
+    //MSG_S2S_SERVER_INIT                         = 103; // 前端的逻辑服务器在启动服务进程的时候，要往后端的DB服务器报告初始化状态
+    MSG_C2S_REQ_IDENTIFICATION_IN_GATE          = 104; // 在Gate申请身份验证，通过后可以继续使用Gate。（向Gate提供Token）
+    MSG_S2C_NTF_SERVER_TIME                     = 105; // 客户端与游戏服务器建立TCP连接的时候，会收到一条包含服务器时间的消息
+    MSG_GS2LOGIN_ENTER_LOGIN                    = 106; // 进入LoginServer
+    MSG_C2S_REQ_ACCOUNT_LOGIN                   = 112; // 连接方向被连接方发送签名，请求验证。
+    MSG_S2S_KICK_PLAYER                         = 113; // 服务器内部T人
+    MSG_S2C_RSP_CONFIG_LOGIN_RESULT             = 114; // Config回复客户端登录（SDK）验证结果
+    MSG_S2C_RSP_ACCOUNT_LOGIN                   = 118; // 签名验证通过
+    MSG_S2S_USER_DISCONNECT                     = 121; // 客户端断开连接
+	MSG_S2C_NOTE_LOGINDATAPROCESS				= 122; // Loaddatafinish 属性类似(当是单独加协议，player，city不太合适用属性。前端登录之后才有player)
+    MSG_S2C_NTF_KICK                             = 125; // 告知客户端，被踢掉（您的账号已经在其它地方登陆，请保护好您的账号密码）
+    MSG_S2C_NTF_SERVER_ABNORMAL                 = 126; // 告知客户端，断线原因是服务器维护中
+    MSG_HTTP2MS_NTF_AREA_CLOSING                = 127; // HttpServer通知Master,当前小区马上关闭
+    MSG_MS2GW_NTF_AREA_CLOSING                  = 128; // Master通知Gate，当前小区马上关闭
+    MSG_S2HTTP_SHOW_STRING_TO_HTTP_CLIENT       = 129; // 向Http客户端显示String
+    MSG_LOGIN2GS_REQ_KICK_PLAYER                = 130; // Login向Game发起踢人的请求
+    MSG_GS2LOGIN_RSP_KICK_PLAYER                = 131; // Login向Game发起踢人的回复
+	MSG_C2S_REQ_VERSIONINFO                 	= 132; // 获取版本信息
+	MSG_C2S_RSP_VERSIONINFO                 	= 133; // 获取版本信息返回
+    MSG_GS2LOGIN_SWITCH_LANGUAGE                = 134; // 切换语言
+
+    MSG_C2S_REQ_MAINTAININFO                    = 135; // 服务器维护信息
+    MSG_C2S_RSP_MAINTAININFO                    = 136; // 服务器维护信息返回
+    
+    MSG_NTF_SERVER_TEST_LOG                     = 137; // 同步服务器测试日志
+    MSG_S2C_NTF_CLIENT_UPDATE                   = 138; // 通知前端，定时重启，热更新
+    MSG_C2S_REQ_RECONNECT_GATE                  = 139; // 请求断线重连Gate
+    MSG_S2C_RSP_RECONNECT_GATE                  = 140; // 回复断线重连Gate
+    MSG_C2S_REQ_PLAYER_OFFLINE                  = 141; // 玩家直接请求下线
+    MSG_GS2GW_REQ_SET_TOKEN_EXPIRED_TIME        = 142; // 设置token失效时间
+    MSG_LOGIN2GW_REQ_KICK_PLAYER                = 143; // Login踢人到Gate
+    MSG_S2S_REPORT_RECONEECT_INFO               = 144; // 上报断线重连信息到Config
+    MSG_S2S_REPORT_CLIENT_DISCONNECT            = 145; // 上报客户端断线到Config
+
+    MSG_BSDK2GAME_REQ_KICK_PLAYER               = 146; // BSDK踢人到GAME
+    MSG_GAME2S_NTF_LINE_INFO                    = 147; // GAME在线状态同步
+    MSG_BSDK2GAME_NTF_HEALTHINFOS               = 148; // BSDK同步更新相应的沉迷信息给GAME
+    MSG_GAME2BSDK_SDK_PROC_TIME                 = 149; // GAME请求设置SDK相关时间
+    MSG_GAME2BSDK_NTF_ONLINETM                  = 150; // GAME批量通知BSDK玩家在线的时间
+
+    MSG_GS2BSDK_REQ_QUERYMONEY                  = 151; // 查询金币
+    MSG_BSDK2GS_RSP_QUERYMONEY                  = 152; // 查询金币的结果
+    MSG_GS2BSDK_REQ_CONSUMEMONEY                = 153; // 扣除金币
+    MSG_BSDK2GS_RSP_CONSUMEMONEY                = 154; // 扣除金币的结果
+    MSG_GS2BSDK_REQ_CANCELCOMSUMEMONEY          = 155; // 取消扣除金币
+
+    MSG_GS2BSDK_REQ_DRAWGIFTMONEY               = 156; // 领取礼品金币
+    MSG_BSDK2GS_RSP_DRAWGIFTMONEY               = 161; // 赠送金币
+
+    MSG_BSDK2GS_RSP_BUYGOODSINFO                = 158; // 直购下单结果
+    MSG_GS2BSDK_REQ_SENDGOODSINFO               = 159; // 发货信息
+    MSG_BSDK2GS_UPDATESDKACCOUNTINFO            = 160; // 更新腾讯SDK的Key
+
+    MSG_GS2BSDK_REPORT_DATA                     = 164; // 上报游戏中心数据
+
+    MSG_GS2SECURITY_REQ_TLOGCONTENTLIST         = 169; // Tlog日志列表
+    MSG_S2SECURITY_REQ_TLOGCONTENT              = 170; // 写Tlog日志
+    MSG_S2SECURITY_REQ_TLOGASMIADINFO           = 171; // 苹果用户AppStore搜索下载信息
+
+    MSG_BSDK2GS_RSP_QUERYAllVIP                 = 175; // 查询qq所有会员
+    MSG_GS2BSDK_REQ_QUERYALLVIP                 = 176; // 查询qq所有会员
+
+    MSG_BGIP2S_REQ_PLAYER_PROPERTY_CHANGE       = 180; // 修改msyql数据
+
+    MSG_GS2LOGIN_RSP_FINANCIAL_DATA_COLLECT     = 192; //经济汇报统计
+
+    MSG_S2S_PLAYER_BASE_INFO                    = 195; //上线同步玩家信息
+    MSG_S2S_UPDATE_PLAYER_CACHE_DATA            = 196; //基本信息变化后的同步
+    MSG_S2S_NTF_DELETE_PLAYER_BASE_INFO         = 197; //删除基本信息的cache
+
+
+    MSG_GW2MS_REQ_SUIT_ONLINE_GAME_ID           = 231; // GateServer请求MasterServer玩家刚上线时候适合的Game
+    MSG_MS2GW_RSP_SUIT_ONLINE_GAME_ID           = 232; // MasterServer返回给GateServer玩家刚上线时候适合的Game
+	
+	MSG_C2S_REQ_AREAINFO_KING					= 233; // 请求王国信息
+	MSG_C2S_RSP_AREAINFO_KING					= 234; // 返回请求王国信息
+	
+	MSG_C2S_REQ_AREAINFO_MAP					= 235; // 请求查看王国的大地图信息
+
+    //广播消息
+    MSG_GS2GW_BROADCAST_MSG2PLAYERS             = 250; //广播消息game->gate
+    MSG_S2ROUTER_BROADCAST_MSG2PLAYERS          = 252; //广播消息route->game
+	MSG_AS2GS_BROADCAST_MSG2MEMBER				= 253; //广播联盟成员消息alliance->game
+	MSG_GS2GW_BROADCAST_MSG2OTHERPLAYERS        = 254; //广播消息game->gate,黑名单列表
+	MSG_BROADCAST_MSG2LOCAL_PLAYERS		        = 255; //通过game 广播给本服（不包含跨服迁移）玩家
+	//场景区分
+	MSG_S2S_SYNC_SCENCE_ZONE        			= 270; //地图区块信息信息
+	MSG_C2S_REQ_OBSERVER_SCENCE_ZONE			= 271; //请求观察跨服区块，前端请求
+	MSG_S2S_REQ_OBSERVER_SCENCE_ZONE			= 272; //返回观察跨服区块	
+	
+	MSG_S2S_REQ_VIEWUPDATE						= 273; //请求观察跨服视野
+    //发送消息
+    MSG_GS2GW_SEND_MSG2PLAYER                   = 290; //发送消息game->gate
+
+    //同步协议
+    MSG_RSP_HEART_BEAT                          = 300;
+    MSG_REQ_HEART_BEAT                          = 301; //同步心跳
+    MSG_S2C_SYNC_PLAYERS_MOVE_IN_FOV            = 322; //视野内移动
+    MSG_S2C_SYNC_PLAYERS_ENTER_IN_FOV           = 349; //玩家进入视野
+    MSG_S2C_SYNC_PLAYERS_LEAVE_IN_FOV           = 350; //玩家离开视野
+    MSG_S2C_SYNC_OBJECT_CREATE                  = 351; //通知客户端创建数据实例
+    MSG_S2C_SYNC_OBJECT_DESTORY                 = 352; //通知客户端清除数据实例    
+
+    MSG_S2C_SYNC_PROPERTY_FULL                  = 398; //上线和进入视野同步所有属性
+    MSG_S2C_SYNC_RECORD_FULL                    = 399; //上线和进入视野同步所有Record
+
+    //MSG_S2C_SYNC_PROPERTY_INT                   = 400; //INT类型特值int64_t
+    //MSG_S2C_SYNC_PROPERTY_FLOAT                 = 401;
+    //MSG_S2C_SYNC_PROPERTY_STRING                = 402;
+    //MSG_S2C_SYNC_PROPERTY_OBJECT                = 403;
+    //MSG_S2C_SYNC_PROPERTY_DOUBLE                = 404;
+    //MSG_S2C_SYNC_PROPERTY_POINT                 = 405; //x y z
+
+    //MSG_S2C_SYNC_RECORD_INT                     = 406; //INT类型特值int64_t
+    //MSG_S2C_SYNC_RECORD_FLOAT                   = 407;
+    //MSG_S2C_SYNC_RECORD_STRING                  = 408;
+    //MSG_S2C_SYNC_RECORD_OBJECT                  = 409;
+    //MSG_S2C_SYNC_RECORD_DOUBLE                  = 410;
+    //MSG_S2C_SYNC_RECORD_POINT                   = 411; //x y z
+
+    MSG_S2C_SYNC_RECORD_SWAP                    = 412;
+    //MSG_S2C_SYNC_RECORD_ADDROW                  = 413;//保留但是协议的结构体改了
+    //MSG_S2C_SYNC_RECORD_REMOVEROW               = 414;
+    //MSG_S2C_SYNC_RECORD_CLEAR                   = 415;
+    MSG_S2C_SYNC_OBJECT_INDEX                   = 416;
+	
+	//MSG_S2C_SYNC_PROPERTY_POINT2D				= 417;	//xy
+    //MSG_S2C_SYNC_RECORD_POINT2D                 = 418; //x y
+	//MSG_S2C_SYNC_RECORD_POINT2D2                 = 419; //x y
+	//MSG_S2C_SYNC_PROPERTY_DATA                   = 420; // MSG_S2C_SYNC_PROPERTY_INT                   = 400; //INT类型特值int64_t
+	//MSG_S2C_SYNC_RECORD_DATA                     = 421;   //MSG_S2C_SYNC_RECORD_INT                     = 406; //INT类型特值int64_t
+    MSG_S2C_SYNC_UPDATE_OBJECTDATA               = 422;   //更新变化的property和record。合包发送
+	MSG_S2C_OBJECT_UPDATE_STACK_NOTIFY			 = 423;   //通知前端update 可以堆叠处理
+    MSG_S2C_SYNC_UPDATE_OBJECTDATA_LOD2_3        = 424;   //更新变化的property和record。合包发送
+    MSG_S2C_SYNC_UPDATE_OBJECTDATA_LOD4          = 425;   //更新变化的property和record。合包发送
+    MSG_S2C_SYNC_UPDATE_OBJECTDATA_LOD1          = 426;   // 大地图单位，专门用的。前端大地图在c# 其他在lua
+    MSG_S2C_SYNC_UPDATE_OBJECTDATA_LOD5          = 427;   //更新变化的property和record。合包发送
+
+    MSG_C2S_TEST_ROUTER_NET_REQ                 = 440; // 网络路由路径测试消息，发到跨区服范围的测试消息REQ
+    MSG_S2C_TEST_ROUTER_NET_RSP                 = 441; // 网络路由路径测试消息，发到跨区服范围的测试消息RSP
+
+    //游戏内协议
+    MSG_S2C_SHOW_STRING                         = 501; // 发给客户端的字符串通知，字符串格式中所有的参数格式化为%s
+	MSG_S2C_RESULT_RESPONSE						= 502; // 发给客户端的结果通知
+	MSG_S2C_REQ_GUIDED_STORY_FINISH				= 503;	// 引导剧情完成
+
+    // 防沉迷
+    MSG_S2C_NTF_HEALTHINFO                      = 510; // 防沉迷信息（主动推送）
+
+    //修改服务器时间
+    MSG_HTTP2MS_CHANGE_TIME                     = 511; //修改服务器时间
+    //获取服务器时间
+    MSG_HTTP2MS_GET_SERVER_TIME                 = 512; //获取服务器时间
+
+    // 
+    MSG_HTTP2MS_GET_ROLE_COUNT                  = 600; // HttpServer通知Master, 游戏单服角色数
+    MSG_HTTP2MS_MAIL                            = 601; // HttpServer通知Master, 邮件
+    MSG_HTTP2MS_ALLIANCE_INFO                   = 602; // HttpServer通知Master, 联盟信息
+    MSG_HTTP2MS_PLAYER_INFO                     = 603; // HttpServer通知Master, 玩家信息
+    MSG_HTTP2MS_CHANGE_NAME                     = 604; // HttpServer通知Master, 修改名字
+    // MSG_HTTP2MS_ADD_ITEM                        = 605; // HttpServer通知Master, 添加道具
+    MSG_HTTP2MS_GET_ONLINE_COUNT                = 606; // HttpServer通知Master, 在线人数
+    MSG_HTTP2MS_BROADCAST                       = 607; // HttpServer通知Master, 跑马灯
+    MSG_HTTP2MS_GET_SERVER_CONFIG               = 608; // HttpServer通知Master, 获取服务器配置
+    MSG_HTTP2MS_CHAT_BAN                        = 609; // HttpServer通知Master, 聊天禁言
+    MSG_HTTP2MS_SEND_ORDER                      = 610; // HttpServer通知Master, 充值
+    MSG_HTTP2MS_SERVER_AREA_LIST                = 611; // HttpServer通知Master, 获取小区服务器列表
+    MSG_HTTP2MS_SERVER_AREA_NET_INFO            = 612; // HttpServer通知Master, 获取小区服务器网络信息
+    MSG_HTTP2MS_BAN                             = 613; // HttpServer通知Master, 封号 / 解封
+    MSG_HTTP2MS_GAME_POST                       = 614; // HttpServer通知Master, 发送游戏内公告
+    MSG_HTTP2MS_KICK_PLAYER                     = 615; // HttpServer通知Master, 踢人
+    MSG_HTTP2MS_RECHARGE_GM                     = 616; // HttpServer通知Master, 充电/扣点
+    MSG_HTTP2MS_SERVER_CONFIG_SET               = 617; // HttpServer通知Master, 设置某个服务器的导入国家地区代码
+    MSG_HTTP2MS_RELOAD_APP_CONFIG               = 618; // HttpServer通知Master, 重新加载AppConfig
+    MSG_HTTP2MS_GET_ACCOUNT_BY_CHAR             = 619; // HttpServer通知Master, 通过角色ID获取账号
+    MSG_HTTP2MS_CHANGE_SOLDIER_GROUP            = 620; // HttpServer通知Master, 修改部队
+    MSG_HTTP2MS_CHARGE_ITEM                     = 621; // HttpServer通知Master, 充道具
+    MSG_HTTP2MS_ALLIANCE_CHANGE_NAME            = 622; // HttpServer通知Master, 联盟改名/描述
+    MSG_HTTP2MS_RES_OFF_NOTICE                  = 623; // HttpServer通知Master, 资源下架通知
+
+
+    MSG_MS2DB_REMOVE_INSERTED_SN                = 650; // Master通知DB, 删除已经插入的SN
+
+    MSG_S2S_REQ_REGISTER_ACCOUNT                = 1082; // 请求注册本地账号
+    MSG_S2S_RSP_REGISTER_ACCOUNT                = 1083; // 回复请求注册本地账号
+    MSG_CONF2DB_REQ_QUERY_LOCAL_ACCOUNT         = 1084; // 请求查询本地账号
+    MSG_DB2CONF_RSP_QUERY_LOCAL_ACCOUNT         = 1085; // 回复请求查询本地账号
+	
+	MSG_C2S_REPORT_INDEPENDENT_EVENT            = 1086; // 客户端上报一些特殊的独立事件完成
+    //开服数据
+	MSG_SYNC_SERVER_DPSTATE						= 1101;
+	MSG_REQ_DB_DATA_CACHE_STATE					= 1103;
+	MSG_NTF_DB_DATA_CACHE_CLEAR					= 1104;
+    MSG_NTF_LIMIT_RANK_GROUP_DATA               = 1105;
+
+	
+    MSG_S2C_NTF_REPLY                           = 1200; // 应答客户端
+	MSG_C2S_TEST_LUAMSG							= 1301; // 应答客户端
+	
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    //业务功能的协议begin（2001-6000），按20递增分模块，不够用就多分20
+    ///////////////////////////////////////////////////////////////////////////
+    //-------------------------------------------
+    //GM系统相关 (2001~2010)
+    MSG_C2S_REQ_GM_COMMAND                      = 2001; // GM测试命令
+    MSG_S2C_RSP_GM_COMMAND                      = 2002; // GM测试命令
+    MSG_S2C_NTF_ROBOT_MESSAGE                   = 2003; // 通知机器人消息
+    MSG_S2C_RSP_SHOW_OBJECT_DATA                = 2004; // 获取Object数据
+    MSG_S2S_GM_CMD_TO_ALL_GAME                  = 2005;
+
+    MSG_C2S_REQ_GET_FREE_REWARD                 = 2018; // 免费奖励
+    MSG_C2S_REQ_FAQ_REWARD                      = 2019; // FAQ问卷奖励
+    MSG_C2S_DATA_FLOW                           = 2020; // 埋点数据        
+
+    //城建系统相关 (2021~2099)
+    MSG_C2S_REQ_CREATE_BUILDING                 = 2021; //创建建筑
+    MSG_C2S_REQ_CREATE_FURNITURE                = 2022; //创建家具
+    MSG_C2S_REQ_UPGRADE_BUILDING_LEVEL          = 2023; //升级建筑
+    MSG_C2S_REQ_CANCEL_UPGRADE_BUILDING_LEVEL   = 2024; //取消升级建筑
+    MSG_C2S_REQ_SPEEDUP_BUILDING_STATUS         = 2025; //加速建筑状态
+    MSG_C2S_REQ_UPGRADE_FURNITURE_LEVEL         = 2026; //升级家具
+    MSG_C2S_REQ_LOAD_GUARDHOUSE_HERO            = 2027; //装载守卫室英雄
+    MSG_C2S_REQ_OUTFIRE_GUARDHOUSE              = 2028; //守卫室灭火
+    MSG_C2S_REQ_REPAIR_GUARDHOUSE               = 2029; //修复守卫室防御值
+    MSG_C2S_REQ_CURE_WOUNDED_SOLDIER            = 2030; //治疗伤兵
+    MSG_C2S_REQ_GET_CURED_SOLDIER               = 2031; //获取已治疗的士兵
+    MSG_S2C_NTF_HOSPITAL                        = 2032; //推送医院信息
+    MSG_C2S_REQ_TRAIN_SOLDIER                   = 2033; //训练士兵
+    MSG_C2S_REQ_GET_TRAINED_SOLDIER             = 2034; //获取已训练的士兵
+    MSG_C2S_REQ_CANCEL_TRAIN_SOLDIER            = 2035; //取消已训练的士兵
+    MSG_S2C_NTF_BARRACK                         = 2036; //推送单个军营信息
+    MSG_S2C_NTF_BARRACKS                        = 2037; //推送所有军营信息
+	MSG_GS2SS_NTF_BUILD_TOWER					= 2038;
+    MSG_C2S_REQ_COLLECT_RESOURCE                = 2039; //收集城内资源
+    MSG_S2C_NTF_REFRESH_FURNITURE               = 2040; // 通知前端刷新建筑家具属性获取
+    MSG_C2S_REQ_STUDY_TECH                      = 2044; //开始研究科技
+    MSG_C2S_REQ_GET_STUDIED_TECH                = 2045; //领取研究完的科技
+    MSG_C2S_REQ_CANCEL_STUDY_TECH               = 2046; //取消正在研究的科技
+	MSG_C2S_REQ_DELETE_TACTICAL_BUILDING				= 2047;	// 战术建筑相关操作
+	MSG_S2C_NTF_TACTICAL_RESULT					= 2048;	// 战术建筑相关结果通知
+	MSG_C2S_REQ_TACTICAL_SOLDIER				= 2049; // 战术建筑士兵操作
+	MSG_C2S_REQ_TACTICAL_MAKE_PRODUCT			= 2050; // 创建卡车
+	MSG_S2C_NTF_TACTICAL_INFO					= 2051; // 战术建筑信息
+	MSG_C2S_REQ_TACTICAL_TAKE_PRODUCT			= 2052; // 拖出卡车
+	MSG_C2S_REQ_TACTICAL_SOLDIER_INFO			= 2053; //  请求战术建筑兵信息
+	MSG_S2C_ACK_TACTICAL_SOLDIER				= 2054; // 术建筑士兵操作回应	
+	MSG_G2S_REQ_REFRESH_SOLDIER_POWER			= 2055;	// 刷新士兵战力
+	
+	MSG_NTF_FUNCTION_CLOSE_LIST					= 2059; // 功能关闭列表
+	MSG_S2S_FUNCTIONOPERATER					= 2060; // 开启或者关闭功能
+    MSG_S2C_NTF_FINISH_CREATE_BUILDING          = 2061; // 创建建筑完成推送
+    MSG_S2C_NTF_FINISH_UPGRADE_BUILDING         = 2062; // 升级建筑完成推送
+    MSG_C2S_REQ_MULTI_CITY_COLLECT              = 2063; // 批量内城收取
+    MSG_C2S_REQ_BUY_CITY_BUILD_WORKER           = 2064; // 购买临时解锁道具
+    MSG_S2C_NTF_FINISH_SPEED_UP_BUILDING        = 2065; // 加速建筑推送
+    MSG_C2S_REQ_SET_CLIENT_VAR                  = 2066; // 设置前端的变量
+    MSG_C2S_REQ_SET_USE_SKIN                    = 2067; // 设置当前使用的主城皮肤
+    MSG_C2S_REQ_SET_AUTORETURN                  = 2068; // 设置部队主动攻击，战斗结束后是否自动回城
+	MSG_C2S_REQ_SET_EMOJI_GRIDID				= 2069;	// 请求设置表情格子id
+	MSG_S2C_RSP_SET_EMOJI_GRIDID				= 2070;	// 响应设置表情格子id
+	MSG_C2S_REQ_LANUCH_EMOJI					= 2071;	// 请求发送表情
+	MSG_S2C_RSP_LANUCH_EMOJI					= 2072;	// 响应发送表情
+    MSG_C2S_REQ_SET_CLIENT_VAR_STRING           = 2073; // 设置前端的变量（string）
+	MSG_C2S_REQ_SET_USE_APPEARANCE              = 2075; // 请求设置当前使用的装扮
+	MSG_S2C_RSP_SET_USE_APPEARANCE              = 2076; // 响应设置当前使用的装扮
+	MSG_C2S_REQ_SET_PUT_DECORATION              = 2077; // 请求放置装饰
+	MSG_S2C_RSP_SET_PUT_DECORATION              = 2078; // 响应放置装饰
+	MSG_C2S_REQ_SET_UPGRADE_DECORATION          = 2079; // 请求升级装饰
+	MSG_S2C_RSP_SET_UPGRADE_DECORATION          = 2080; // 响应升级装饰
+	MSG_C2S_REQ_SET_UPDATE_DECORATION_GRID      = 2081; // 请求更新装饰格子
+	MSG_S2C_RSP_SET_UPDATE_DECORATION_GRID      = 2082; // 响应更新装饰格子
+
+    //英雄相关(2100~2119)
+    MSG_C2S_REQ_STORY_ACCEPT                    = 2100;  //点击解锁的传记领取 
+    MSG_C2S_REQ_HERO_STORY_REWARD               = 2101;  //领取英雄背景故事奖励
+	MSG_C2S_REQ_HERO_REBORN						= 2102;  //请求英雄重生
+	MSG_S2C_RSP_HERO_REBORN						= 2103;  //响应英雄重生
+	MSG_C2S_REQ_HERO_LEVLEUP					= 2104;	 //请求英雄升级
+    MSG_C2S_REQ_HERO_UP_STAR                    = 2105;  //升星（一次升一星）
+    MSG_C2S_REQ_HERO_UP_SKILL                   = 2106;  //升级技能等级（一次技能等级加一）
+    MSG_C2S_REQ_HERO_UP_TALENT                  = 2107;  //激活或提升天赋     
+    MSG_C2S_REQ_HERO_TALENT_RESET               = 2108;  //天赋重置
+    MSG_C2S_REQ_HERO_COST_FRAGMENT              = 2109;  //合成碎片
+    MSG_C2S_REQ_SET_HERO_CAPTAIN                = 2110;  //设置英雄统帅
+    MSG_C2S_REQ_SET_HERO_OFFICER                = 2111;  //设置英雄内政官
+	MSG_C2S_REQ_HERO_UP_EQUIP					= 2112;  //装备强化
+    MSG_C2S_REQ_COMMON_CHIP_EXCHANGE            = 2113;  //通用碎片兑换
+    MSG_C2S_REQ_HERO_RESONATE_CMD               = 2114;  //英雄共鸣
+    MSG_C2S_REQ_HERO_RESONATE_LEADER_INFO       = 2115;  //请求英雄共鸣领袖信息
+    MSG_S2C_RSP_HERO_RESONATE_LEADER_INFO       = 2116;  //返回英雄共鸣领袖信息
+	MSG_C2S_REQ_HERO_INTENSIFY_EQUIP			= 2117;  //请求新装备强化
+	MSG_S2C_RSP_HERO_INTENSIFY_EQUIP			= 2118;  //响应新装备强化
+	MSG_C2S_REQ_HERO_HONOR_UPGRADE				= 2119;  //英雄荣誉殿堂等级提升
+
+    //语言设置
+    MSG_C2S_REQ_SET_LANGUAGE                    = 2120; // 设置语言
+    // MSG_S2C_NTF_LANGUAGE                        = 2121; // 当前语言
+	//客户端上报npc位置坐标
+	MSG_C2S_REQ_TRIGGER_GAME_EVENT	            = 2123; // 触发游戏事件
+	MSG_C2S_REQ_ENTER_DUNGEON_LIST	            = 2124; // 进入关卡选择副本
+	MSG_C2S_REQ_REFUGE_AREA_UNLOCK	            = 2125; // 解锁区域
+	MSG_C2S_REQ_RISK_STATE_REMOVE	            = 2126; // 移除满危险值的状态
+	MSG_S2C_NTF_REFUGE_EVENT_AWARD	            = 2127; // 通知客户端避难所事件奖励
+	MSG_C2S_REQ_GET_DUNGEON_LIST_PROGRESS_REWARD		 = 2128;// 获取关卡进度阶段性奖励
+	
+    MSG_MULTI_C2S_REQ_RECRUIT                   = 2129;  //招募
+    MSG_C2S_REQ_RECRUIT                         = 2130;  //招募
+    MSG_C2S_RSP_RECRUIT                         = 2131;  
+
+    MSG_C2S_REQ_TIMELINE_REFUGE_NPC             = 2132; // timeline创建npc 和事件
+
+    MSG_S2C_RECRUIT_LEGEND_OPEN_LIST            = 2133; // 保底英雄列表
+    MSG_C2S_REQ_SET_LEGEND                      = 2134; // 设置保底英雄
+
+    MSG_C2S_REQ_NODE_LIST                       = 2135; // 请求节点列表
+    MSG_S2C_RSP_NODE_NOTIFY                     = 2136; // 通知
+    MSG_C2S_REQ_NODE_CMD                        = 2137; // 操作节点    
+
+    MSG_C2S_REQ_TIMELINE_RESIDENT               = 2138; // timeline 居民
+
+    MSG_C2S_REQ_TIMELINE_CMD                    = 2139; // timeline cmd
+
+    // req EquipBagList
+    MSG_C2S_REQ_EQUIP_BAG_LIST                  = 2140; // 请求装备背包列表
+    // rsp EquipNotify
+    MSG_S2C_RSP_EQUIP_NOTIFY                    = 2141; // 装备信息 全量包 和 增删改
+    // req EquipCmd
+    MSG_C2S_REQ_EQUIP_CMD                       = 2142; // 装备升级 装备觉醒 英雄装备穿脱 等
+	MSG_C2S_REQ_SET_NEW_HERO                    = 2143; // 请求设置新英雄
+
+    // req BankList
+    MSG_C2S_REQ_BANK_LIST                       = 2150; // 请求银行列表
+    // rsp BankNotify
+    MSG_S2C_RSP_BANK_NOTIFY                     = 2151; // 银行信息 全量包 和 增删改
+    // req BankCmd
+    MSG_C2S_REQ_BANK_CMD                        = 2152; // 银行存方 提前退出 收获 等
+
+    MSG_C2S_REQ_SEND_OIL                        = 2160; // 请求运石油
+    MSG_S2C_RSP_ELEC_OIL_STORE                  = 2161; // 推送电力石油储量信息
+    MSG_S2C_RSP_SEND_OIL                        = 2162; // 推送运石油结果    
+
+    MSG_C2S_REQ_RESCUE                          = 2163; // 救助莎兰娜
+    MSG_C2S_REQ_RESCUE_CYCLE_REWARD             = 2164; // 莎兰娜周期奖励
+    MSG_C2S_REQ_RESCUE_DATA_FLOW                = 2165; // 莎兰娜埋点数据
+
+    MSG_C2S_REQ_FACILITY_BAG_LIST                  = 2170; // 请求设施背包列表
+    MSG_S2C_RSP_FACILITY_NOTIFY                    = 2171; // 通知
+    MSG_C2S_REQ_FACILITY_CMD                       = 2172; // 设施升级 设施觉醒 建筑设施穿脱 等    
+
+    MSG_C2S_REQ_TAKE_METEOR_REWARD                 = 2175; // 领取怪物入侵奖励
+
+    MSG_C2S_REQ_RESIDENT_SYNTHESIS                 = 2179; // 合成居民
+
+    MSG_C2S_REQ_RESIDENT_BAG_LIST                  = 2180; // 请求居民列表
+    MSG_S2C_RSP_RESIDENT_NOTIFY                    = 2181; // 通知
+    MSG_C2S_REQ_RESIDENT_CMD                       = 2182; // 建筑居民穿脱 等
+    MSG_C2S_REPORT_RESIDENT                        = 2183; // 上行 居民信息 内容 S2CRspResidentNotify
+
+    MSG_C2S_REQ_RESIDENT_COLLECT_RES               = 2184; // 请求采集资源
+    MSG_C2S_REQ_AFFAIR_SECTION                     = 2185; // 请求处理事务
+
+    MSG_C2S_SYNC_RESIDENT_LETTER                   = 2186; // 上行 居民信件
+
+    MSG_C2S_REQ_ATELIER_SWITCH                     = 2187; // 请求灯塔开关
+
+    MSG_C2S_RESIDENT_RESOURCE                      = 2189; // 上行 资源上报
+    MSG_SYNC_RESIDENT_RESOURCE                     = 2190; // 下行 资源更新
+    MSG_S2C_OFFLINE_RESOURCE                       = 2191; // 离线资源通知
+
+    MSG_C2S_REQ_DECREE_LIST                  = 2192; // 请求法典列表
+    MSG_S2C_RSP_DECREE_NOTIFY                    = 2193; // 通知
+    MSG_C2S_REQ_DECREE_CMD                       = 2194; // 颁布庇护法典
+
+    MSG_S2C_RSP_REFRESH_SHOP_GOODS            = 2195; // 刷新商店物品
+
+    MSG_C2S_REQ_SHOP_LIST                     = 2196; // 请求商店列表
+    MSG_S2C_RSP_SHOP_LIST                     = 2197; // 返回商店列表
+    MSG_C2S_REQ_SHOP_BUY                      = 2198; // 购买商店道具
+    MSG_C2S_REQ_SHOP_REFRESH                  = 2199; // 刷新商店物品
+
+    //聊天室相关模块 (2200-2250)
+    MSG_C2S_REQ_GET_FRIEND_LIST                 = 2200;   //获取好友列表
+    MSG_S2C_RSP_GET_FRIEND_LIST                 = 2201;   //获取好友列表返回
+    MSG_C2S_REQ_APPLY_FRIEND                    = 2202;   //申请好友
+    MSG_C2S_REQ_DEAL_APPLY_FRIEND               = 2203;   //处理申请好友
+    MSG_C2S_REQ_DELETE_FRIEND                   = 2204;   //删除好友
+    MSG_C2S_REQ_BLACK_SOMEONE                   = 2205;   //屏蔽某人
+    MSG_S2C_NTF_UPDATE_FRIEND                   = 2206;   //更新好友数据
+    MSG_C2S_REQ_SET_CHAT_ATTRIBUTE              = 2207;   //设置聊天属性
+    MSG_C2S_REQ_GET_CHAT_LIST                   = 2208;   //获取聊天列表
+    MSG_S2C_RSP_GET_CHAT_LIST                   = 2209;   //获取聊天列表返回
+    MSG_C2S_REQ_SEND_CHAT_MESSAGE               = 2210;   //发送聊天消息
+    MSG_S2C_NTF_CHAT_MESSAGE                    = 2211;   //聊天推送
+    MSG_PS2PS_NTF_FRIEND_ONLINE                 = 2212;   //好友上线
+    MSG_PS2PS_REQ_SEND_PLAYER_CHAT_MESSAGE      = 2213;   //私聊
+    MSG_C2S_REQ_GET_CHAT_MESSAGES               = 2214;   //请求单个聊天室消息
+    MSG_S2C_RSP_GET_CHAT_MESSAGES               = 2215;   //返回单个聊天室消息
+    MSG_S2C_NTF_CHAT_ATTRIBUTE                  = 2216;   //聊天室属性推送
+    MSG_C2S_REQ_SEARCH_PLAYER                   = 2217;   //请求搜索用户
+    MSG_S2C_RSP_SEARCH_PLAYER_RESULT            = 2218;   //请求搜索用户结果
+    MSG_C2S_REQ_CREATE_CHAT                     = 2219;   //创建聊天室
+    MSG_C2S_REQ_DELETE_CHAT                     = 2220;   //删除聊天室
+    MSG_C2S_REQ_ADD_CHAT_MEMBER                 = 2221;   //添加聊天室成员
+    MSG_C2S_REQ_REM_CHAT_MEMBER                 = 2222;   //删除聊天室成员
+    MSG_CS2PS_NTF_UPDATE_CHAT                   = 2223;   //chat推送public更新聊天室数据
+    MSG_C2S_REQ_BLACK_MANY                      = 2224;   //批量拉黑
+    MSG_S2C_NTF_UPDATE_FRIENDS                  = 2225;   //批量推送好友列表变化
+    MSG_C2S_REQ_OPEN_RED_PACKET                 = 2226;   //开红包请求
+    MSG_S2C_RSP_OPEN_RED_PACKET                 = 2227;   //开红包返回
+    MSG_S2C_RSP_CHAT_BAN                        = 2228;   //玩家已被禁言(剩余秒)
+    MSG_S2S_REQ_SEND_CHAT_MESSAGE               = 2229;   //服务器发送聊天消息
+    MSG_S2S_REQ_CHANGE_CHAT_PLAYER_AREA         = 2230;   //修改玩家聊天室小区
+    MSG_C2S_REQ_SWITCH_LEADER_CHAT_MSG          = 2231;   //开关R4频道消息请求
+    MSG_S2C_REQ_SWITCH_LEADER_CHAT_MSG          = 2232;   //开关R4频道消息响应
+	MSG_C2S_REQ_RED_PACKET_LIST           		= 2233;   //请求获取未领取的联盟红包列表
+    MSG_S2C_RSP_RED_PACKET_LIST           		= 2234;   //响应未领取的联盟红包列表
+	MSG_PS2AS_NTF_UPDATE_RED_PACKET				= 2235;	  //通知联盟服广播红包列表状态变化消息
+    MSG_C2S_REQ_UPVOTE_CHAT_MESSAGE             = 2236;   //发送点赞消息
+    MSG_S2C_NTF_UPVOTE_CHAT_MESSAGE             = 2237;   //点赞推送
+    MSG_C2S_REQ_SET_CHAT_SHOW_LINE              = 2238;   //设置聊天主界面显示行数
+    MSG_S2S_NTF_CHAT_ATTRIBUTE                  = 2239;   //chat->ps聊天属性
+
+    MSG_C2S_REQ_PUBLISH_ALLIANCE_NOTICE         = 2240;   //联盟公告发布
+    MSG_C2S_REQ_UPVOTE_ALLIANCE_NOTICE          = 2241;   //联盟点赞公告
+    MSG_S2C_NTF_UPVOTE_ALLIANCE_NOTICE          = 2242;   //通知联盟公告点赞消息
+
+    MSG_S2S_NTF_CHAT_MESSAGE                    = 2243;   //聊天推送
+    MSG_C2S_REQ_LEAVE_CHAT                      = 2244;   //请求离开聊天室
+    MSG_C2S_REQ_QUERY_CHAT_MEMBER               = 2245;   //请求聊天室所有成员
+    MSG_S2C_RSP_QUERY_CHAT_MEMBER               = 2246;   //请求聊天室所有成员
+
+	MSG_C2S_REQ_REDPACKET_OPEN_LIST          	= 2247;   //请求红包打开列表
+    MSG_S2C_RSP_REDPACKET_OPEN_LIST          	= 2248;   //响应红包打开列表
+	
+	MSG_S2C_NTF_REDPACKET_LIST_UPDATE          	= 2249;   //推送红包更新    
+
+    MSG_C2S_REQ_GET_MAIN_BRANCH_TASKS           = 2251;  //获取主线支线任务信息
+    MSG_S2C_RSP_GET_MAIN_BRANCH_TASKS           = 2252;  //获取主线支线任务信息返回
+	MSG_C2S_REQ_FINISH_MAIN_TASK         	    = 2253;  //完成主线任务
+	MSG_C2S_REQ_FINISH_BRANCH_TASK           	= 2254;  //完成支线任务
+	MSG_C2S_REQ_GET_DAILY_TASKS           		= 2255;  //获取每日任务信息
+	MSG_S2C_RSP_GET_DAILY_TASKS           		= 2256;  //获取每日任务信息返回
+	MSG_C2S_REQ_FINISH_DAILY_TASK           	= 2257;  //完成每日任务
+	MSG_C2S_REQ_GET_DAILY_STAGE_REWARD    		= 2258;  //获取每日任务档位奖励
+	MSG_S2C_NTF_ALL_TASK_DATA					= 2259;  //推送所有任务数据
+	MSG_S2C_NTF_TASK_DATA						= 2260;  //推送单个任务数据
+    MSG_C2S_REQ_GET_ACHIEVEMENT_INFO            = 2261;  //获取成就信息
+    MSG_S2C_RSP_GET_ACHIEVEMENT_INFO            = 2262;  //获取成就信息返回
+    MSG_C2S_REQ_FINISH_ACHIEVEMENT_TASK         = 2263;  //完成成就任务
+    MSG_C2S_REQ_GET_ACHIEVEMENT_STAGE_REWARD    = 2264;  //获得成就档位奖励
+    MSG_C2S_REQ_SET_ACHIEVEMENT_BADGE           = 2265;  //设置成就徽章
+    MSG_C2S_REQ_GET_CHAPTER_TASKS               = 2266;  //获取章节任务信息
+    MSG_S2C_RSP_GET_CHAPTER_TASKS               = 2267;  //获取章节任务信息返回
+    MSG_C2S_REQ_GET_CHAPTER_REWARD              = 2268;  //领取大章奖励
+    MSG_C2S_REQ_FINISH_CHAPTER_TASK             = 2270;  //完成章节任务
+    MSG_C2S_REQ_GET_NOTE_REWARD                 = 2271;  //获取手记奖励
+    MSG_C2S_REQ_FINISH_SHETLER_TASK             = 2272;  //获取地下城任务奖励
+    MSG_C2S_REQ_FINISH_NOTE_TASK                = 2273;  //完成手记任务
+    MSG_S2C_NTF_CLEAR_ACTIVITY_TASK_DATA        = 2274;  //清除活动任务数据通知
+    MSG_S2C_NTF_MULTI_TASK_DATA                 = 2275;  //推送多个任务数据
+    MSG_S2S_NTF_INCR_ENERGY                     = 2276;  //玩家体力变化通知任务模块
+    MSG_S2C_NTF_CLEAR_TRIGGER_TASK_DATA         = 2277;  //清除触发任务数据通知
+	MSG_C2S_REQ_GET_ALL_DAILY_TASK_REWARD		= 2278;	//一键领取每日任务奖励
+	MSG_C2S_RSP_GET_ALL_DAILY_TASK_REWARD		= 2279;	//一键领取每日任务奖励
+
+    //个人信息相关 (2281-2330)
+    MSG_C2S_REQ_CHANGE_PLAYER_NAME              = 2281;  //修改玩家名称
+    MSG_C2S_REQ_CHECK_PLAYER_NAME               = 2282;  //检查玩家名称
+    MSG_C2S_REQ_CHANGE_PLAYER_AVATAR            = 2283;  //修改玩家头像
+    MSG_C2S_REQ_GET_PLAYER_BASIC_INFO           = 2284;  //获取玩家基础信息
+    MSG_S2C_RSP_GET_PLAYER_BASIC_INFO           = 2285;  //获取玩家基础信息返回
+    MSG_C2S_REQ_GET_ACCOUNT_ROLE_LIST           = 2286;  //获取账户拥有的玩家角色列表
+    MSG_S2C_RSP_GET_ACCOUNT_ROLE_LIST           = 2287;  //获取账户拥有的玩家角色列表返回
+    MSG_C2S_REQ_SET_GAME_SETTING                = 2288;  //改变玩家设置
+    MSG_MS2LS_REQ_MOVE_PLAYER_NAME              = 2289;  //移动玩家名字所在集合
+    MSG_LS2MS_REQ_MOVE_PLAYER_NAME              = 2290;  //移动玩家名字所在集合
+    MSG_MS2GS_REQ_MOVE_PLAYER_NAME              = 2291;  //移动玩家名字所在集合
+    MSG_C2S_REQ_CHANGE_PROPERTY                 = 2292;  //修改玩家属性 性别、签名等 协议体PropertyData
+
+    MSG_C2S_REQ_GAME_SERVER_VERSION             = 2331;
+    MSG_S2C_RSP_GAME_SERVER_VERSION             = 2332;
+	// GlobalBuff模块
+	MSG_S2C_NTF_GLOBAL_BUFF_LIST             	= 2335;	  //GS->C
+	MSG_S2S_GLOBAL_BUFF_CHANGE             		= 2336;	  // 全局buff的改变
+
+    MSG_C2S_REQ_USE_ENERGY_SHIELD                = 2337;  // 点击使用充能护盾 协议体EmptyMsg
+	
+	//demo 消息 begin (2401~2450)
+	MSG_S2C_NTF_OBJECT_MOVE						= 2403;
+    MSG_S2C_NTF_OBJECT_MOVE_BORN                = 2404;  //移动到出生点
+	MSG_C2S_REQ_DUNGEON_MARCHING				= 2410;	//副本行军
+	MSG_C2S_REQ_MARCHING						= 2411;	//行军
+	MSG_C2S_REQ_GET_PATH						= 2412;	//请求服务器大地图寻路路径
+	MSG_S2C_RSP_GET_PATH						= 2413;	//请求服务器大地图寻路路径应答
+	MSG_S2C_RSP_MARCHING						= 2414;	//行军
+	MSG_C2S_REQ_GET_FREE_ENERGY					= 2415;	//获取定时刷新的免费体力
+    MSG_C2S_REQ_BUY_ENERGY					    = 2416;	//请求购买体力
+
+    // MSG_C2S_REQ_MARCHING_TRY_OUT                = 2418; // 获取采集信息
+    // MSG_S2C_RSP_MARCHING_TRY_OUT                = 2419; // 采集信息返回
+
+	//临时协议
+	//demo 消息 end (2401~2450)
+	
+	//地图数据相关 begin (2501~2600)
+	MSG_C2S_REQ_VIEW_UPDATE							= 2501;		//请求视野变更
+	MSG_S2C_RSP_VIEW_UPDATE							= 2502;		//回复视野变更
+	MSG_S2C_NTF_MAP_OBJECT_CREATE					= 2503;		//地图单位（资源点、野怪、队伍等）创建通知
+	MSG_S2C_NTF_MAP_OBJECT_DELETE					= 2504;		//地图单位（资源点、野怪、队伍等）删除通知
+	MSG_C2S_REQ_MAP_OBJECT_POSITION_VERIFY			= 2505;		//请求对象坐标（校验位置）
+	MSG_S2C_RSP_MAP_OBJECT_POSITION_VERIFY			= 2506;		//请求对象坐标应答（校验位置）
+	
+	MSG_S2D_REQ_SAVE_SCENCE_ENTITY					= 2507;
+	MSG_S2M_LOAD_SCENCE_SERVER_COMPELETE			= 2508;
+	MSG_S2D_REQ_DELETE_SCENCE_ENTITY				= 2509;
+	MSG_S2G_NTF_GENERAL_PROPERTY					= 2510;
+	
+    MSG_S2G_NTF_MEMBER_PROPERTY						= 2512;     // 成员属性
+
+	MSG_S2C_NTF_MAP_OBJECT_UPDATE					= 2511;		//地图单位数据刷新
+	MSG_S2D_REQ_SAVE_SCENCE_ENTITY_FULL				= 2513;		//保存完整数据
+	
+	MSG_GS2DB_REQ_LOAD_CITY_DATA					= 2514;//
+    MSG_S2C_NTF_GAMECITY_OBJECT_CREATE                   = 2515;     //gamecity data
+
+    MSG_RPC_GS2DB_REQ_LOAD_CITY_DATA                = 52514; // rpc 请求加载城市数据
+	
+	MSG_G2S_NTF_DELETE_SCENCE_CITY					= 2516;		//
+	MSG_DB_RSP_LOAD_CITY_DATA						= 2518;		//
+	MSG_REQ_RECOVER_GAME_CITY_DATA					= 2519;		//
+
+    MSG_C2S_REQ_SEARCH_OBJECT                       = 2520;     //请求搜索
+    MSG_S2C_RSP_SEARCH_OBJECT                       = 2521;     //回复搜索结果
+    MSG_C2S_REQ_OBJECT_LIST_FOR_SEARCH              = 2522;     //请求主城周围object list for search
+    MSG_S2C_RSP_OBJECT_LIST_FOR_SEARCH              = 2523;     //回复主城周围object list for search
+
+    MSG_C2S_REQ_ADD_MARK                            = 2525;     //添加标签
+    MSG_C2S_REQ_EDIT_MARK                           = 2526;     //编辑标签
+    MSG_C2S_REQ_DEL_MARK                            = 2527;     //删除标签
+
+    MSG_C2S_REQ_MOVE_CITY                           = 2528;     //高迁
+    MSG_SS2GS_RSP_MOVE_CITY                         = 2529;     //高迁结果返回
+	
+	MSG_S2C_NTF_MAIN_MAP_AREA_UNLOCK                = 2530;     //服务器通知客户端大地图区域解锁时间
+    
+    MSG_C2S_REQ_ALLIANCE_RES_INFO                   = 2531;       // 请求联盟资源点信息
+    MSG_S2C_RSP_ALLIANCE_RES_INFO                   = 2532;       // 回复联盟资源点信息
+    MSG_C2S_REQ_ALLIANCE_RES_MD5                    = 2533;       // 请求联盟资源点md5
+    MSG_S2C_RSP_ALLIANCE_RES_MD5                    = 2534;       // 回复联盟资源点md5
+    
+    MSG_C2S_REQ_SEARCH_SAND_WORM                    = 2535;   // 请求搜索沙虫怪信息    
+    MSG_S2C_RSP_SEARCH_SAND_WORM                    = 2536;   // 返回搜索沙虫怪信息
+	
+	MSG_S2S_NTF_TAKE_REWARD_BOX						= 2537;	//捡取地图宝箱
+	MSG_S2C_NTF_SOLDIER_GROUP_GET_REWARD_BOX		= 2538;	//通知客户端已经捡取宝箱
+
+    MSG_S2C_NTF_MAP_OBJECT_CREATE_LOD2_3            = 2540;     //地图单位（资源点、野怪、队伍等）创建通知
+    MSG_S2C_NTF_MAP_OBJECT_CREATE_LOD4              = 2541;     //地图单位（资源点、野怪、队伍等）创建通知
+    MSG_S2C_NTF_MAP_OBJECT_DELETE_LOD2_3            = 2542;     //地图单位（资源点、野怪、队伍等）删除通知
+    MSG_S2C_NTF_MAP_OBJECT_DELETE_LOD4              = 2543;     //地图单位（资源点、野怪、队伍等）删除通知
+    MSG_S2C_NTF_MAP_OBJECT_DELETE_LOD5              = 2544;     //地图单位（资源点、野怪、队伍等）删除通知
+    MSG_S2C_NTF_MAP_OBJECT_CREATE_LOD5              = 2545;     //地图单位（资源点、野怪、队伍等）创建通知
+    MSG_S2C_NTF_MARCHINGTOMEINFOLIST                = 2546;     //向我行军信息
+
+	//地图数据相关 end (2501~2600)
+	
+	//战斗相关 begin (2601~2700)
+	MSG_NTF_BATTLE_ROUND_DATA						 = 2601;	//战斗回合数据
+	MSG_NTF_BATTLE_REPORT							 = 2602;	//战斗结束后的战斗报告
+	MSG_NTF_SOLIDER_DATA_UPDATE						 = 2603;	//自己的战斗信息更新，每个兵种的数量更新
+	MSG_SS2GS_BATTLE_RESULT							 = 2604;	// 战斗结果通知game
+	MSG_GS2SS_PLUNDER_RESOURSE						 = 2605;	// 掠夺资源回包给场景
+	MSG_SS2GS_RPC_WOUNDED_SOLDIER					 = 2606;	// 伤兵协议
+	MSG_NTF_SOLIDER_GROUP_DATA						 = 2607;	//通知客户端队伍信息
+	MSG_NTF_ENEMY_MARK								 = 2608;	//通知敌对标识
+	MSG_S2S_SET_PROPERTYS						 = 2609;	//同步城建属性
+	MSG_SS2GS_NTF_CITY_BATTLE_FINISH				 = 2610;	//场景服通知game 所有战斗结束
+
+    MSG_SS2GS_MONSTER_REWARD	                     = 2611;	// 怪物击杀奖励	
+	MSG_SS2GS_SOLDIER_POWER_REFRESH                  = 2612;	// 队伍战力刷新
+	MSG_GS2SS_ASSEMBLE_PLUNDER_RESOURSE				 = 2613;	// 集结掠夺资源
+	
+	MSG_C2S_REQ_SET_DETAIL_BATTLE_MSG_LIMIT			 = 2614;	// 客户端登录上报每回合最大接收战斗详细单位信息数量
+
+    MSG_SS2GS_CITY_SGLIST                            = 2615; // 城市和部队信息
+
+    MSG_SS2GS_BREAK_WALL                             = 2616; // 场景服通知game服城墙破坏
+	MSG_S2C_NTF_BATTLE_RESULT_MESSAGE                = 2617; // 通知客户端战斗胜利或失败特效
+	
+	//战斗相关 end (2501~2500)
+	//行军、建筑部队 begin (2701~2740)
+	MSG_S2C_NTF_SOLDIER_GROUP_REMOVE								 = 2701;//玩家自己队伍删除
+	MSG_S2C_NTF_CITY_SOLDIERS_INFO									 = 2702;//通知客户端当前城市中 兵种数量 总量\变化
+	MSG_C2S_REQ_SET_PRESET_SOLDIER_GROUP							 = 2703;//请求保存预设队伍
+	MSG_C2S_NTF_INBUILDING_SOLDIER_GROUP							 = 2704;//通知客户端在建筑中（不在地图上）的队伍信息
+	MSG_S2C_NTF_SOLDIER_GROUP_STATE									 = 2705;//玩家自己队伍状态变更
+	
+	MSG_GS2SS_NTF_MARCHING_HERO_UPDATE								 = 2706;//game 通知 场景服 英雄数据变化 需要更新到队伍数据中
+	MSG_SS2GS_NTF_HERO_BACK_CITY									 = 2707;	//场景服通知game服英雄返回
+	MSG_GS2SS_NTF_GARRISON_CITY_HERO_CHANGE							 = 2708;	//game to 场景 城墙英雄变化
+	
+	MSG_C2S_REQ_GARRISON_SOLDIER_GROUP_INFO							 = 2709;	//驻守队伍信息
+	MSG_S2C_RSP_GARRISON_SOLDIER_GROUP_INFO							 = 2710;	//驻守队伍信息
+	MSG_SS2GS_SYNC_SCENCE_DATA										 = 2711;	//玩家上线同步场景服数据
+	MSG_S2C_NTF_MARCHING_TO_SELF									 = 2712;// 通知预警框信息
+	MSG_S2C_NTF_SCOUT_INFO											 = 2713;// 通知侦查信息
+	MSG_SS2GS_GET_SCOUT_INFO										 = 2714;// 获取侦查信息
+	MSG_SS2GS_AFTER_SCOUTED											 = 2715;// 侦查完成
+	MSG_SS2GS_Create_SCOUT											 = 2716;// 创建侦查兵 扣资源
+	MSG_S2C_NTF_ALL_MARCHING_TO_SELF								 = 2717;// 通知所有的预警框信息
+	MSG_S2C_CANCEL_MARCHING_TO_SELF									 = 2718;// 删除指定的预警框信息 
+	
+	MSG_C2S_REQ_GARRISON_LEADER_OPERATE								 = 2719;	//驻守队伍队长操作
+	MSG_C2S_RSP_GARRISON_LEADER_OPERATE								 = 2720;	//驻守队伍队长操作
+    MSG_GS2SS_NTF_GUARD_CAR_UNNLOAD                                  = 2721;// 城墙载具卸下
+	
+	MSG_C2S_REQ_GARRISON_INFO	                                 = 2722;// 目标建筑 援助信息请求
+	MSG_S2C_RSP_GARRISON_INFO	                                 = 2723;// 目标建筑 援助信息回复
+
+    MSG_C2S_REQ_GARRISON_R4_OPERATE                              = 2724;    //联盟官员操作
+    MSG_C2S_RSP_GARRISON_R4_OPERATE                              = 2725;    //联盟官员操作
+
+
+    MSG_C2S_REQ_SET_TEAM_RECORD                                      = 2726; // 设置编队存档
+
+    MSG_C2S_REQ_UPDATE_MARCHING_TO_SELF                              = 2727;// 更新预警信息
+
+	//行军、建筑部队 end (2701~2740)
+	
+	
+	MSG_C2S_REQ_USE_PACK_ITEM					 			= 2750;	// 使用物品
+    MSG_S2C_NTF_GET_ITEMS                                   = 2751; // 获得道具
+    MSG_C2S_REQ_BATCH_USE_PACK_ITEM                         = 2752;  //批量使用背包物品(不用于使用物品，某些处理不支持)
+    MSG_C2S_REQ_ALLIANCE_ROOKIE_PLACE                       = 2753;  //联盟玩家推荐迁城位置
+    MSG_S2C_RSP_ALLIANCE_ROOKIE_PLACE                       = 2754;  //联盟玩家推荐迁城位置
+	MSG_C2S_REQ_MULTI_USE_PACK_ITEM                         = 2755;  //批量使用背包物品
+    MSG_C2S_REQ_JOIN_ALLIANCE_MOVE_PLACE                    = 2756;  //加入联盟迁城
+    MSG_C2S_REQ_JOIN_ALLIANCE_MOVE_TIPS                     = 2757;  //加入联盟迁城tips
+	MSG_S2C_RSP_BATCH_USE_PACK_ITEM                         = 2758;  //批量使用背包物品(不用于使用物品，某些处理不支持)
+ 
+
+	//公会 begin （2761 ~ 2800）
+	//工会集结
+	MSG_S2C_NTF_GUILD_ASSEMBLE_INFO										 = 2761;	//玩家上线广播工会集结信息
+	MSG_C2S_REQ_UPDATE_ASSEMBLE_SG										 = 2762;	//请求更新集结信息（战斗状态的集结，士兵数量由客户端请求更新，服务器不主动推送）
+	MSG_C2S_REQ_NEW_ASSEMBLE											 = 2763;	//请求发起集结
+	MSG_C2S_CANCEL_ASSEMBLE												 = 2764;	//取消集结
+	MSG_S2C_NTF_ASSEMBLE_SOLDIER_GROUP_ADD								 = 2765;	//有队伍加入集结
+	MSG_S2C_NTF_ASSEMBLE_SOLDIER_GROUP_REMOVE							 = 2766;	//集结队伍推出
+	MSG_S2C_NTF_ASSEMBLE_STATE_UPDATE									 = 2767;	//集结状态变化
+	
+	MSG_C2S_REQ_KICK_OUT_ASSEMBLE_SG									 = 2768;	//请求踢出集结队伍
+	MSG_C2S_REQ_LEAVE_ASSEMBLE											 = 2769;	//请求退出集结队伍
+	
+	MSG_PS2SS_NTF_PLAYER_ASSEMBLE_INFO									 = 2770;
+	MSG_C2S_REQ_ASSEMBLE_LEADER_PROPERTYS								 = 2771;	//请求集结队伍信息  队长属性和英雄技能
+	MSG_C2S_RSP_ASSEMBLE_LEADER_PROPERTYS								 = 2772;	//请求集结队伍信息  队长属性和英雄技能
+	
+	//MSG_C2S_REQ_SET_AUTO_ASSEMBLE										 = 2773;	//设置自动集结
+	//MSG_S2C_RSP_SET_AUTO_ASSEMBLE										 = 2774;	//设置自动集结
+	
+	//MSG_C2S_REQ_AUTO_ASSEMBLE_INFO										 = 2775;	//请求自动集结信息
+	//MSG_S2C_RSP_AUTO_ASSEMBLE_INFO										 = 2776;	//请求自动集结信息
+	
+	MSG_S2G_NTF_ASSEMBLE_COMPLETE										 = 2777;	//场景通知game 集结完成
+	
+	MSG_S2AS_BRORACAST_TIPS												 =  2778;	//场景通知联盟弹出tips
+	
+	MSG_SS2AS_NTF_BE_ASSEMBLE_INFO										 = 2779;	//通知被集结信息
+
+	//公会 end （2761 ~ 2800）
+
+	//场景 begin （2801 ~ 2820）
+	MSG_S2C_NTF_ENTER_SCENCE											 = 2801;	//通知客户端进入场景
+	MSG_S2S_REQ_PLAYER_CITY_DATA										 = 2802;	//请求玩家city相关数据广播
+	MSG_S2S_NTR_SERVER_MOVE_PLAYER_CITY									 = 2803;	//服务器对玩家进行迁城操作
+		
+	MSG_S2G_NTF_CROSS_CITY_BACK											 = 2804;	//跨服city 返回原服	//服务器关服、被打到飞堡、时间结束
+	MSG_G2S_REQ_AREA_CITY_LEAVE											 = 2805;	//本服关服，通知跨服city 从对方服务器离开
+	MSG_S2G_RSP_AREA_CITY_LEAVE											 = 2806;	//本服关服，通知跨服city 从对方服务器离开
+	MSG_G2S_REQ_CROSS_CITY_VERIFY										 = 2807;	//game 和 其他区服的场景服连接，检查跨服city是否正确，用于做宕机后，或者短暂断连后的数据处理
+	MSG_S2G_RSP_CROSS_CITY_VERIFY										 = 2808;	//game 和 其他区服的场景服连接，检查跨服city是否正确，用于做宕机后，或者短暂断连后的数据处理
+    MSG_REQ_TRANS_TO_CROSS_SCENCE_SERVER								 = 2809;	//通过game 转发到目标跨服场景服
+	MSG_S2C_NTF_CITY_CROSS_STATE										 = 2810;	//通知客户端跨服
+	MSG_C2S_REQ_CROSS_CITY_BACK											 = 2811;	//客户端请求返回原服
+	//场景 end （2801 ~ 2820）
+	//副本玩法（2821 ~ 2900）
+    MSG_C2S_REPORT_DUNGEON   											 = 2820;	//上报副本埋点
+    MSG_C2S_LOADING_DUNGEON   											 = 2821;	//通知loading结束进入副本
+	MSG_S2C_NTF_ENTER_DUNGEON											 = 2822;	//通知进入副本
+	MSG_S2C_NTF_DUNGEON_END												 = 2823;	//副本结束
+	MSG_C2S_REQ_LEAVE_DUNGEON											 = 2824;	//请求离开副本玩法
+	MSG_GS2SCS_REQ_CREATE_DUNGEON_DATA									 = 2825;	//game to scenceclone 请求初始化副本数据
+	MSG_SCS2GS_RSP_CREATE_DUNGEON_DATA									 = 2826;	//scenceclone to game 初始化副本数据响应
+	MSG_C2S_REQ_SET_DUNGEON_INIT_DATA									 = 2827;	//设置副本初始化数据（英雄阵容等）
+	MSG_S2C_RSP_SET_DUNGEON_INIT_DATA									 = 2828;	//设置副本初始化数据（英雄阵容等）
+	
+	MSG_SCS2GS_NTF_DUNGEON_END											 = 2830;	//scenceclone to game 副本结束
+	//
+	MSG_S2S_REQ_DUNGEON_MATCH											 = 2831;	//服务器内请求匹配
+	MSG_S2S_NTF_DUNGEON_STATE											 = 2832;	//通知副本状态
+	
+	MSG_S2S_REQ_MATCH_DUNGEON_START										 = 2833;	//
+	MSG_S2C_NTF_DUNGEON_STATE											 = 2834;	//通知副本状态	
+	MSG_C2S_REQ_CANCEL_DUNGEON_MATCH									 = 2835;	//取消副本匹配
+	MSG_C2S_REQ_SET_VIEW_DUNGEON										 = 2836;	//设置副本观察点
+	MSG_S2C_RSP_SET_VIEW_DUNGEON										 = 2837;	//设置副本观察点
+	//
+	MSG_C2S_REQ_BATTLE_ROYALE_ACTIVITY_MATCH							 = 2838;	//大逃杀活动匹配
+	MSG_C2S_RSP_BATTLE_ROYALE_ACTIVITY_MATCH							 = 2839;	//大逃杀活动匹配
+	
+    MSG_S2C_NTF_DUNGEON_CIRCLE                                           = 2840;    //副本毒圈通知
+	MSG_S2C_NTF_BTR_OBJECT_PROPERTY                                      = 2841;    //通知大逃杀单位属性
+	MSG_S2C_NTF_BTR_OBSERVER_END										 = 2842;	//通知大逃杀副本观战结束
+	//
+	MSG_C2S_REQ_CPM_ACCESS_ENTER										 = 2843;	//进入特训基地cpm副本
+	//MSG_C2S_REQ_CPM_ACCESS_REWARD										 = 2844;	//领取特训基地cpm副本奖励
+	//
+	MSG_C2S_REQ_CHAPTER_CHALLANGE										 = 2850;	//请求挑战赛车关卡
+	MSG_C2S_REQ_HANGUP_REWARD											 = 2851;	//请求领取挂机奖励   
+	MSG_S2C_ACK_HANGUPREWARD											 = 2852;	//返回挂机奖励
+	MSG_C2S_REQ_ENTER_RANDOM_EVENT										 = 2853;	//请求进入随机事件副本
+	MSG_C2S_COMPLETE_USER_GUIDE											 = 2854;	//完成新手引导
+	//
+	MSG_C2S_REQ_DUNGEON_RESTART												 = 2855;	//请求副本重新开始
+	MSG_S2C_RSP_DUNGEON_RESTART												 = 2856;	//返回副本重新开始
+	MSG_C2S_REQ_DUNGEON_SETTLE												 = 2857;	//副本结算
+	MSG_S2C_NTF_DUNGEON_PREPARE												 = 2858;	//通知进入副本准备阶段
+
+	MSG_C2S_START_DUNGEON_LOGIC                                           = 2859;    //客户端上报副本开始
+	
+    MSG_C2S_GOLD_DUNGEON_REWARD                                          = 2870;    //请求付费活动奖励
+
+	//副本玩法（2821 ~ 2900）
+	MSG_C2S_DUNGEON_USEITEM_SKILL  = 2880;// 副本使用技能
+    MSG_NTF_DUNGEON_USEITEM_SKILL  = 2881;// 副本使用技能： 广播包
+    MSG_C2S_DUNGEON_GET_ITEMS      = 2882;// 获取道具
+    MSG_C2S_BATTLEROYALE_REVIVE    = 2883; //玩家复活请求
+    MSG_C2S_BATTLEROYALE_QUIT      = 2884;  //玩家退出请求
+    MSG_NTF_BRSG_IDLE_CURE         = 2890;// 部队脱战回血
+    MSG_NTF_BRSG_KILL              = 2891;// 部队副本击杀
+    MSG_NTF_BRSG_DEFEAT            = 2892;// 部队副本死亡
+    MSG_NTF_BR_REFRESH_OBJECT      = 2893;// 地图通知刷新单位
+    MSG_NTF_BR_BASIC_INFO          = 2894; //地图基础信息通知
+    MSG_NTF_BR_Kill_INFO           = 2895;  //地图击杀信息
+    MSG_NTF_BT_TAKESOLDIERITEM     = 2896;  //玩家拾取士兵道具通知
+    MSG_NTF_BT_GET_KILL_SCORE      = 2897;  //获得击杀积分
+
+	//联盟 begin (2901~3000)
+	MSG_C2S_REQ_CREATE_ALLIANCE = 2901;  //玩家请求创建联盟
+	MSG_S2C_RSP_CREATE_ALLIANCE = 2902;  //创建联盟返回
+
+	MSG_C2S_REQ_JOIN_ALLIANCE = 2903;  //玩家请求加入联盟
+	MSG_S2C_RSP_JOIN_ALLIANCE = 2904;  //加入联盟返回
+
+	MSG_C2S_REQ_QUIT_ALLIANCE = 2905;  //玩家请求退出联盟
+	MSG_S2C_RSP_QUIT_ALLIANCE = 2906;  //退出联盟返回
+
+	MSG_C2S_REQ_OPERATE_ALLIANCE = 2907;  //请求操作联盟
+	MSG_S2C_RSP_OPERATE_ALLIANCE = 2908;  //操作联盟返回
+
+	MSG_C2S_REQ_OPERATE_ALLIANCE_MEMBER = 2909; //请求联盟成员常规操作
+	MSG_S2C_RSP_OPERATE_ALLIANCE_MEMBER = 2910; //联盟成员常规操作返回
+
+	MSG_C2S_REQ_ALLIANCE_LIST = 2911;   //请求联盟列表(联盟推荐)
+	MSG_S2C_RSP_ALLIANCE_LIST = 2912;   //联盟列表返回(联盟推荐)
+
+	MSG_C2S_REQ_SEARCH_ALLIANCE = 2913;  //请求搜索联盟
+	MSG_S2C_RSP_SEARCH_ALLIANCE = 2914;  //搜索联盟返回
+
+	MSG_C2S_REQ_ALLIANCE_NAME_CHECK = 2915;  //请求联盟名字检测
+	MSG_S2C_RSP_ALLIANCE_NAME_CHECK = 2916;  //联盟名字检测返回
+
+	MSG_C2S_REQ_ALLIANCE_APPLICATION_LIST = 2917;  //请求拉取申请列表
+	MSG_S2C_RSP_ALLIANCE_APPLICATION_LIST = 2918;  //拉取申请列表返回
+
+	MSG_C2S_REQ_ALLIANCEINFO = 2919;  	//请求联盟信息
+	MSG_S2C_RSP_ALLIANCEINFO = 2920;	//联盟信息返回
+
+	MSG_C2S_REQ_ALLIANCE_INVITE = 2921;  //请求联盟邀请
+	MSG_S2C_RSP_ALLIANCE_INVITE = 2922;  //联盟邀请返回
+
+	MSG_C2S_REQ_ALLIANCE_LOG = 2923; 	//请求联盟日志
+	MSG_S2C_RSP_ALLIANCE_LOG = 2924;	//联盟日志返回
+
+	MSG_C2S_REQ_OPERATE_ALLIANCE_SCHEDULE = 2925;  //请求操作联盟日程
+	MSG_S2C_RSP_OPERATE_ALLIANCE_SCHEDULE = 2926;  //操作联盟日程返回
+
+	MSG_C2S_REQ_OPERATE_ALLIANCE_TECH = 2927;  //请求操作联盟科技
+	MSG_S2C_RSP_OPERATE_ALLIANCE_TECH = 2928;  //操作联盟科技返回
+	MSG_S2C_NTF_ALLIANCE_TECH = 2929;  //科技通知
+
+	MSG_AS2GS_VERIFY_ALLIANCE = 2930;   //校验联盟
+
+    MSG_C2S_REQ_OPERATE_ALLIANCE_GIFT = 2931;  //请求操作联盟礼物
+    MSG_S2C_RSP_OPERATE_ALLIANCE_GIFT = 2932;  //返回联盟礼物操作
+    MSG_S2C_NTF_ALLIANCE_GIFT         = 2933;  //联盟礼物通知
+
+    MSG_C2S_REQ_ALLIANCE_HELP = 2934;    //请求联盟帮助
+    MSG_S2C_RSP_ALLIANCE_HELP = 2935;    //联盟帮助返回
+    MSG_S2C_NTF_ALLIANCE_HELP_RECORD = 2936;    //联盟帮助记录
+    MSG_S2C_NTF_ALLIANCE_HELP         = 2937;  //联盟帮助通知
+
+    MSG_S2C_NTF_ALLIANCE_MARK = 2938;       //联盟标记通知协议
+    MSG_C2S_REQ_ALLIANCE_MARK_INFO = 2939;  //联盟标记Info请求
+    MSG_S2C_RSP_ALLIANCE_MARK_INFO = 2940;  //返回联盟标记Info
+
+    MSG_S2C_NTF_ALLIANCE         = 2941;  //联盟通知
+
+    MSG_C2S_REQ_ALLIANCE_CHANGE_NAME =  2942;  //请求联盟改名(包括简称)
+    MSG_S2C_RSP_ALLIANCE_CHANGE_NAME =  2943;  //联盟改名返回
+
+    MSG_GS2AS_REQ_CREATE_ROOKIE_ALLIANCE = 2944;   //创建新手联盟
+    MSG_AS2GS_RSP_CREATE_ROOKIE_ALLIANCE = 2945;   //创建新手联盟返回
+
+    MSG_S2AS_REQ_REWARD_ALLIANCE_GIFT = 2946;  //发送联盟礼物奖励
+
+    MSG_S2S_SYNC_ALLIANCE_INFO = 2947;  //同步联盟信息
+
+    MSG_GS2AS_REQ_QUIT_ROOKIE_ALLIANCE = 2948;   //请求退出新手联盟
+    MSG_AS2GS_RSP_QUIT_ROOKIE_ALLIANCE = 2949;   //退出新手联盟返回
+
+    ///////////////
+    MSG_AS2GS_SYNC_ALLIANCE_HELP = 2950;  //同步联盟帮助
+	
+	MSG_S2C_NTF_BRIEF_ALLIANCE_INFO			 = 2951;   //Server通知玩家所有联盟简要信息
+    MSG_GS2AS_PLAYER_ENTER_SCENE             = 2952;   //玩家进入场景
+
+    MSG_C2S_REQ_INVITE_JOIN_ALLIANCE = 2953;   //入盟邀请请求
+
+    MSG_MAIL2AS_JOIN_ALLIANCE = 2954;  //邮件入盟
+
+    MSG_S2S_RSP_INVITE_JOIN_ALLIANCE = 2955;  //入盟邀请返回
+
+    MSG_SS2AS_SAVE_ALLIANCE_TERRITORY  = 2956;   //存储联盟领土数据
+
+    MSG_C2S_REQ_BUILD_ALLIANCE_BUILDING = 2957;    //请求建造联盟建筑
+    MSG_S2C_RSP_BUILD_ALLIANCE_BUILDING = 2958;    //建造联盟建筑返回
+
+    MSG_C2S_REQ_REMOVE_ALLIANCE_BUILDING = 2959;  //请求拆除联盟建筑
+    MSG_S2C_RSP_REMOVE_ALLIANCE_BUILDING = 2960;  //拆除联盟建筑返回
+
+    MSG_AS2SS_REQ_REMOVE_ALLIANCE_BUILDING = 2961;  //AS->SS 删除联盟建筑
+
+    MSG_C2S_REQ_ALLIANCE_BUILDING_BUILD_CHECK = 2962;  //请求建造检测
+    MSG_S2C_RSP_ALLIANCE_BUILDING_BUILD_CHECK = 2963;  //建造检测返回
+
+    MSG_C2S_REQ_ALLIANCE_TERRITORY_INFO = 2964;   //领土信息请求
+    MSG_S2C_RSP_ALLIANCE_TERRITORY_INFO = 2965;   //领土信息返回
+
+    MSG_S2C_NTF_ALLIANCE_STORAGE_ITEM_LIST = 2966;  //通知资源变化
+
+    MSG_SS2AS_ALLIANCE_RES_POINTS_CHANGE = 2967;  //联盟资源点数量变化
+
+    MSG_C2S_REQ_ALLIANCE_RES_LOGLIST = 2968;  //请求联盟资源消耗列表
+    MSG_S2C_RSP_ALLIANCE_RES_LOGLIST = 2969;  //联盟资源消耗列表返回
+
+    MSG_SS2AS_UPDATE_ALLIANCE_BUILDING_DATA = 2970;  //更新联盟建筑信息
+
+    MSG_S2AS_ADD_ALLIANCE_RES = 2971;  //增加联盟资源
+
+    MSG_SS2GS_ALLIANCE_BUILDING_BUILD_GET_POINTS = 2972; //联盟建筑建造获得积分
+
+    MSG_GS2AS_GIVE_ALLIANCEPOINTS = 2973;   //GAME发放联盟积分
+
+    MSG_C2S_REQ_ALLIANCE_WAR_SOLO_INFO = 2974;  //请求联盟战斗SOLO信息 
+    MSG_S2C_RSP_ALLIANCE_WAR_SOLO_INFO = 2975;  //联盟战斗SOLO信息返回
+
+    MSG_NTF_ALLIANCE_WAR_SOLO_INFO_DEL = 2976;  //联盟战斗SOLO信息删除
+
+    MSG_NTF_ALLIANCE_WAR_SOLO_INFO_UPDATE = 2977;  //联盟战斗SOLO信息更新
+
+    MSG_SS2AS_SYNC_ALLIANCE_WAR_SOLO_INFO = 2978;  //场景同步联盟战争信息到联盟
+
+    MSG_AS2SS_BUILD_ALLIANCE_BUILDING_RESULT = 2979;  //请求建造建筑结果同步
+
+    // MSG_SS2AS_NPC_TOWN_ADD_TO_ALLIANCE          = 2980;     //NPC城镇归属联盟
+    // MSG_SS2AS_NPC_TOWN_REMOVE_IN_ALLIANCE       = 2981;     //NPC城镇从联盟中删除
+
+    MSG_C2S_REQ_ALLIANCE_MEMBER_PANEL = 2980;  //请求联盟成员面板 Empty
+    MSG_S2C_RSP_ALLIANCE_MEMBER_PANEL = 2981;  //联盟成员面板返回
+    
+    MSG_C2S_REQ_ALLIANCE_INFO_SIMPLE = 2982;  //请求联盟简略信息 Empty
+    MSG_S2C_RSP_ALLIANCE_INFO_SIMPLE = 2983;  //联盟简略信息返回
+
+    MSG_SS2AS_REQ_DEL_NPC_TOWN      = 2984;     //联盟删除NPC城镇
+    MSG_SS2AS_REQ_ADD_NPC_TOWN_BUFF = 2985;     //NPC城镇增加帮会buff
+
+    MSG_S2C_NTF_ALLIANCE_PROPERTY = 2986;   //同步联盟属性
+
+    MSG_C2S_REQ_INVITE_JOIN_ALLIANCE_BY_CHAT = 2987;    //邀请入盟通过聊天发送世界频道
+
+    MSG_C2S_REQ_QUERY_ALLIANCE_INFO = 2988;   //请求查询其他联盟信息
+    MSG_S2C_RSP_QUERY_ALLIANCE_INFO = 2989;   //查询其他联盟信息返回
+
+    MSG_S2AS_PLAYER_ADD_ALLIANCE_GIFT = 2990;  //玩家发放联盟礼物
+
+    MSG_C2S_REQ_FILTER_INVITE_LIST = 2991;   //请求过滤邀请列表
+    MSG_S2C_RSP_FILTER_INVITE_LIST = 2992;   //返回过滤邀请列表
+
+    /////////////////////////////////////////////////////////内部协议
+	MSG_S2C_HELP_BUILDING_LEVELUP = 2993;   //被帮助建筑升级
+    MSG_GS2AS_UPDATE_PLAYER_HELP_INFO  = 2994;  //更新玩家帮助信息
+
+    MSG_S2AS_ALLIANCE_LOG = 2995;   //同步联盟日志到联盟服
+
+    MSG_C2S_REQ_POINTS_ALLIANCE_TERRITORY       = 2996;     //批量获取点的联盟领土归属
+    MSG_S2C_RSP_POINTS_ALLIANCE_TERRITORY       = 2997;     //批量获取点的联盟领土归属返回
+
+    MSG_AS2S_SYNC_ALLIANCE_INCR_PROPERTY = 2998;  //联盟对象同步property
+
+    MSG_AS2S_INIT_ALLIANCE_OBJECT   = 2999;   //联盟对象同步Server
+    MSG_AS2S_DELETE_ALLIANCE_OBJECT = 3000;   //Server删除联盟对象
+	
+    //联盟 end (2901~3000)
+
+	//玩家简要信息模块 begin (3001-3050)
+	MSG_GS2PUB_PLAYER_BASIC_INFO              = 3001; 	//同步玩家信息
+	MSG_S2PUB_REQ_QUERY_PLAYER_BASIC_INFO	  = 3002; 	//查询请求协议
+	MSG_PUB2S_RSP_QUERY_PLAYER_BASIC_INFO     = 3003; 	//查询返回协议
+	MSG_PUB2AL_PLAYER_BASIC_INFO              = 3004;   //同步到联盟服
+
+    MSG_S2C_NTF_PLAYER_ALLIANCE_APPLY_STATUS  = 3005;   //通知玩家联盟申请状态
+
+    //排行榜 (3051-3100)
+    MSG_C2S_REQ_RANK_INFO                     = 3051;   //请求排行榜信息
+    MSG_S2C_RSP_RANK_INFO                     = 3052;   //排行榜信息返回
+    MSG_S2PS_UPDATE_RANK                      = 3053;   //S-->Public 更新榜单
+    MSG_PS2CS_UPDATE_RANK                     = 3054;   //Public-->Cross 更新榜单
+    MSG_C2S_REQ_ALL_RANK_INFO                 = 3055;   //请求所有排行榜
+    MSG_S2C_RSP_ALL_RANK_INFO                 = 3056;   //所有排行榜返回
+    MSG_C2S_REQ_GLOBAL_ALL_RANK_INFO          = 3057;   //请求所有排行榜 全服
+    MSG_S2C_RSP_GLOBAL_ALL_RANK_INFO          = 3058;   //所有排行榜返回 全服
+    MSG_PS2AS_ACTIVITY_RANK_REWARD            = 3059;   //活动排行榜发奖
+	
+	MSG_S2S_REQ_DELETE_PLAYER_RANK            = 3060;   //删除个人排行榜
+	MSG_C2S_REQ_RANK_EX_PARAM		          = 3061;   //请求排行榜 额外参数
+	MSG_S2C_RSP_RANK_EX_PARAM		          = 3062;   //请求排行榜 额外参数
+	//活动 (3101-3200)
+    MSG_S2C_NTF_ACTIVITY_EVER_CONF            = 3100;   //通知活动ever配置
+	MSG_S2C_NTF_UPDATE_ACTIVITY				  = 3101;	//通知玩家活动信息
+	MSG_PS2GS_NTF_UPDATE_ACTIVITY			  = 3102;	//public server to game server 更新活动信息
+	MSG_SS2GS_NTF_CALLED_MONSTER_DEAD		  = 3103;	//场景服 to game server 召唤的怪物死亡
+	MSG_S2C_NTF_ITEM_CREATE_MONSTER_POS		  = 3104;	//通知玩家物品创建的怪物位置
+	//活动（礼包）
+	MSG_C2S_REQ_GET_CHARGE_BAG				  = 3105;	//购买充值礼包，现阶段临时协议没有接sdk
+	MSG_S2C_NTF_CHARGE_MAIN					  = 3107;	//通知充值礼包活动开启内容
+	MSG_PS2GS_NTF_CHARGE_MAIN				  = 3108;	//通知gameserver充值礼包活动开启内容
+
+    /////////////  new
+    MSG_S2C_NTF_ACTIVITY_CONF                   = 3109;   //通知活动配置
+    MSG_C2S_REQ_ACTIVITY_OPERATE                = 3110;   //请求活动操作
+    MSG_S2C_NTF_ACTIVITY_PROGRESS               = 3111;   //通知活动数据
+    MSG_PS2GS_UPDATE_ACTIVITY_CONF              = 3112;   //通知GAME活动配置
+    //MSG_PS2GS_NOTIFY_ACTIVITY_STATE             = 3113;   //通知活动状态
+    MSG_C2S_REQ_ACTIVITY_DETAIL_CONF            = 3114;   //请求活动小表配置
+    MSG_S2C_RSP_ACTIVITY_DETAIL_CONF            = 3115;   //活动小表配置返回
+    MSG_S2C_UPDATE_ACTIVITY_DETAIL_CONF         = 3116;   //更新活动小表配置
+  
+    MSG_PS2GS_NTF_COMMANDER_ACT_RANDTASK        = 3117;   //通知Game指挥官活动随机任务
+    MSG_S2C_NTF_COMMANDER_ACT_RANDTASK          = 3118;   //通知客户端指挥官活动随机任务
+    MSG_S2C_UPDATE_SINGLE_ACTIVITY_CONF         = 3119;   //通知单条活动配置更新
+	
+	MSG_C2S_REQ_ACTIVITY_COMMON_FREE_REWARD     = 3120;   //领取活动通用触达奖励
+	
+	MSG_S2S_NTF_ACTIVITY_CLOSE				    = 3121;   //通知活动结束
+	MSG_S2S_NTF_ACTIVITY_MONSTER_DISAPPEAR	    = 3122;   //通知场景服活动怪消失
+
+    MSG_S2S_ACTIVITY_OPEN                       = 3123;   //GM 通知活动开启
+	
+	MSG_S2C_RSP_ACTIVITY_OPERATE                = 3124;   //活动操作返回
+    
+    MSG_S2S_ACTIVITY_CLOSE                       = 3125;   //GM 通知活关闭
+	MSG_S2S_NTF_ACTIVITY_ASSEMBLE_MONSTER_DISAPPEAR = 3126;   //通知場景重置攔路投手怪物數據
+
+    MSG_C2S_REQ_CHARGE                          = 3150;   //请求充值
+    
+    MSG_C2S_REQ_BUY_CHARGE_BAG                  = 3153;   //请求购买充值礼包(当前仅支持代币购买)
+
+    MSG_S2C_RSP_GUARD_NOTIFY                    = 3161; // 通知
+    MSG_C2S_REQ_GUARD_CMD                       = 3162; // 领取警戒奖励
+
+    //红点 (3201-3210)
+    MSG_NTF_PLAYER_RED_POINT                  = 3201;  //通知玩家红点
+
+    //派遣
+    MSG_S2C_RSP_DISPATCH_NOTIFY                = 3210;  //通知派遣信息
+    MSG_C2S_REQ_DISPATCH_CMD                   = 3211; // 操作派遣 (派遣出发 帮领0/1 掠夺0/3)
+    MSG_S2AS_UPDATE_ALLIANCE_DISPATCH          = 3212; // 更新联盟派遣信息(后端内部使用)
+    MSG_S2GS_NTF_DISPATCH_RESULT               = 3213; // 通知派遣结果(后端内部使用)
+    MSG_GS2SS_DAILY_REFRESH           = 3214; // 通知每日刷新(后端内部使用)
+    MSG_SS2GS_DISPATCH                         = 3215; // 派遣成功(后端内部使用)
+
+    MSG_C2S_REQ_JUMP_TO_DISPATCH_ROB           = 3216; // 跳转到掠夺坐标, 空协议体:EmptyMsg, 返回ResultRsp:参数1坐标
+	
+	//装备材料(3231-3240)
+	MSG_C2S_REQ_HERO_EQUIP_MATERIALS_OPERATE			= 3231;//英雄装备材料操作
+	MSG_S2C_NTF_HERO_EQUIP_MATERIALS_INFO				= 3232;//装备车间信息通知
+	MSG_C2S_REQ_GET_EQUIP_MATERIALS						= 3233;//装备车间领取生成的材料
+	
+	// 载具养成
+	MSG_C2S_REQ_ACTIVESTAGE					  = 3301;//激活载具
+	MSG_C2S_REQ_STAR_UPGRADE				  = 3302;//进阶
+	MSG_S2CNTF_CAR_UPGRADE_INFO				  = 3303;//载具信息
+    MSG_S2S_OUTSIDE_CAR_INFO_UPDATE           = 3304;//在外载具信息更新
+	
+    //新载具APC
+    MSG_C2S_REQ_APC_LEVEL_UP                    = 3305;    //改装车升级
+    MSG_C2S_REQ_APC_PART_LEVEL_UP               = 3307;    //载具配件升级
+    
+	// 探索
+	MSG_C2S_REQ_STARTEVENTGROUP				  = 3310;// 前往
+	MSG_C2S_REQ_FINISHEVENT				  	  = 3311;// 完成某个事件
+	MSG_C2S_REQ_DEAL_EVENT				      = 3312;// 开始处理事件 进入副本 赛车等
+	MSG_GS2SS_DELETE_EXPLORE_MONSTER		  = 3313;// 删除过期的探索野怪(内部协议)
+	MSG_C2S_REQ_REFRESH_EVENT				  = 3314;// 手动刷新事件
+	MSG_C2S_REQ_GETCOMPLETE_GROUP_REWARD	  = 3315;// 领取事件组奖励
+    MSG_C2S_REQ_FIRST_REFRESH_EXPLORE         = 3316; // 第一次刷新探索
+	MSG_C2S_REQ_GET_EXPLORE_LEVEL_AWARD       = 3317; // 领取雷达等级奖励
+
+    //推送礼包(3320-3330)
+    MSG_S2C_PUSH_GIFT_LIST = 3320;                  //推送礼包列表
+    MSG_NTF_PUSH_GIFT_UPDATE = 3321;             //通知推送礼包激活
+
+	// 末日试炼活动 （3330 ~ 3350）
+	MSG_C2S_REQ_DOOMSDAY_DIFFICULTY_SELECT				  = 3330;	//设置末日试炼难度
+	//MSG_S2C_NTF_DOOMSDAY_BOSS_DEFEAT					  = 3330;// 联盟boss 被击败
+	MSG_C2S_REQ_DOOMSDAY_MONSTER_CHALLENGE				  = 3331;// 怪物挑战
+	MSG_C2S_REQ_DOOMSDAY_HELP							  = 3332;// 请求帮助
+	MSG_S2C_NTF_DOOMSDAY_ALLIANCE_HELP_INFO				  = 3333;// 通知联盟求助信息
+	MSG_C2S_REQ_DOOMSDAY_ALLIANCE_INFO					  = 3334;// 请求联盟信息 联盟成员进度
+	MSG_S2C_RSP_DOOMSDAY_ALLIANCE_INFO					  = 3335;// 回复联盟信息
+	//MSG_S2C_NTF_DOOMSDAY_ALLIANCE_BOSS_INFO				  = 3336;// 通知联盟boss信息 坐标 guid
+
+	MSG_C2S_REQ_TAKE_DOOMSDAY_REWARD					  = 3337;	//领取奖励
+	//MSG_S2S_NTF_DOOMSDAY_MONSTER_DEFEAT					  = 3338;	//怪物被打败
+    MSG_C2S_REQ_DOOMSDAY_ALLIANCE_PROGRESS		           = 3339;// 请求联盟进度信息 联盟奖励解锁状态
+    MSG_S2C_RSP_DOOMSDAY_ALLIANCE_PROGRESS		           = 3340;// 回复联盟进度信息
+
+    MSG_S2S_REQ_DOOMSDAY_PERSONAL_DATA_UPDATE             = 3341;// 通知联盟服更新个人数据
+    MSG_S2S_NTF_DOOMSDAY_OPERATE_RESULT                   = 3342;// 通知跨服操作结果
+    MSG_S2S_NTF_DOOMSDAY_HELP_UPDATE                      = 3343;// 通知帮助信息变化
+    
+	
+     // NPC 派遣信息
+    MSG_S2C_NTF_NPC_INFO                                  = 3344;//NPC派遣信息更新
+    MSG_C2S_REQ_GET_NPC_REWARD                            = 3345;// 获取NPC奖励
+    MSG_C2S_REQ_DISPATCH_NPC                              = 3346;// 派遣Npc
+    MSG_C2S_REQ_ONE_KEY_DISPATCH_NPC                      = 3347;// 一键派遣Npc
+    MSG_C2S_GET_RANDOM_POS                                = 3348;// 获取随机可用点
+    MSG_S2C_GET_RANDOM_POS                                = 3349;// 获取随机可用点
+    MSG_C2S_DIALOG_GET_REWARD                             = 3350; // 获取对话奖励
+
+	// SDK相关 （3351 ~ 3370）
+    MSG_S2GS_REQ_SDK_MESSAGE_PUSH                         = 3351;
+    MSG_S2AS_REQ_SDK_MESSAGE_PUSH                         = 3352;
+    MSG_GS2WS_REQ_SDK_MESSAGE_PUSH                        = 3353;
+    MSG_MS2WS_REQ_SDK_WARNING                             = 3354;// sdk报警
+    MSG_GS2WS_REQ_SDK_BATTLE_REPORT_PUSH                  = 3355;
+    MSG_GS2WS_REQ_SDK_ARENA_REPORT_PUSH                  = 3356; //请求竞技场战报push
+    MSG_GS2WS_REQ_SDK_ARENA_DETAIL_PUSH                  = 3357; //请求竞技场战报详细push
+
+    //Npc城镇相关 (3371-3400)
+    MSG_S2C_NTF_NPC_TOWN_REWARD                      = 3371;// 城镇奖励推送
+    MSG_C2S_REQ_GET_ENROLL_NPC_TOWN_INFO             = 3372;//请求报名信息
+    MSG_C2S_REQ_ENROLL_NPC_TOWN                      = 3373;// 报名
+    MSG_S2C_NTF_ENROLL_NPC_TOWN                      = 3374;// 报名推送
+    MSG_C2S_REQ_GET_NPC_TOWN_HISTORY                 = 3375;// 获得城镇历史记录
+    MSG_S2C_RSP_GET_NPC_TOWN_HISTORY                 = 3376;// 获得城镇历史记录返回
+    MSG_SS2AS_REQ_INIT_NPC_TOWN_ENROLL_TIMES         = 3377;// 初始化帮会报名次数
+    MSG_S2C_NTF_NPC_TOWN_STEP                        = 3378;// 推送Npc城镇的阶段
+    MSG_S2C_NTF_NPC_TOWN_ALLIANCE                    = 3379;// 推送Npc城镇占领帮会变化
+    MSG_C2S_REQ_GET_LINKED_SMALL_NPC_TOWN            = 3380;// 获取和帮会相连的小城信息
+    MSG_S2C_RSP_GET_LINKED_SMALL_NPC_TOWN            = 3381;// 返回和帮会相连的小城信息
+    MSG_C2S_REQ_GET_NPC_TOWN_ALL_ALLI_OCC_TIME       = 3382;// 获取城镇所有帮会占领的时长
+    MSG_S2C_RSP_GET_NPC_TOWN_ALL_ALLI_OCC_TIME       = 3383;// 返回城镇所有帮会占领的时长
+    MSG_C2S_REQ_GET_NPC_TOWN_RANK                    = 3384;// 获取城镇积分排名
+    MSG_S2C_RSP_GET_NPC_TOWN_RANK                    = 3385;// 返回城镇积分排名
+
+    MSG_C2S_REQ_ABANDON_NPC_TOWN                     = 3386;// 放弃城镇 ResultResponse回包 paramlist带放弃时间戳
+    
+    MSG_C2S_REQ_NPC_TOWN_STATUS                      = 3387; // 获取城镇战况 联盟战功排名 个人战功 击杀守军 拆除耐久度
+    MSG_S2C_RSP_NPC_TOWN_STATUS                      = 3388; // 返回城镇战况
+
+    MSG_C2S_REQ_NPC_TOWN_LAST_RANK                   = 3389; // 获取最近一次战功排名 消息体EmptyMsg
+    MSG_S2C_RSP_NPC_TOWN_LAST_RANK                   = 3390; // 返回最近一次战功排名
+    MSG_SS2AS_NPC_TOWN_MERIT_RANK                    = 3391; // 通知AS记录城镇战功排名
+
+    MSG_S2C_NTF_NPC_TOWN_OCCUPY_SUCCESS              = 3392; // 本盟在线广播占领成功
+
+    //国王系统相关 (3401-3420)
+    MSG_C2S_APPOINT_KING                             = 3401;// 任命国王
+    MSG_C2S_APPOINT_OFFICIAL                         = 3402;// 任命王都职位
+    MSG_SS2GS_OFFICIAL_CANCEL                        = 3403;// 全部取消任命
+    MSG_C2S_REQ_KING_USE_SKILL                       = 3404;// 国王使用技能
+    MSG_SS2GS_BE_KING_USE_SKILL                      = 3405;// 被国王使用技能
+    MSG_S2C_NTF_KING_PROPERTY                        = 3406;// 同步联盟属性
+    MSG_C2S_REQ_KING_ALLOCATE_REWARD                 = 3407;// 国王请求使用技能
+    MSG_SS2GS_BE_KING_ALLOCATE_REWARD                = 3408;// 被国王分配奖励   
+    MSG_C2S_REQ_NPCTOWN_OFFICIAL_INFO                = 3409;// 请求npc城镇信息
+    MSG_S2C_RSP_NPCTOWN_OFFICIAL_INFO                = 3410;// 回复npc城镇信息
+    MSG_S2C_RSP_KING_USE_SKILL                       = 3411;// 国王使用技能返回
+    MSG_S2C_NTF_KING_BUFF                            = 3412;// 国王Buff同步
+    MSG_SS2GS_OFFICIAL_RELOAD                        = 3413;// SS-GS 官员 RELOAD 操作
+    MSG_C2S_REQ_GET_KING_HISTORY                     = 3414;// 国王历史记录
+    MSG_S2C_RSP_GET_KING_HISTORY                     = 3415;// 国王历史记录返回
+    MSG_C2S_GET_KING_OPERATE_INFO                    = 3416;// 国王的操作信息
+    MSG_S2C_RSP_KING_OPERATE_INFO                    = 3417;// 国王的操作信息返回
+
+    //限时比赛活动 (3421 ~ 3430)
+    MSG_C2S_REQ_TIMED_RACE_ACTIVITY_RANK = 3421;  //限时比赛排行榜信息请求
+    MSG_S2C_RSP_TIMED_RACE_ACTIVITY_RANK = 3422; //限时比赛排行榜信息返回
+	
+	//里程碑任务 (3431 ~ 3450)
+	MSG_C2S_REQ_MILESTONE_CUR_TASK_PROGRESS					 = 3431;	//里程碑当前任务进度 请求
+	MSG_S2C_RSP_MILESTONE_CUR_TASK_PROGRESS					 = 3432;	//里程碑当前任务进度 返回
+	MSG_S2C_NTF_MILESTONE_TASK_COMPLETE						 = 3433;	//完成里程碑任务通知	
+	MSG_C2S_REQ_MILESTONE_TASK_RANK							 = 3434;	//里程碑任务排行榜 请求
+	MSG_S2C_RSP_MILESTONE_TASK_RANK							 = 3435;	//里程碑任务排行榜 返回
+	MSG_C2S_REQ_GET_MILESTONE_TASK_REWARD					 = 3436;	//领取里程碑任务奖励 请求
+	MSG_S2C_RSP_GET_MILESTONE_TASK_REWARD					 = 3437;	//领取里程碑任务奖励 返回
+	
+	MSG_S2S_REQ_CHANGE_MILESTONE_TASK_PROCESS						 = 3438;	//里程碑进度变化
+
+	
+    //联盟协议补充协议段(3500-3700)
+    MSG_S2AS_CITY_CHANGE_POS            = 3500;  //玩家主城位置改变
+    MSG_S2AS_CITY_IS_RECYCLE_CHANGE     = 3501;  //玩家主城回收状态改变
+    MSG_AS2S_GIVE_ITEMS                 = 3502;  //联盟通用给玩家发奖
+
+    MSG_S2C_NTF_MOBILIZATION_TASK_UPDATE    = 3505;  //通知任务状态更新 
+    MSG_C2S_REQ_MOBILIZATION_INFO           = 3506;  //基础信息请求
+    MSG_S2C_RSP_MOBILIZATION_INFO           = 3507;  //基础信息返回
+    MSG_C2S_REQ_MOBILIZATION_CLAIM_TASK     = 3508;  //领取任务请求
+    MSG_S2C_RSP_MOBILIZATION_CLAIM_TASK     = 3509;  //领取任务返回
+    MSG_C2S_REQ_MOBILIZATION_REFRESH_TASK   = 3510;  //刷新任务
+
+    MSG_C2S_REQ_MOBILIZATION_GIVE_UP_TASK   = 3511;  //放弃任务请求
+    MSG_S2C_RSP_MOBILIZATION_GIVE_UP_TASK   = 3512;  //放弃任务返回
+    MSG_C2S_REQ_MOBILIZATION_BUY_CLAIM_NUM  = 3513;  //购买接取次数请求
+    MSG_S2C_RSP_MOBILIZATION_BUY_CLAIM_NUM  = 3514;  //购买接取次数返回
+    MSG_GS2AS_MOBILIZATION_TASK_TRIGGER     = 3515;  //GAME通知ALLIANCE 玩家任务触发
+    MSG_C2S_REQ_MOBILIZATION_SUBMIT_TASK    = 3516;  //提交任务请求
+    MSG_S2C_RSP_MOBILIZATION_SUBMIT_TASK    = 3517;  //提交任务返回
+    MSG_C2S_REQ_MOBILIZATION_TAKE_AWARD     = 3518;  //请求领取奖励
+    MSG_S2C_RSP_MOBILIZATION_TAKE_AWARD     = 3519;  //领取奖励返回
+    MSG_S2C_NOTIFY_MOBILIZATION_OPEN_LIMIT  = 3520;  
+	MSG_S2S_SYNC_EXPLORE_SPICALEVENT_LEVEL  = 3521; // 对联盟服同步雷达特殊事件等级
+	MSG_C2S_REQ_EXPLORE_SPICALEVENT_MEMBER  = 3522; // 联盟内某个雷达特殊事件等级成员列表
+	MSG_S2C_RSP_EXPLORE_SPICALEVENT_MEMBER  = 3523; // 联盟内某个雷达特殊事件等级成员列表
+	MSG_NTF_ALLIANCE_CROSS_MEMBER			= 3524;	// 通知联盟内 跨服的成员列表
+	//MSG_NTF_ALLIANCE_CROSS_CITY_POSITION	= 3525;	// 通知联盟内跨服到当前服的玩家city 坐标
+
+    MSG_C2S_ALLIANCE_TASK_CHAPTER           = 3601;  //请求联盟任务章节信息
+    MSG_S2C_ALLIANCE_TASK_CHAPTER           = 3602;  //回复联盟任务章节信息
+    MSG_SS2AS_TRIGER_ALLIANCE_TASK          = 3603;// 触发联盟任务 通知AS
+
+    MSG_C2S_REQ_EDIT_ALLIANCE_INVITE_NOTICE     = 3605;   //请求编辑联盟邀请公告
+    MSG_S2C_RSP_EDIT_ALLIANCE_INVITE_NOTICE     = 3606;   //编辑联盟邀请公告返回
+    MSG_C2S_REQ_ALLIANCE_BE_ACTIVE              = 3607;   //联盟是否活跃请求
+    MSG_S2C_RSP_ALLIANCE_BE_ACTIVE              = 3608;   //联盟是否活跃返回
+    MSG_C2S_REQ_FAST_JOIN_ALLIANCE              = 3609;   //一键加入联盟请求
+    MSG_S2C_RSP_FAST_JOIN_ALLIANCE              = 3610;   //一键加入联盟返回
+    
+    MSG_SS2AS_ALLIANCE_LEADER_MOVE              = 3620;   //联盟增加免费迁城次数
+    MSG_GS2AS_CHANGE_MEMBER_FREE_MOVE           = 3621;   //玩家修改免费迁城次数
+
+    MSG_C2S_REQ_ALLIANCE_INTEL                  = 3622;   //请求联盟情报 消息体EmptyMsg
+    MSG_S2C_RSP_ALLIANCE_INTEL                  = 3623;   //返回联盟情报
+    MSG_S2AS_ALLIANCE_INTEL                     = 3624;   //同步联盟情报到联盟服
+    
+    MSG_S2AS_ADD_ALLIANCE_DULE_SCORE            = 3625;  //增加联盟对决积分
+    MSG_C2S_ALLIANCE_DULE_INFO                  = 3626;  //请求联盟对决信息
+    MSG_S2C_ALLIANCE_DULE_INFO                  = 3627;  //响应联盟对决信息
+    MSG_AS2CS_ALLIANCE_DULE_MATCH_JOIN          = 3628;  //联盟对局参与匹配(alliance->cross)
+    MSG_S2AS_ALLIANCE_DULE_MATCH_NTF            = 3629;  //联盟对局匹配通知(cross->alliance)
+    MSG_S2AS_ALLIANCE_DULE_SETTLE_NTF           = 3630;  //联盟对局匹配通知(cross->alliance)
+    MSG_C2S_ALLIANCE_DULE_MOVE_POS              = 3631;  //请求联盟对决迁城坐标
+    MSG_S2C_ALLIANCE_DULE_MOVE_POS              = 3632;  //响应联盟对决迁城坐标
+    MSG_C2S_ALLIANCE_DULE_WEEK_LOG              = 3633;  //请求联盟对决周结算
+    MSG_S2C_ALLIANCE_DULE_WEEK_LOG              = 3634;  //响应联盟对决周结算
+    MSG_AS2S_ALLIANCE_DULE_SCORE                = 3635;  //刷新联盟对决积分(alliance->cross)
+    MSG_S2PS_ALLIANCE_DULE_SETTLE_NTF           = 3636;  //结算通知(cross->Public)
+    MSG_PS2AS_ALLIANCE_DULE_SETTLE_NTF          = 3637;  //结算通知(Public->alliance)
+	
+	MSG_SS2GS_TRANS_MSG_TO_ALLIANCE				= 3638;	//通过game转发的联盟服消息
+    
+    MSG_REQ_ALLIANCE_DULE_CROSS_AREA            = 3639; //请求联盟对决跨区
+
+	MSG_AS2S_NTF_ALLIANCE_MEMBER_LEAVE				= 3640;   //联盟服通知联盟成员离开联盟
+
+	//跨服相关	（3701-3800）
+	MSG_C2S_REQ_SET_VIEW_SERVER					 = 3701;	//设置观察服务器请求
+	MSG_C2S_RSP_SET_VIEW_SERVER					 = 3702;	//设置观察服务器返回
+	MSG_S2S_REQ_OBSERVER_LEAVE_SCENE			 = 3703;	//观察者移出场景，跨服删除，本服移出
+	MSG_S2S_CROSSSERVER_VIEW_MSG				 = 3704;	//跨服视野消息转发
+	MSG_S2S_CROSSSERVER_VIEW_HEARTBEAT			 = 3705;	//跨服视野心跳
+	
+	MSG_C2S_REQ_PLAYER_MIGRATE					 = 3706;	//移民请求
+	MSG_S2S_NTF_MIGRATE_FINISH					 = 3707;	//老服移民结束
+	
+	MSG_C2S_REQ_ALL_SERVER_LIST		             = 3708;	//服务器列表
+    MSG_S2C_RSP_ALL_SERVER_LIST                  = 3709;    //服务器列表	返回
+    MSG_C2S_REQ_TARGET_SERVER_MIGRATE_DETAIL     = 3710;    //移民服相关数据
+    MSG_S2C_RSP_TARGET_SERVER_MIGRATE_DETAIL     = 3711;    //移民服相关数据 返回
+	MSG_S2S_BROADCAST_CROSS_MSG					 = 3713;	//	
+	
+	MSG_C2S_NTF_ENTER_MAIN_WORLD				 = 3714;	//跨服切换视野通知服务器已经进入大地图----联盟、地图解锁、npc城镇等
+    
+	
+	//联盟boss	（3801-3850）
+	MSG_C2S_REQ_CALL_ALLIANCE_BOSS					 = 3801;	//召唤联盟boss
+	MSG_C2S_REQ_ALLIANCE_BOSS_ACTIVITY_INFO			 = 3802;	//联盟boss 活动相关信息 请求
+	MSG_S2C_RSP_ALLIANCE_BOSS_ACTIVITY_INFO			 = 3803;	//联盟boss 活动相关信息 应答
+	MSG_C2S_REQ_ALLIANCE_BOSS_STRENGTHEN			 = 3804;	//联盟boss 强化 请求
+	//MSG_S2C_RSP_ALLIANCE_BOSS_STRENGTHEN     		 = 3805;	//联盟boss 强化 应答
+	MSG_C2S_REQ_ALLIANCE_BOSS_RANK					 = 3806;	//联盟boss 排行榜 请求
+	MSG_S2C_RSP_ALLIANCE_BOSS_RANK		     		 = 3807;	//联盟boss 排行榜 应答
+	MSG_C2S_REQ_ALLIANCE_BOSS_GET_PERSONAL_REWARD	 = 3808;	//联盟boss 领取个人奖励
+	MSG_S2S_REQ_ALLIANCE_BOSS_SETTLE				 = 3809;	//联盟boss 打完数据结算
+	MSG_S2S_NTF_ALLIANCE_MEMBER_REWARD				 = 3810;	//联盟boss 结算联盟伤害奖励
+	MSG_S2C_NTF_ALLIANCE_BOSS_INFO					 = 3811;	//联盟boss 通知玩家联盟boss 剩余时间
+	MSG_C2S_REQ_ALLIANCE_BOSS_SET_INFO				 = 3812;	//请求联盟boss设置信息
+	MSG_S2C_RSP_ALLIANCE_BOSS_SET_INFO				 = 3813;	//响应联盟boss设置信息
+	MSG_C2S_REQ_SET_ALLIANCE_BOSS_INFO				 = 3814;	//请求设置联盟boss信息
+	MSG_S2C_RSP_SET_ALLIANCE_BOSS_INFO				 = 3815;	//响应设置联盟boss信息
+	MSG_S2C_RSP_ALLIANCE_BOSS_CAN_FIGHT_INFO		 = 3816;	//联盟boss可以被打的广播消息
+	MSG_A2S_NTF_RESET_MEMBER_ALLIANCEBOSS_DATA		 = 3817;	//通知场景服重置联盟成员有关联盟boss的数据
+
+    //事件系统相关  (3851~3900)
+    MSG_S2C_NTF_ALL_INCIDENT_DATA                    = 3851;
+    MSG_S2C_NTF_INCIDENT_DATA                        = 3852;    
+    MSG_S2C_NTF_INCIDENT_EVENT_GROUP                 = 3853;
+    MSG_C2S_REQ_START_MAP_INCIDENT_SECTION           = 3854;
+    MSG_C2S_REQ_GET_MAP_INCIDENT_SECTION_REWARD      = 3855;
+    MSG_C2S_REQ_START_MAP_INCIDENT_EVENT_GROUP       = 3856;
+    MSG_C2S_REQ_FINISH_MAP_INCIDENT_EVENT_GROUP      = 3857;
+    MSG_C2S_REQ_DEAL_MAP_INCIDENT_EVENT              = 3858;
+    MSG_C2S_REQ_DEAL_INCIDENT_EVENT                  = 3859;
+	MSG_G2S_REQ_INCIDENT_EVENT_MONSTER_CEHCK         = 3860;	//玩家上线检查召唤怪是否在场景服中存在
+	MSG_G2S_NTF_INCIDENT_EVENT_MONSTER_INVALID       = 3861;	//召唤怪失效
+    MSG_S2G_NTF_GATHER_FINISH                        = 3862;    //采集完毕
+
+    MSG_C2S_REQ_GET_INCIDENT_GIFT                    = 3863;    //领取电台等级赠送的事件 协议体:EmptyMsg
+
+    MSG_C2S_REQ_OPEN_INCIDENT                        = 3864;    // 打开雷达面板的时候发 协议体:EmptyMsg
+    MSG_G2S_INCIDENT_DELETE_POS                      = 3865;    // 删除雷达点
+
+    //竞技场协议 (3901~3950)
+    MSG_C2S_REQ_ARENA_BATTLE_START          = 3901;   //请求竞技场开始战斗
+    MSG_S2C_RSP_ARENA_BATTLE_START          = 3902;   //返回竞技场开始战斗
+    MSG_C2S_REQ_ARENA_INFO                  = 3903;   //竞技场信息请求
+    MSG_S2C_RSP_ARENA_INFO                  = 3904;   //竞技场信息返回
+    MSG_C2S_REQ_REFRESH_TARGET_LIST         = 3905;   //刷新对手请求
+    MSG_S2C_RSP_REFRESH_TARGET_LIST         = 3906;   //刷新对手返回
+    MSG_C2S_REQ_SET_DEFENSE_SOLDIERS        = 3907;   //设置防守阵容请求
+    MSG_S2C_RSP_SET_DEFENSE_SOLDIERS        = 3908;   //设置防守阵容返回
+    MSG_S2C_ARENA_BATTLE_RESULT             = 3909;   //战斗结果
+    MSG_S2C_NOTIFY_ARENA_SOLDIERS           = 3910;   //通知阵容更新
+    MSG_C2S_REQ_ARENA_BATTLEREPORTLIST      = 3911;   //请求战报列表
+    MSG_S2C_RSP_ARENA_BATTLEREPORTLIST      = 3912;   //战报列表返回
+    MSG_GS2S_REQ_ARENA_BATTLE_START         = 3913;   //竞技场战斗
+    MSG_C2S_REQ_ARENA_TARGET_SOLDIERS_INFO  = 3914;   //请求目标阵容信息
+    MSG_S2C_RSP_ARENA_TARGET_SOLDIERS_INFO  = 3915;   //返回目标阵容信息
+    MSG_S2S_NOTIFY_ARENA_BATTLE_RESULT      = 3916;   //竞技场战斗结果(TO GAMESERVER)
+    MSG_C2S_ARENA_BUY_ATTEMPTS              = 3917;   //购买挑战次数
+    MSG_C2S_ARENA_TAKE_RANK_REWARDS         = 3918;   //领取排行榜奖励
+    MSG_C2S_REQ_ARENA_BATTLE_PAST_RECORDS   = 3919;   //请求战斗历史记录
+    MSG_S2C_RSP_ARENA_BATTLE_PAST_RECORDS   = 3920;   //战斗历史记录返回
+    MSG_C2S_REQ_ARENA_BATTLE_DETAIL_PAST_RECORD = 3921;   //请求竞技场战斗历史详情
+    MSG_S2C_RSP_ARENA_BATTLE_DETAIL_PAST_RECORD = 3922;   //竞技场战斗历史详情返回
+    MSG_C2S_REQ_ARENA_BATTLE_REPORT = 3923;  //请求战报
+    MSG_S2C_RSP_ARENA_BATTLE_REPORT = 3924;  //战报返回
+    MSG_S2S_ARENA_SOCRE_INIT = 3925;  //竞技场积分初始化
+    MSG_S2GAME_RETURN_ATTEMPTS = 3926;  //返还挑战次数
+    MSG_C2S_REQ_ARENA_MATCH_INFO            = 3927;   //竞技场匹配目标请求
+    MSG_S2C_RSP_ARENA_MATCH_INFO            = 3928;   //竞技场匹配目标请求
+    MSG_C2S_REQ_ARENA_DATA                  = 3929;   //竞技场数据请求
+    MSG_S2C_RSP_ARENA_DATA                  = 3930;   //竞技场数据返回
+    MSG_C2S_REQ_ARENA_TASK_REWARD           = 3931;   //领取竞技场任务奖励
+    MSG_S2C_RSP_ARENA_TASK_REWARD           = 3932;   //领取竞技场任务奖励返回
+    MSG_S2C_NTF_ARENA_TASK_CLEAR            = 3933;   //清空任务奖励领取记录
+    
+    //小游戏装置协议(3951~4000)
+    MSG_C2S_REQ_DEVICE_BAG_LIST = 3951; //请求装置列表
+    MSG_S2C_RSP_DEVICE_NOTIFY   = 3952; // 装置信息 全量包 和 增删、穿脱
+    MSG_C2S_REQ_DEVICE_CMD      = 3953; //装置穿脱、分解等
+    MSG_C2S_REQ_MIN_GAME_ATTACK = 3954; //请求小游戏攻击
+    MSG_S2C_REQ_MIN_GAME_ATTACK = 3955; //返回小游戏响应
+    MSG_C2S_REQ_MIN_GAME_FREE_GIFT = 3956; //请求小游戏免费礼包
+
+	//地块解锁 (3980~3999)
+	MSG_C2S_REQ_DO_GRID_STEP					= 3980;	//请求执行地块阶段逻辑
+	MSG_S2C_RSP_DO_GRID_STEP					= 3981;	//请求执行地块阶段逻辑应答，只有出错才会有，正常执行地块阶段数据会变化
+
+    //押镖(4000~4100)
+    MSG_RSP_ESCORT_NOTIFY                       = 4000; //押镖相关通知
+    MSG_C2S_REQ_REFRESH_ESCORT_ITEM             = 4001; //请求刷新货物
+    MSG_C2S_REQ_GET_ESCORT_REWARD               = 4002; //请求领取护送奖励
+    MSG_S2C_RSP_GET_ESCORT_REWARD               = 4003; //响应领取护送奖励
+    MSG_C2S_REQ_ESCORT_RECORD_BRIEF             = 4004; //请求押镖护送见简要日志
+    MSG_S2C_RSP_ESCORT_RECORD_BRIEF             = 4005; //响应押镖护送见简要日志
+    MSG_C2S_REQ_ESCORT_RECORD                   = 4006; //请求押镖护送日志
+    MSG_S2C_RSP_ESCORT_RECORD                   = 4007; //响应押镖护送日志
+    MSG_C2S_REQ_ESCORT_ROB_RECORD_BRIEF         = 4008; //请求劫镖简要日志
+    MSG_S2C_RSP_ESCORT_ROB_RECORD_BRIEF         = 4009; //响应劫镖简要日志
+    MSG_C2S_REQ_ESCORT_ROB_BATTLE_REPORT        = 4010; //请求劫镖战报
+    MSG_S2C_RSP_ESCORT_ROB_BATTLE_REPORT        = 4011; //响应劫镖战报
+    MSG_C2S_REQ_ESCORT_ROB_REFRESH_CAR          = 4012; //请求刷新劫镖车列表
+    MSG_S2C_RSP_ESCORT_ROB_REFRESH_CAR          = 4013; //响应刷新劫镖车列表
+    MSG_C2S_REQ_ESCORT_ROB_ATTACK               = 4014; //请求攻击镖车
+    MSG_S2C_RSP_ESCORT_ROB_ATTACK               = 4015; //响应攻击镖车
+    MSG_C2S_REQ_ESCORT_CAR_DETAIL               = 4016; //请求查看镖车详细信息(大地图查看镖车)
+    MSG_S2C_RSP_ESCORT_CAR_DETAIL               = 4017; //响应查看镖车详细信息
+    MSG_C2S_REQ_ESCORT_CAR_LIST                 = 4019; //请求押镖列表信息
+    MSG_S2S_REQ_ESCORT_RECORD                   = 4020; //请求押镖护送日志
+    MSG_C2S_REQ_ESCORT_CAR_POS                  = 4021; //请求镖车位置
+    MSG_S2C_RSP_ESCORT_CAR_POS                  = 4022; //响应镖车位置
+    MSG_C2S_REQ_SAVE_ESCORT_SOLDIER             = 4023; //请求保存护送阵容
+	
+	//世界BOSS(4100~4200)
+	MSG_C2S_REQ_WORLD_BOSS_RANK               	= 4100; //请求世界BOSS排名
+    MSG_S2C_RSP_WORLD_BOSS_RANK               	= 4101; //响应世界BOSS排名
+	MSG_C2S_REQ_WORLD_BOSS_ACHIEVEMENT_INFO		= 4102; //请求世界BOSS成就（包括每日和生涯）
+    MSG_S2C_RSP_WORLD_BOSS_ACHIEVEMENT_INFO		= 4103; //响应世界BOSS成就（包括每日和生涯）
+	MSG_S2C_NTF_WORLD_BOSS_ACHIEVEMENT_INFO		= 4104; //主动通知世界BOSS成就（包括每日和生涯）
+	MSG_C2S_REQ_WORLD_BOSS_INFO					= 4105; //请求世界BOSS活动数据
+    MSG_S2C_RSP_WORLD_BOSS_INFO					= 4106; //响应世界BOSS活动数据
+	MSG_S2C_NTF_WORLD_BOSS_INFO					= 4107; //主动通知更新世界BOSS活动数据
+	MSG_C2S_REQ_WORLD_BOSS_ACHIEVEMENT_REWARD	= 4108; //请求领取世界BOSS活动奖励
+    MSG_S2C_RSP_WORLD_BOSS_ACHIEVEMENT_REWARD	= 4109; //响应领取世界BOSS活动奖励
+	MSG_RPC_RSP_WORLD_BOSS_ATTACK_DAMAGE		= 4110; //同步世界BOSS伤害
+	MSG_RPC_REQ_SETTLE_DAILY_WORLD_BOSS			= 4111; //请求结算世界BOSS
+    
+    //投票公告
+    MSG_C2S_REQ_VOTE_NOTICE_QUERY_MEMBER        = 4150;   //请求查看投票公告成员
+    MSG_S2C_RSP_VOTE_NOTICE_QUERY_MEMBER        = 4151;   //响应查看投票公告成员
+    MSG_C2S_REQ_OPERA_ALLIANCE_NOTICE           = 4152;   //请求操作联盟公告
+
+    //DBServer和GameServer协议--public
+    MSG_GS_DB_BEGIN                             = 7000;
+    MSG_GS2DB_REQ_LOAD_CHAR_INFO                 = 7001; //申请获取全部数据
+    MSG_RPC_GS2DB_REQ_LOAD_CHAR_INFO            = 57001; // rpc请求获取Player数据
+    MSG_DB2GS_RSP_LOAD_CHAR_INFO                = 7002; //全部数据从DB发送到GS完毕
+    //MSG_GD_LOAD_CHAR_PB                       = 7063; //从DB获取到数据
+    MSG_GS2DB_SAVE_CHAR_FIGHT_PB                = 7064; //保存数据
+    MSG_GS2DB_REQ_SAVE_CHAR_DATA_ALL            = 7065; //全量保存数据请求
+	MSG_GS2DB_RSP_SAVE_CHAR_DATA_ALL            = 7066; //全量保存数据回复
+	MSG_GS2DB_REQ_SAVE_CHAR_DATA_INCRE          = 7067; //增量保存玩家数据请求
+	MSG_GS2DB_RSP_SAVE_CHAR_DATA_INCRE          = 7068; //增量保存玩家数据回复
+    MSG_GS2DB_SYNC_OBJECT_INDEX                 = 7069; //同步属性和Record索引
+
+
+    MSG_GS2DB_REQ_OTHER_CHAR_INFO               = 7070; //申请获取其他玩家信息内容
+    MSG_DB2GS_RES_OTHER_CHAR_INFO               = 7071; //返回其他玩家内容消息结果
+    MSG_GS2DB_REQ_GAME_OTHER_INFO               = 7072; //请求其他玩家在线消息
+    MSG_DB2GS_RSP_GAME_OTHER_INFO               = 7073; //返回其他玩家在线消息
+    MSG_GS2DB_NOTIFY_FLUSH_CACHE                = 7074; //GAME通知DB清空缓存
+
+    MSG_GS2DB_LOGIN_LOGOUT_LOG                  = 7080; //GAME 登录登出日志记录
+
+    MSG_GS_DB_END                               = 7099;
+	
+///////////////
+    //DBServer和ScenceServer
+    MSG_SS_DB_BEGIN                             = 7100;
+    MSG_SS2DB_REQ_LOAD_ALL_SCENCEOBJECT_INFO	= 7101; //申请获取大地图信息
+    MSG_SS2DB_RSP_LOAD_SCENCEOBJECT_INFO		= 7102; //返回地图部队信息
+	MSG_SS2DB_UPDATE_SCENCEOBJECT_INFO			= 7103; //保存部队等object信息
+
+    MSG_SS2DB_UPDATE_GLOBAL_AREA        		= 7104; //更新全局信息
+
+	MSG_SS_DB_END                               = 7149;		
+
+	//GameServer和ScenceServer
+	MSG_SS_GS_BEGIN                             = 7150;
+	MSG_GS2SS_PLAYERONLINEVIEW					= 7151;// 通知大地图，玩家上线，玩家城市信息发送给前端。
+	MSG_GS2SS_PLAYEROFFLINEVIEW					= 7152;// 通知大地图，玩家下线，	
+	MSG_SS_GS_SOLDIER_BACK_CITY					= 7153;// 部队回到城
+	MSG_GS2SS_REQ_SYNC_PROPERTY					= 7154;// 同步属性变化
+	
+	MSG_SS2GS_COMPLETE_TACTICAL_BUILD			= 7156;// 完成战术建筑
+	MSG_SS2GS_ONEGROUP_BATTLE_END				= 7157;// 一组战斗结束
+	
+    MSG_SS_GS_END                               = 7199;
+
+    //GameServer和GateServer
+    MSG_GS2GATE_CHANGE_SCENETYPE                 = 7200;
+    MSG_GS2GATE_MUST_RELOGIN_SWITCH              = 7201; // 设置强制大重连开关
+
+
+    //LoginServer和GameServer协议
+    MSG_GS_LOGIN_BEGIN                          = 7300;
+
+    MSG_GS2LOGIN_REQ_UPDATE_SERVER_INFO         = 7303; //[GAME-->LOGIN]请求更新游戏服务器信息
+    MSG_LOGIN2GS_LOAD_ACCOUNT_DETAIL_INFO       = 7308; //[LOGIN-->GAME]响应获取账号的具体信息
+    MSG_LOGIN2GS_LOAD_ACCOUNT_DETAIL_INFO_ROBOT = 7309;
+    MSG_GS2LOGIN_REQ_CHECK_NAME_CAN_USE         = 7310; //验证名字是否一样;
+    MSG_GS_LOGIN_END                            = 7349;
+
+    //LoginServer和Client协议
+    MSG_LOGIN_C_BEGIN                           = 7400;
+
+    MSG_C2S_REQ_CHAR_LIST                       = 7406; //客户端请求角色列表
+    MSG_S2C_RSP_CHAR_LIST                       = 7407; //发送角色列表给客户端
+    MSG_C2S_REQ_CREATE_CHAR                     = 7410; //创建角色申请
+    MSG_S2C_RSP_CREATE_CHAR                     = 7411; //回复角色创建
+    MSG_C2S_REQ_DELETE_CHAR                     = 7412; //删除角色申请
+    MSG_C2S_REQ_RECOVER_CHAR                    = 7414; //恢复角色申请
+    MSG_C2S_REQ_ENTER_GAMESERVER                = 7420; //申请进入游戏世界(这里只是判断那个服务器是否正常可连接，因此要求ls回复了后继续发MSG_GC_REQ_LOGIN)
+    MSG_S2C_RSP_ENTER_GAMESERVER                = 7421;
+    MSG_C2S_REQ_GAME_TIME                       = 7422; //申请服务器时间
+    MSG_S2C_RSP_GAME_TIME                       = 7423;
+    MSG_S2C_NTF_GAME_QUEUE                      = 7424; //在队列中
+    MSG_C2S_REQ_GAME_QUEUE                      = 7425; //请求队列位置
+    MSG_S2C_RSP_OVER_QUEUE_SIZE                 = 7426; //在队列中
+    MSG_C2S_REQ_LOGIN_DEQUEUE                   = 7427; //取消登陆排队
+	MSG_S2S_REQ_TOUCH_QUEUE_PLAYER				= 7428;	//gate 通知 login 排队的玩家，延长login中的 cache过期时间
+
+    MSG_LOGIN_C_END                             = 7499;
+
+//////////////////////////////////////////////////////////////////////////
+    // GameServer和PublicServer协议
+    MSG_GS_PUB_BEGIN                            = 7500; // 开始
+
+    // 关系
+    MSG_GS2S_NTF_PLAYER_ONLINE                  = 7518; // 通知上下线
+    //MSG_GS2PUB_NTF_PLAYER_RECONNECTED           = 7520; //通知玩家断线重连
+    MSG_GS2S_NTF_ALL_ONLINE_PLAYER_INFO         = 7521;  //通知所有在线玩家信息
+
+    MSG_GS_PUB_END                              = 7599; // 结束
+    
+    //怪物奖励
+    MSG_C2S_REQ_MONSTER_AWARD_LIST              = 7600; //请求怪物奖励列表
+    MSG_S2C_RSP_MONSTER_AWARD_NOTIFY            = 7601; // 怪物奖励信息 全量包 和 增删
+    MSG_C2S_REQ_GET_MONSTER_AWARD               = 7602; //一键领取怪物奖励
+    
+	
+	    //合服协议                                 
+    MSG_GS2PUB_REQ_MERGE_SERVER_PERSONAL_KEY    = 12500; //玩家上线，判断合服之后，将玩家个人的key迁移
+    MSG_PUB2GS_RSP_MERGE_SERVER_PERSONAL_KEY    = 12501; //玩家上线，判断合服之后，将玩家个人的key迁移
+    //-------------------------------------------
+    ///////////////////////////////////////////////////////////////////////////
+    //--------------------------邮件协议-------------------------------------
+    MSG_S2S_REQ_ADD_NEW_MAIL                    = 14420; //添加新邮件
+	MSG_S2S_REQ_TRANS_OTHER_AREA_MAIL           = 14421; // 转发跨服邮件
+    MSG_C2S_REQ_OPEN_MAIL                       = 14422; // 打开邮件
+    MSG_S2C_RSP_OPEN_MAIL                       = 14423; // 打开邮件
+    MSG_C2S_REQ_MAIL_LIST                       = 14424; // 获取邮件列表
+    MSG_S2C_RSP_MAIL_LIST                       = 14425; // 确认邮件列表
+    MSG_S2C_NTF_GET_NEW_MAIL                    = 14426; // 通知客户端新邮件
+    MSG_S2C_NTF_DELETE_MAIL                     = 14427; // 通知客户端删除了邮件
+    MSG_C2S_REQ_DELETE_MAIL                     = 14428; // 请求删除邮件
+    MSG_S2C_RSP_DELETE_MAIL                     = 14429; // 删除邮件结果
+    MSG_C2S_REQ_ONE_KEY_DELETE                  = 14430; // 一键删除
+    MSG_S2C_RSP_ONE_KEY_DELETE                  = 14431; // 一键删除结果
+    MSG_C2S_REQ_GET_MAIL_ATTACH                 = 14432; // 领取附件（一键领取）
+    MSG_S2C_RSP_GET_MAIL_ATTACH                 = 14433; // 领取附件结果
+    MSG_BGIP2MAIL_REQ_MAIL_LIST                 = 14434;
+    MSG_MAIL2BGIP_RSP_MAIL_LIST                 = 14435;
+    MSG_MAIL2GS_GET_MAIL_ATTACH                 = 14436; // 发给Game领取附件
+    MSG_GS2MAIL_GET_MAIL_ATTACH_RESULT          = 14437; // Game通知Mail，附件领取结果
+	MSG_C2S_REQ_SEND_MAIL						= 14438; // 个人邮件
+	MSG_S2C_RSP_SEND_MAIL						= 14439; // 个人邮件回包
+	MSG_C2S_REQ_MAIL_COLLECT					= 14440; // 邮件 收藏
+	MSG_S2C_RSP_MAIL_COLLECT					= 14441;// 邮件 收藏回包
+	MSG_PS2MS_SEND_MAIL							= 14442; // PS 2 MS发送邮件
+	MSG_S2S_ADD_NEW_GLOBAL_MAIL					= 14443;// 添加全服邮件
+	MSG_S2S_REQ_BETCH_ADD_NEW_MAIL				= 14444;// 批量添加邮件
+	MSG_RB2PS_REQ_GET_RANDOM_PLAYER_ID			= 14445;// 请求获取随机玩家ID，用于Robot测试发送邮件，目前仅RobotClient使用
+	MSG_PS2RB_RSP_GET_RANDOM_PLAYER_ID			= 14446;// 返回随机玩家ID，用于Robot测试发送邮件，目前仅RobotClient使用
+    MSG_C2S_REQ_OPERATE_MAIL           = 14447;  //请求邮件操作
+    // MSG_S2C_RSP_OPERATE_JOIN_ALLIANCE_MAIL      = 14448;  //入盟邮件操作返回
+	MSG_MS2GS_GLOBAL_MAIL_HOT					= 14449;  //全服热更邮件
+	MSG_GS2MS_ADD_NEW_HOT_GLOBAL_MAIL			= 14450;// 新增一封运营邮件
+    MSG_S2AS_REQ_SEND_ALLIANCE_MAIL             = 14451;// 发给帮会服，发送全帮邮件
+	MSG_SS2ASSENDTERRITORTMAIL					= 14452;// 联盟领土邮件
+    MSG_S2S_REQ_ADD_NEW_MAIL_CONFIGID           = 14453; //添加新邮件 (ConfigID)
+    MSG_S2S_ADD_NEW_GLOBAL_MAIL_CONFIGID		= 14454;// 添加全服邮件 (ConfigID)
+
+	MSG_C2S_REQ_GET_MAIL_LIST                   = 14455;// 登录获取增量邮件列表
+    MSG_S2C_ACK_GET_MAIL_LIST                   = 14456;// 回包：登录获取增量邮件列表
+	MSG_C2S_REQ_GET_ERROR_MAIL					= 14457;// 邮件数据错误处理
+    
+    MSG_S2S_NTF_SAVE_BATTLE_REPORT              = 14458; //通知保存战报
+    MSG_C2S_REQ_BATTLE_REPORT                   = 14459;// 请求战报
+    MSG_S2C_ACK_BATTLE_REPORT                   = 14460;// 请求战报响应
+    MSG_GS2GS_NTF_ASSEMBLE_MAIL                 = 14461;// 通知leader集结邮件
+
+    MSG_S2C_NTF_MAIL_PLAYER_ONLINE              = 14462; // 邮件玩家已确认上线 内容空EmptyMsg
+	
+	MSG_C2S_REQ_SINGLE_BATTLE_LOG_DETAIL 	= 14463;// 请求单场战报详情
+    MSG_S2C_RSP_SINGLE_BATTLE_LOG_DETAIL 	= 14464;// 响应单场战报详情
+	
+	MSG_C2S_REQ_BATTLE_LOG_DETAIL 				   = 14465;// 请求战斗日志详情
+    MSG_S2C_RSP_BATTLE_LOG_DETAIL 				   = 14466;// 响应战斗日志详情
+
+
+    MSG_C2S_REQ_SEND_ALLIANCE_MAIL              = 14467; // 发送联盟邮件
+
+    //--------------------------邮件协议end-----------------------------------
+    
+    //-------------------------- 哈希槽协议（14500~14599） --------------------------
+    MSG_S2S_HASHSLOT_NTF_LEADER_RANGE           = 14500; // Leader同步各Follower槽位信息
+    MSG_S2S_HASHSLOT_REQ_LEADER_RANGE           = 14501; // Follower向Leader请求各槽位信息（返回NTF_LEADER_RANGE）
+    MSG_S2S_HASHSLOT_NTF_FOLLOWER_STATE         = 14502; // Leader收到Follower节点状态变化同步
+    MSG_S2S_HASHSLOT_NTF_OBSERVER_SLOT_MISS     = 14503; // Follower向Observer通知发给自己的消息不在自己负责的Hashslot范围，判断是否需要拉取更新
+    MSG_S2S_HASHSLOT_NTF_FOLLOWER_VER_OUTDATE   = 14504; // Observer、其它Follower等向Follower通知版本过期，需要拉取新的哈希槽
+    MSG_S2S_HASHSLOT_OBSERVER_REQ_FOLLOWER_RANGE= 14505; // Observer向Follower请求各槽位信息（返回NTF_LEADER_RANGE）
+
+
+
+    //-------------------------- 哈希槽协议end --------------------------
+	
+	//----------------------------跑马灯协议begin（14600~14610）-----------------------------------
+	MSG_S2C_BROADCAST_NTF						= 14600; // 推送跑马灯消息
+	MSG_S2GS_BROADCAST_REQ						= 14601; //	请求GameServer推送跑马灯协议
+	
+	//----------------------------跑马灯协议end---------------------------------
+	
+	//----------------------------VIP协议begin（14611~14620）-----------------------------------
+	MSG_C2S_REQ_GET_VIP_REWARD						= 14611;//请求领取每日VIP点数
+	MSG_S2C_VIP_INFO_CHANGE_NTF						= 14612;//VIP信息变化通知
+	MSG_C2S_REQ_BUY_VIP_EXP							= 14613;//请求齿轮币购买vip经验
+    MSG_C2S_REQ_BUY_VIP_TIME					    = 14614;//请求VIP时间购买(并使用)
+    MSG_S2C_VIP_ACTIVATE_NTF					    = 14615;//VIP时间激活通知
+	//----------------------------VIP协议end----------------------------------------------------
+
+    //-------第一次完成RPG关卡协议--------14621-------------------
+    MSG_S2C_FIRST_RPG_FINISH = 14621;
+
+    //押镖协议
+    MSG_S2S_NTF_ESCORT_BATTLE_REPORT            = 14650; //通知押镖战报
+    MSG_S2S_NTF_ESCORT_FINISH                   = 14651; //通知护送完成
+    MSG_S2S_NTF_ESCORT_CREATE_ROBOT             = 14652; //通知创建机器人
+    
+    //------------------------------------------------------------------------------------
+    ///////////////////////////////////////////////////////////////////////////
+    ///rpc start 50000----60000
+    MSG_RPC_TEST                                = 50000;
+    MSG_DELAY_TEST                              = 50001;
+    MSG_RPC_CHAR_LIST                           = 50002;
+	MSG_RPC_CREATE_CHAR							= 50003;
+	MSG_RPC_ENTER_GAME							= 50004;
+    MSG_CONFIG2AUTH_REQ_ACCOUNT_LOGIN           = 50005; // 请求Auth服进行SDK验证
+    MSG_S2S_REQ_ASSIGN_GATE                     = 50006; // Config发给Master，请求给客户端分配Gate
+    MSG_SS_REQ_ASSIGN_GATE_RELAY                = 50007; // Master请求Gate
+    MSG_S2S_REQ_KICK_PLAYER_MASTER				= 50008; // 请求客户端断线 Config->Master
+    MSG_S2S_REQ_KICK_PLYAER_GATE                = 50009; // 玩家掉线Master->Gate 
+
+    //check content valid
+    MSG_RPC_CONTENT_CHECK                       = 50010;//检测内容是否非法
+	MSG_RPC_S2S_REQ_LOAD_AREAINFO_KING			= 50011;// 请求加载王国信息	
+	MSG_RPC_S2S_REQ_UPDATE_AREAINFO_KING		= 50012;// 请求更新王国信息
+	MSG_RPC_GS2SS_REQ_CREATECITY				= 50013;// 请求创建城市	
+	
+	// 场景信息
+    MSG_RPC_S2S_RECYCLE_CITY                    = 50014;   //回收city
+	MSG_RPC_C2S_REQRSP_OBJECT_MOVE				= 50015;
+	MSG_RPC_C2S_REQRSP_CREATE_SUB_BUILDING		= 50016;
+	MSG_RPC_C2S_REQRSP_CHANGE_OBJECT_PROPERTY	= 50017;
+	MSG_RPC_C2S_REQRSP_UPGRADE_OBJECT_LEVEL		= 50018;
+	MSG_RPC_C2S_REQRSP_VIEW_UPDATE				= 50019;		//请求视野变更
+	MSG_RPC_C2S_REQRSP_MAP_OBJECT_POSITION_VERIFY= 50020;		//请求对象坐标（校验位置）
+    MSG_RPC_S2S_CITY_DATA_SWITCH_SCENE          = 50021;  //离开场景 (服务器驱动)
+
+	
+	MSG_GS2SS_RPC_CITY_MOVE_RECOMMEND           = 50022;     //迁城推荐点位RPC
+	MSG_RPC_SS2GS_REQRSP_COSTITEM				= 50023;	//场景向gameserver发送消耗物品
+	MSG_RPC_GS2SS_REQRSP_COSTCURENCY_AND_ITEM	= 50024;	//gameserver向场景发送消耗货币资源，如果有道具有货币，先去扣货币
+	MSG_RPC_G2S_REQ_MARCHING					= 50026;
+	MSG_RPC_G2S_REQ_CITY_SOLDIER_UPDATE			= 50027;	//game 士兵变化推送给场景
+    MSG_GS2SS_RPC_CITY_MOVE                     = 50028;     //迁城RPC
+    MSG_GS2SS_RPC_WATCH_TARGET_CITY_BUILD       = 50029; //查看其他人的建筑,转发到SceneServer
+    MSG_SS2GS_RPC_WATCH_TARGET_CITY_BUILD       = 50030; //查看其他人的建筑,转发到GameServer
+	
+	MSG_GS2PS_RPC_NEW_ASSEMBLE			        = 50031; //发起新的集结
+	MSG_PS2SS_RPC_NEW_ASSEMBLE			        = 50032; //发起新的集结
+	MSG_SS2GS_CREATE_TACTICAL_BUILD				= 50033;// 创建战术建筑
+	MSG_SS2GS_TACTICAL_MAKE_PRODUCT				= 50034;// 战术建筑
+	MSG_SS2GS_TACTICAL_SOLDIER_OPERATER			= 50035;// 战术建筑治疗/招募
+	MSG_GS2SS_RPC_PLAYEROFFLINEVIEW				= 50036;	
+	MSG_GS2GS_RPC_CROSSTEST	 					= 50037;//测试跨服远程
+	MSG_S2PUB_RPC_PLAYER_BASIC_INFO             = 50038;  //玩家基础信息查询
+
+    //联盟RPC(50038~50058)
+    MSG_GS2AS_RPC_ALLIANCE_OPERATE_TECH         = 50039;  //联盟科技操作
+    MSG_AS2SS_RPC_MEMBER_LOCATE                 = 50040;  //成员定位
+    MSG_S2AS_RPC_ALLIANCE_BRIEFINFO             = 50041;  //查询联盟简要信息
+    MSG_AS2SS_RPC_BUILD_ALLIANCE_BUILDING       = 50042;  //请求建造联盟建筑
+    MSG_AS2SS_RPC_REMOVE_ALLIANCE_BUILDING      = 50043;  //请求拆除联盟建筑
+    MSG_S2AS_RPC_GET_ALLIANCE_LEADER            = 50044;  //请求联盟首领ID
+    MSG_AS2SS_RPC_GET_NPC_TOWN_LIST             = 50045;  //请求NPC城镇列表
+    MSG_AS2SS_RPC_ENROLL_NPC_TOWN               = 50046;  //请求报名NPC城镇
+    MSG_GS2SS_RPC_CHECK_QUIT_ALLIANCE           = 50047;  //去场景服检查是否满足退帮条件
+    MSG_SS2AS_RPC_QUERY_ALLIANCEINFO            = 50048;  //请求联盟信息
+    MSG_AS2GS_RPC_ALLIANCE_MEMBER_INFO          = 50049;  //更新联盟成员部分信息
+        
+	// 邮件
+	MSG_MS2GS_RPC_GET_MAIL_ATTACH				= 50050;// 领取邮件RPC
+
+    //联盟RPC
+    MSG_MS2GS_RPC_GET_ALLIANCE_LEADER_NPOINT       = 50051;//获取盟主附近点
+    MSG_AS2SS_RPC_GET_ALLIANCE_INTEL               = 50052;//获取情报对象的详细信息
+
+    MSG_AS2SS_RPC_ABANDON_NPC_TOWN               = 50053;  //放弃NPC城镇
+    MSG_AS2SS_RPC_NPC_TOWN_RANK                  = 50054;  //请求NPC城镇战功排名
+
+    MSG_SS2AS_RPC_GET_DECLARE_WAR                = 50055;  //获取宣战信息
+
+    MSG_AS2SS_RPC_BE_DECLARE_WAR                 = 50056;  //获取 被宣战 信息
+
+    //聊天RPC(50059~50080)
+    MSG_PS2PS_RPC_APPLY_FRIEND                  = 50059;//申请好友
+    MSG_PS2PS_RPC_DEAL_APPLY_FRIEND             = 50060;//处理申请好友
+    MSG_PS2PS_RPC_DELETE_FRIEND                 = 50061;//删除好友
+    MSG_PS2CS_RPC_CREATE_CHAT                   = 50062;//创建聊天室
+    MSG_PS2CS_RPC_DELETE_CHAT                   = 50063;//删除聊天室,未启用
+    MSG_PS2CS_RPC_ADD_CHAT_MEMBER               = 50064;//添加聊天室成员,未启用
+    MSG_PS2CS_RPC_REM_CHAT_MEMBER               = 50065;//移除聊天室成员,未启用
+    MSG_S2S_RPC_GET_CHAT_LIST                   = 50066;//获取聊天列表
+    MSG_S2S_RPC_GET_CHAT_MESSAGES               = 50067;//获取聊天消息
+    MSG_S2S_RPC_QUERY_CHAT_MEMBER               = 50068;//获取聊天成员
+    
+	MSG_PS2PS_RPC_SEND_MAIL						= 50069;//发送RPC消息
+    MSG_PS2AS_RPC_GET_CHAT_LIST                 = 50070;//获取帮会频道数据
+    MSG_GS2PS_RPC_CREATE_RED_PACKET             = 50071;//请求创建红包
+    MSG_GS2PS_RPC_OPEN_RED_PACKET               = 50072;//请求开红包
+	MSG_GS2AS_RPC_CREATE_RED_PACKET             = 50073;//请求创建红包(game-->alliance)
+	MSG_GS2AS_RPC_OPEN_RED_PACKET               = 50074;//请求开红包(game-->alliance)
+	
+    //玩家修改RPC(50081~50100)
+    MSG_GS2LS_RPC_CHANGE_PLAYER_NAME            = 50081;//修改玩家名字
+    MSG_S2S_RPC_INCR_ENERGY                     = 50082;//修改玩家体力
+	MSG_GS2SS_RPC_MIGRATE_CHECK                 = 50083;//玩家移民条件检查
+    MSG_GS2LS_RPC_CHECK_PLAYER_NAME             = 50084;//检查玩家名字
+	
+    MSG_S2S_RPC_ALL_SERVER_LIST                 = 50086;//获取服务器列表
+    MSG_S2S_RPC_TARGET_SERVER_MIGRATE_DETAIL    = 50087;//获取移民目标服信息
+    MSG_GS2SS_RPC_TARGET_MIGRATE_CHECK          = 50088;//玩家移民条件检查
+    MSG_GS2LS_RPC_TARGET_MIGRATE_CHECK          = 50089;//玩家移民条件检查
+    MSG_GS2SS_RPC_DEAL_MIGRATE_DATA             = 50090;//在场景服获取城市数据
+    MSG_GS2LS_RPC_DEAL_MIGRATE_DATA             = 50091;//删除小区账号信息
+    MSG_GS2LS_RPC_DEAL_TARGET_MIGRATE_DATA      = 50092;//目标服创建移民数据
+    MSG_GS2PS_RPC_DEAL_MIGRATE_DATA             = 50093;//强制保存PSPlayer信息
+    MSG_GS2MS_RPC_DEAL_MIGRATE_DATA             = 50094;//强制保存MailDB信息
+	MSG_GS2SS_RPC_LANUCH_EMOJI					= 50095;//game-->scene发送表情
+    MSG_GS2SS_RPC_UPDATE_SG_DRESSUP				= 50096;//game-->scene发送表情
+
+    //排行榜RPC(50101~50120)
+    MSG_PS2CS_RPC_RANK_INFO                      = 50101;  //请求排行榜信息
+    MSG_PS2CS_RPC_ALL_RANK_INFO                  = 50102;  //所有排行榜信息
+
+	MSG_GS2SS_RPC_DO_CALL_MONSTER_ITEM		 	 = 50121;	//game server to 场景服 使用召唤怪物物品
+	MSG_GS2SS_RPC_EXPLORE_CREATE_MONSTER		 = 50122;	// G 2 S 创建演员野怪
+	MSG_GS2SS_RPC_CREATE_ACTIVITY_MONSTER		 = 50123;	//game server to 场景服 召唤活动怪物
+    MSG_GS2PS_RPC_PULL_ONLINE_PLAYER_RANKING     = 50124; /////拉取配置排行榜
+
+    //国王
+    MSG_SS2GS_RPC_APPOINT_KING                      = 50125;//S 国王/官员 任命
+    MSG_GS2SS_RPC_APPOINT_OFFICIAL                  = 50126;// g2s 官员 任命
+    MSG_SS2AS_RPC_APPOINT_TIMEEND                   = 50127;// S->AS 通知 时间到了自动任命群主为国王
+    MSG_GS2SS_RPC_END_APPOINT_KING                  = 50128;// AS-SS 官员 任命
+    MSG_RPC_GS2SS_KING_USE_SKILL                    = 50129;// GS-SS 国王使用技能
+    MSG_RPC_GS2SS_KING_ALLOCATE_REWARD              = 50130;// GS-SS 国王分配奖励
+	//联盟boss
+	MSG_RPC_ITEM_CHANGE								= 50131;// 玩家道具变化
+	MSG_RPC_CALL_SCENCE_ALLIANCE_BOSS				= 50132;// 召唤联盟boss
+	//里程碑
+	MSG_RPC_MILESTONE_GET_ALLIANCE_SETTLE_DATA		= 50133;	//里程碑任务结算时获取联盟结算信息
+	//自动集结
+//	MSG_RPC_REQ_SET_AUTO_ASSEMBLE					= 50134;	//
+	MSG_RPC_REQ_DO_AUTO_ASSEMBLE					= 50135;	//场景服通知game 开始自动加入集结
+    // 探索获取可用点
+    MSG_GS2SS_RPC_EXPLORE_GET_POS                   = 50140;// 探索获取可用点
+	MSG_RPC_CHECK_BTRSOLDIER_COUNT					= 50141;	//检查大逃杀队伍士兵数量
+	//末日试炼活动
+	MSG_RPC_DOOMSDAY_ASK_HELP								= 50142;	//末日试炼请求帮助
+	MSG_RPC_DOOMSDAY_CHECK_ALLIANCE_PROGRESS				= 50143;	//末日试炼检查联盟奖励进度
+    //场景内信息
+    MSG_SS2DB_RPC_UPDATE_SCENE_CELL_INFO            = 50200;// S->DB 更新场景单位格子信息
+	MSG_RPC_SET_VIEW_SERVER							= 50201;//设置跨服观察者请求
+	MSG_RPC_OBSERVER_LEAVE_SCENE					= 50202;//观察者移出场景，跨服删除，本服移出
+
+    MSG_RPC_DISPATCH_ROB                            = 50210;//派遣-抢夺(后端内部使用)
+    MSG_RPC_DISPATCH_HELP                           = 50211;//派遣-帮助(后端内部使用)
+    MSG_RPC_DISPATCH_REFRESH                        = 50212;//派遣-刷新(后端内部使用)
+
+    //大逃杀RPC 50300-50400
+    MSG_S2S_RPC_BATTLEROYALE_REVIVE                 = 50300;   //Rpc请求复活
+	//竞技场 50401-50500
+    MSG_S2S_RPC_ARENA_MATCH_TARGET                  = 50401;  //竞技场请求匹配
+    MSG_S2GS_RPC_GET_ARENA_DEFENSE_SOLDIERS         = 50402;  //请求竞技场防守阵容
+    MSG_S2S_RPC_SET_SKIN                            = 50403;  //设置主城皮肤。增加pi
+    MSG_S2S_RPC_ARENA_RANK_LIST                     = 50404;  //竞技场排行列表
+    MSG_S2S_RPC_ARENA_RANKING_LIST                  = 50405;  //竞技场上榜列表
+    MSG_S2S_RPC_ARENA_UPDATE_MATCH_TARGET           = 50406;  //竞技场更新匹配目标
+
+    
+    //押镖
+    MSG_RPC_G2S_REQ_ESCORT_ROB_ATTACK               = 50420;  //劫镖
+    MSG_RPC_S2S_ESCORT_FILL_ROBOT                   = 50421; //填充机器人
+
+    //排行榜(50501)
+    MSG_S2S_RPC_GET_PLAYERLIST_RANK =  50501;  //请求玩家排名
+
+
+    // Http rpc占用 50600~50700
+    // = 50600;
+    // ~
+    MSG_RPC_HTTP2MS_GET_ROLE_COUNT                  = 50600; // HttpServer通知Master, 游戏单服角色数
+    MSG_RPC_HTTP2MS_MAIL                            = 50601; // HttpServer通知Master, 邮件
+    MSG_RPC_HTTP2MS_ALLIANCE_INFO                   = 50602; // HttpServer通知Master, 联盟信息
+    MSG_RPC_HTTP2MS_PLAYER_INFO                     = 50603; // HttpServer通知Master, 玩家信息
+    MSG_RPC_HTTP2MS_CHANGE_NAME                     = 50604; // HttpServer通知Master, 修改名字
+    MSG_RPC_HTTP2MS_ADD_ITEM                        = 50605; // HttpServer通知Master, 添加道具
+    MSG_RPC_HTTP2MS_GET_ONLINE_COUNT                = 50606; // HttpServer通知Master, 在线人数
+    MSG_RPC_HTTP2MS_BROADCAST                       = 50607; // HttpServer通知Master, 跑马灯
+    MSG_RPC_HTTP2MS_GET_SERVER_CONFIG               = 50608; // HttpServer通知Master, 获取服务器配置
+    MSG_RPC_HTTP2MS_CHAT_BAN                        = 50609; // HttpServer通知Master, 聊天禁言    
+    MSG_RPC_HTTP2MS_SERVER_AREA_LIST                = 50611; // HttpServer通知Master, 获取小区服务器列表
+    MSG_RPC_HTTP2MS_SERVER_AREA_NET_INFO            = 50612; // HttpServer通知Master, 获取小区服务器网络信息
+    MSG_RPC_HTTP2MS_BAN                             = 50613; // HttpServer通知Master, 封号 / 解封
+    MSG_RPC_HTTP2MS_GAME_POST                       = 50614; // HttpServer通知Master, 发送游戏公告
+    MSG_RPC_HTTP2MS_KICK_PLAYER                     = 50615; // HttpServer通知Master, 踢人
+    MSG_RPC_HTTP2MS_RECHARGE_GM                     = 50616; // HttpServer通知Master, 充点/扣点接口
+    MSG_RPC_HTTP2MS_SERVER_CONFIG_SET               = 50617; // HttpServer通知Master, 设置某个服务器的导入国家地区代码
+    MSG_RPC_HTTP2MS_RELOAD_APP_CONFIG               = 50618; // HttpServer通知Master, 重新加载app配置
+    MSG_RPC_HTTP2MS_GET_ACCOUNT_BY_CHAR             = 50619; // HttpServer通知Master, 通过角色ID获取账号
+    MSG_RPC_HTTP2MS_CHANGE_SOLDIER_GROUP            = 50620; // HttpServer通知Master, 修改部队
+    MSG_RPC_HTTP2MS_CHARGE_ITEM                     = 50621; // HttpServer通知Master, 充道具
+    MSG_RPC_HTTP2MS_ALLIANCE_CHANGE_NAME            = 50622; // HttpServer通知Master, 联盟改名/描述
+    MSG_RPC_HTTP2MS_RES_OFF_NOTICE                  = 50623; // HttpServer通知Master, 资源下架通知
+    MSG_RPC_HTTP2MS_FIX_REPAIR                      = 50624; // HttpServer通知Master, 修复数据
+    MSG_RPC_HTTP2MS_FIX_REPAIR_JSON                 = 50625;
+    // = 50700 
+    
+    //configsever请求authserver rpc
+    MSG_CONFIG2AUTH_REQ_QUERY_ID                    = 50700; // 请求查询IP国家码
+
+    // 联盟50800-50900
+    MSG_AS2SS_RPC_MEMBER_MOVE_CITY                    = 50800;  // 联盟成员联盟迁城
+    MSG_GS2AS_RPC_FREE_MOVE_INFO                      = 50801;  // 联盟免费迁城信息
+
+    MSG_S2S_RPC_CREATE_ROBOT                          = 50802;  // 创建机器人
+    
+    MSG_RPC_ALLIANCE_DULE_INFO                     = 50803; //联盟对决信息请求
+    //MSG_RPC_ALLIANCE_DULE_MATCH_JOIN               = 50804; //联盟对局参与匹配
+    MSG_RPC_ALLIANCE_DULE_WEEK_LOG                 = 50805; //联盟对决结算日志
+
+    MSG_GS2AS_RPC_INCIDENT_HELP                     = 50806;  // 帮助联盟成员
+
+    MSG_GS2AS_RPC_GET_INCIDENT_HELPER_ID            = 50807;  // 获取N个联盟帮助者ID
+
+    MSG_DELAY_MAX                                   = 60000;
+
+    ///////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    MSG_S2S_SERVER_REGISTERED                   = 65000; // 服务器注册
+    MSG_S2S_SERVER_UNREGISTERED                 = 65001; // 服务器注册
+    MSG_S2S_REQ_SERVER_DATA                     = 65002; // 服务器查询
+    MSG_S2S_RSP_SERVER_QUERY_DATA               = 65003; // 服务器查询
+    MSG_C2S_REQ_GATE_SERVER_INFO                = 65005; // 查询网关信息
+    MSG_S2C_RSP_GATE_SERVER_INFO                = 65006; // 返回网关信息
+    MSG_C2S_REQ_BIG_AREA_SERVER                 = 65007; // 查询大区内所有小区信息
+    MSG_S2C_RSP_BIG_AREA_SERVER                 = 65008; // 返回大区内所有小区信息
+
+    MSG_S2S_REPORT_AREA_STATE		            = 65009; // 汇报小区状态
+	MSG_S2S_REPORT_SERVER_STATE					= 65010; // 汇报服务器状态
+
+    MSG_GW2CONF_REQ_AREA_INFO                   = 65011; // 查询小区状态，用来做停服维护等
+    MSG_CONF2GW_RSP_AREA_INFO                   = 65012; // 回复小区状态
+
+
+    
+    MSG_END                                     = 65535;
+    //注意，MSG TYPE值范围为[0;65535]
+};
+enum ReloadComandID
+{
+    ///////////////////////////////////////////////////////////////////////////
+    //非业务逻辑保留begin（1-100）
+    ///////////////////////////////////////////////////////////////////////////     
+    RDC_ID_RELOAD_DES_XML_CONFIG       = 3; // 重载策划配置命令，控制台格式是 reload 3 item award ... 其中3是命令ID， item、award是配置表名称 ... 表示是列表
+    
+    RDC_ID_LOG_LEVEL_DEBUG             = 11; // 打开log等级debug
+    RDC_ID_LOG_LEVEL_INFO              = 12; // 打开log等级info
+    RDC_ID_LOG_LEVEL_WARNING           = 13; // 打开log等级warning
+    RDC_ID_LOG_LEVEL_ERROR             = 14; // 打开log等级error
+    RDC_ID_LOG_LEVEL_FATAL             = 15; // 打开log等级fatal
+
+    RDC_ID_LOG_CLOSE_LEVEL_DEBUG       = 16; // 关闭log等级debug
+    RDC_ID_LOG_CLOSE_LEVEL_INFO        = 17; // 关闭log等级info
+    RDC_ID_LOG_CLOSE_LEVEL_WARNING     = 18; // 关闭log等级warning
+    RDC_ID_LOG_CLOSE_LEVEL_ERROR       = 19; // 关闭log等级error
+    RDC_ID_LOG_CLOSE_LEVEL_FATAL       = 20; // 关闭log等级fatal    
+
+    RDC_ID_RELOAD_LOG_CONFIG           = 21; // 热加载log_conf.xml
+	
+	
+    RDC_ID_DB_RELOAD_SAVE_CONFIG        = 22; // DB热加载,定时保存的配置    
+    RDC_ID_DO_UPDATE_AUTORELOAD         = 23; // 加载一次，自动加载表    
+    RDC_ID_RELOAD_AREALIST_ALLOW_ACCOUNT= 24; // 加载allow_account.xml,server_area_list.xml
+    RDC_ID_RELOAD_GM_ACCOUNT            = 25; // 加载白名单，gm_account.xml
+    RDC_ID_RELOAD_MAINTAIN_INFO         = 26; // 加载停服的登录公告
+	RDC_ID_RELOAD_MAIL_SEND				= 27; // 热更新发送全服邮件
+	RDC_ID_RELOAD_MAIL_PLAYER_SEND		= 28; // 热更新发送指定玩家的邮件
+    RDC_ID_RELOAD_CONNECT_SERVER        = 29; // 热加载重连SERVER
+    RDC_ID_RELOAD_LUAVM                 = 30; // 热加载lua虚拟机
+    RDC_ID_RELOAD_ACTIVITY_CONF         = 31; // 热加载活动配置  参数1 活动ID 参数2- 配置表名(...)
+    RDC_ID_RELOAD_WARNING_CONF          = 32; // 热加载报警源
+    RDC_ID_RELOAD_HOTFIX_HOOK           = 33; // 热加载hook
+    RDC_ID_RELOAD_UNLOAD_HOTFIX_HOOK    = 34; // 热卸载hook
+    RDC_ID_RELOAD_HOTFIX_HOTFIX_HOOK1   = 35; // 热加载hook
+    RDC_ID_RELOAD_CHARGE_LIMIT          = 36; // 热加载充值限额    
+    RDC_ID_RELOAD_GAME_ID               = 37; // 热加载game_id.xml
+    RDC_ID_RELOAD_NOTE_CLIENT_UPDATE    = 38; // 通知在线前端热更新
+
+
+}
+enum GMComandID
+{
+    //////////////////////// demo 视野管理和地图单位同步测试（101-110） ////////////////////////////////////////
+	NGMC_ID_SET_VIEW_POINT				= 101;
+	NGMC_ID_CHANGE_PROPERTY				= 102;
+	NGMC_ID_CREATE_DELETE_OBJECT		= 103;
+	NGMC_ID_OBJECT_MO_MOVE				= 104;
+	NGMC_ID_MOVE_CITY		            = 105;
+    NGMC_ID_CHECK_POINT                 = 106;  //检查坐标点阻挡
+	NGMC_ID_SET_MOVE_MSG_BROADCAST      = 107;  //移动消息优化开关
+    NGMC_ID_LEAVE_SCENE                 = 108;  //离开场景
+    NGMC_ID_ENTER_SCENE                 = 109;  //进入场景
+	
+	//////////////////////// 导航寻路测试 （111-120）
+	NGMC_ID_GET_PATH_TEST				= 111;
+	NGMC_ID_MAP_AREA_UNLOCK				= 112;
+	NGMC_ID_SCENCE_CITY_CROSS			= 113;	//跨服
+    /////////////////////// 多语言
+    NGMC_ID_SET_LANGUAGE                = 121;
+    NGMC_ID_GET_GAMESERVERID            = 122;  //获取游戏服务器ID
+	NGMC_ID_SEND_PUSH_MESSAGE           = 123;  //
+    //////////////////////// 加资源
+    NGMC_ID_ADD_RESOURCE                = 130;
+    NGMC_ID_CLEAR_RESOURCE              = 131;  //清空资源
+	NGMC_ID_GIVE_REWARD		            = 132;  //发放奖励包
+    /////////////////////// 城建相关（141-150）
+    NGMC_ID_SHOW_DATA                   = 141;
+    NGMC_ID_CHANGE_DATA                 = 142;
+    NGMC_ID_ADD_WOUNDED_SOLDIER         = 143;
+    NGMC_ID_BURN_GUARD_HOUSE            = 144;
+	NGMC_ID_BURN_BUILD_TOWER            = 145;
+	NGMC_ID_CHANGE_BUILDING_LEVEL       = 146;
+    NGMC_ID_STUDY_ALL_TECH              = 147;
+    NGMC_ID_FORCE_LEAVE_HOME_LAND       = 148;
+	NGMC_ID_UNLOCK_AREA_BUILDINGS       = 149;
+	/////////////////////// 队伍测试（151-160）
+    NGMC_ID_MARCHING_TEST		        = 151;	//行军测试
+	NGMC_ID_ADD_CITY_SOLDIER            = 152;	//添加城市士兵
+	NGMC_ID_ADD_TACTICAL_CAR		 	= 153;	//添加战术建筑伤兵士兵
+	NGMC_ID_SET_CITY_PROPERTY		 	= 154;	//设置城市属性
+	NGMC_ID_ADD_WOUNDED_2_TACTICAL		= 155;	// 
+	NGMC_ID_CLEAR_OUSIDE_SOLDIERGROUP	= 156;	// 清理外部队伍 瞬间回城
+	NGMC_ID_USE_SKILL					= 157; 	// 直接使用技能
+	NGMC_ID_ADD_PASSIVE_SKILL			= 158; 	// 直接添加被动技能
+	NGMC_ID_TRIGER_SKILL				= 159;	// 直接触发技能
+	NGMC_ID_ADD_SCOUT					= 160; // 添加斥候
+
+	/////////////////////// 任务测试（161-170）
+    NGMC_ID_CHANGE_TASK_DATA		    = 161;	//任务数据测试
+    NGMC_ID_FINISH_ALMOST_ALL_TASKS     = 162;  //强制完成大多数主支线任务
+    NGMC_ID_FINISH_CURR_CHAPTER_TASKS   = 163;  //强制完成当前章节任务
+    NGMC_ID_INCR_DAILY_TASK_POINT       = 164;  //增加每日任务点数的进度
+    NGMC_ID_FINISH_SHELTER_TASKS        = 165;  //强制完成避难所章节任务
+    NGMC_ID_FINISH_ALL_CHAPTER_TASKS    = 166;  //强制完成所有章节任务
+	
+    /////////////////////// 英雄测试（201-300）
+    NGMC_ID_Hero_GET                    = 201;  //获取英雄
+    NGMC_ID_Hero_UP_LEVEL               = 202;  //等级提升
+    NGMC_ID_Hero_UP_STAR                = 203;  //英雄升星
+    NGMC_ID_Hero_UP_SKILL               = 204;  //英雄技能升级
+    NGMC_ID_Hero_GET_ALL                = 205;  //获取所有英雄，并拉满
+	NGMC_ID_GET_RANDOM_POS				= 206;	//获取随机可用位置
+    NGMC_ID_Hero_UP_EQUIP               = 207;  //英雄装备升级
+    NGMC_ID_TEST_HERO_BATTLE            = 208;  //英雄大地图强度测试
+
+    // 获得装备
+    NGMC_ID_GET_EQUIP                   = 209;  //获取装备
+
+    NGMC_ID_SET_ELEC_OIL                = 210;  //设置石油
+    NGMC_ID_SET_ELEC               = 211;  //设置电力值 参数1 电力值
+    NGMC_ID_ADD_AWARDPACK               = 212;  //奖励包
+
+
+    NGMC_ID_ADD_FACILITY                = 220; // 建筑设施
+
+	/////////////////////// 道具测试（301-350）
+    NGMC_ID_ADDITEM                    = 301;  //增加道具
+    NGMC_ID_ADD_ALL_ITEM               = 302;  //获取所有道具
+    NGMC_ID_CLEAR_PACK                 = 303;  //清包裹物品
+
+
+    //联盟测试
+    NGMC_ID_ALLIANCE_ADD_GIFT                   = 304;  //联盟添加礼物
+    NGMC_ID_ALLIANCE_ADD_RESOURCE               = 305;  //增加联盟资源  参数1 ITEM_ID 参数 2 数量
+    NGMC_ID_ALLIANCE_CLEAR_RESOURCE             = 306;  //清空联盟资源
+    NGMC_ID_STUDY_ALL_TECHS                     = 307;  //研究所有科技
+    NGMC_ID_ALLIANCE_BUILDING_BUILD_COMPLETE    = 308;  //立即完成联盟建筑建造 参数1 联盟建筑ID
+    NGMC_ID_ALLIANCE_CHECK_LINK                 = 309;  //检测联盟连通性 参数1 联盟ID
+    NGMC_ID_ALLIANCE_UP_LEVEL                   = 310;  //升级联盟 参数1 等级
+    NGMC_ID_STUDY_TECH_ID                       = 311;  //研究指定科技至满级，不考虑前置条件 参数1 联盟科技ID
+    NGMC_ID_BUILD_ALLIANCE_BUILDING             = 312;  //建造联盟建筑  参数1 config_id //配置ID  参数2 Point2D x 坐标 //建造位置 参数3 Point2D y 坐标 //建造位置
+    NGMC_ID_DAILY_DONATION_SETTLE               = 313;  //每日捐献结算
+    NGMC_ID_WEEKLY_DONATION_SETTLE              = 314;  //每周捐献结算
+    NGMC_ID_SET_DONATION_VALUE                  = 315;  //设置捐献值
+    NGMC_ID_RESET_MOBILIZATION_OPEN             = 316;  //重置总动员开启
+    NGMC_ID_MOBILIZATION_MATCH                  = 317;  //总动员匹配  1 小服 2 大区
+    NGMC_ID_MOBILIZATION_FINISH_TASK            = 318;  //立即完成任务
+    NGMC_ID_MOBILIZATION_ADD_CLAIM_NUM          = 319;  //增加领取任务次数
+    NGMC_ID_MOBILIZATION_ADD_TASK_SCORE         = 320;  //增加任务进度
+    NGMC_ID_MOBILIZATION_ADD_PLAYER_SCORE       = 321;  //增加玩家积分
+    NGMC_ID_MOBILIZATION_ADD_ALLIANCE_SCORE     = 322;  //增加联盟积分
+    NGMC_ID_MOBILIZATION_CLOSE                  = 323;  //活动关闭
+    NGMC_ID_MOBILIZATION_SET_RANK               = 324;  //设置玩家段位
+    NGMC_ID_COMPLETE_ALLIANCE_TASK              = 325;// 完成联盟任务
+    NGMC_ID_COMPLETE_ALLIANCE_CHAPTER           = 326;// 完成当前联盟章节
+    NGMC_ID_TRIGGER_ALLIANCE_LEADER_CHAT        = 327;// 触发联盟leader chat 事件
+	NGMC_ID_RESET_ALLIANCE_BOSS_DATA			= 328;// 重置联盟boss数据
+	NGMC_ID_RESET_ALL_ALLIANCE_BOSS_DATA		= 329;// 重置所有联盟boss数据
+    NGMC_ID_ALLIANCE_DULE_MATCH                 = 330;  //联盟对决gm匹配， param1:匹配的guid
+    NGMC_ID_ALLIANCE_DULE_TEST_MATCH            = 331;  //联盟对决cross开启匹配测试
+    NGMC_ID_RESET_ALLIANCE_NPC_TOWN_DECLARE     = 336;// 重置 当日宣战次数 以及 宣战开始和结束时间
+
+    NGMC_ID_ALLIANCE_ADD_HONOR_POINT            = 340;  //增加荣誉点 参数1 honor_point 荣誉点数
+
+    NGMC_ID_ALLIANCE_END                        = 350;
+
+	/////////////////////// 副本（351-370）
+	NGMC_ID_FINISH_DUNGEON			  			= 351;	//结束副本
+	NGMC_ID_ENTER_DUNGEON						= 352;	//进入副本
+	
+	////////////战役副本 (371-380)
+	NGMC_ID_CHAPTER_COMPLETE			= 371;//完成当前关卡
+	NGMC_ID_CHAPTER_RANDOMEVENT			= 372;//触发随机副本（概率）
+	NGMC_ID_CAR_SUIT_UPGRADE 			= 373;// 套装升级
+	NGMC_ID_CAR_PART_UPGRADE			= 374;// 部件升级
+	
+	NGMC_ID_EXPLORE_MONSTER				= 375;// GM探索创建野怪
+	NGMC_ID_EXPLORE_FINISH				= 376;// GM完成探索任务
+	NGMC_ID_DUNGEONlIST_SUCCESS         = 377;// GM完成关卡选择
+	NGMC_ID_ExploreLevelUp              = 378;// GM升级  
+    NGMC_ID_KilledMonsterLevel          = 379;// GM击杀野怪的等级
+	NGMC_ID_ExploreRefresh          	= 380;// GM探索刷新
+	/////////////////////// 邮件(381 - 400)
+	NGMC_ID_ADD_NEW_MAIL						= 381;// 添加邮件
+	NGMC_ID_ADD_GLOBAL_NEW_MAIL					= 382;// 添加全服邮件
+	NGMC_ID_GET_RANDOM_PLAYER_ID				= 383;// 获取随机玩家ID，用于Robot测试发送邮件，目前仅RobotClient使用
+
+	NGMC_ID_FUNCTIONOPERATER					= 391;// 功能开启操作 
+    NGMC_ID_FUNCTIONOPEN                        = 392;// 开启功能
+	NGMC_ID_BROADCAST							= 400;// 跑马灯通知
+	NGMC_ID_ONE_PARAM_BROADCAST					= 401;// 一个参数的跑马灯
+    NGMC_ID_REQNOTEGAME                         = 402;// 一个请求通知GameServerID
+	
+	NGMC_ID_CLEAR_TIME_APPOINT					= 410; //设置玩家上次日刷新时间
+	NGMC_ID_CLEAR_WEEKLY_TIME_APPOINT			= 411; //设置玩家上次周刷新时间
+	NGMC_ID_DO_PLAYER_REFRESH					= 412; //
+
+    NGMC_ID_EXPLORE_GROUP_DELETE                = 413; //删除雷达事件组
+
+
+    //////////////////////活动(420-500)
+    NGMC_ID_ACTIVITY_IN_RANK                = 420;  //排行榜活动上榜
+    NGMC_ID_ACTIVITY_COMMANDER_ADD_SCORE    = 421;  //最强指挥官活动加积分
+	
+	NGMC_ID_ACTIVITY_CHARGE_EVENT		    = 422;  //触发充值
+
+    NGMC_ID_ACTIVITY_BATTLE_PASS_ADD_SCORE  = 423;  //通行证加积分
+	NGMC_ID_DOOMSDAY_SET_CUR_MONSTER		= 424;  //末日试炼设置玩家当前进度
+	NGMC_ID_DOOMSDAY_SET_REWARD_BOX			= 425;  //创建末日试炼boss宝箱
+    NGMC_ID_ACTIVITY_NEW_PASS_ADD_SCORE     = 426;  //登录/周通行证加积分
+
+    NGMC_ID_OPEN_ACTIVITY                   = 500;  //GM活动开启
+
+	///////////////////////////////////////////////////////
+    NGMC_ID_CHANGE_SYSTEM_TIME              = 501;  //GM修改系统时间
+	NGMC_ID_ADD_REFUGE_NPC					= 502;  //生成避难所npc
+	NGMC_ID_SETTLE_GAME_EVENT				= 503;  //事件结算
+    NGMC_ID_MUST_RELOGIN_SWITCH             = 504;  //设置强制大重连开关
+    NGMC_ID_RECYCLE_UNACTIVE_CITY           = 505;  //回收不活跃的玩家城堡
+    NGMC_ID_CHANGE_ATTACK_MONSTER_LV        = 506;  //调整当前可以攻打的野怪等级
+	NGMC_ID_CALL_ALLIANCE_BOSS		        = 507;  //召唤联盟boss
+    NGMC_ID_RESET_REFUGE_DAILY_EVENT        = 508;  //重置避难采集事件
+
+    NGMC_ID_GET_NPC_DISPATCH                = 510;  //获取派遣Npc
+	NGMC_ID_SET_BASE_SIM_DEGREE             = 511;  //设置支持度 危险值
+	NGMC_ID_SET_ENERGY			            = 512;  //设置体力值
+    NGMC_ID_SET_ACTIVITY_PROCESS            = 513;  //设置活动的进度值
+    NGMC_ID_CLOSE_ACTIVITY                  = 514;  //GM活动关闭
+    NGMC_ID_DO_ACTIVITY_EVENT               = 515;  //触发活动事件
+
+    //////////////////////Npc城镇相关(551-570)    
+    NGMC_ID_CHANGE_NPCTOWN_STEP             = 551;
+    NGMC_ID_GARRISON_NPCTOWN                = 552;
+    NGMC_ID_OCCUPY_NPCTOWN                  = 553;
+    NGMC_ID_TEST_NPCTOWN_FUNC               = 554;
+
+    NGMC_ID_TEST_KING_FUNC                  = 560;
+    NGMC_ID_RECYCLE_CITY                    = 561;// 回收堡
+    NGMC_ID_APPOINT_KING                    = 562;// 任命国王
+    NGMC_ID_COMPLETE_INCIDENT_EVENT         = 571;// 假装服务器完成事件
+    NGMC_ID_TEST_PUSH_GIFT_FUNC             = 572;// 测试推送礼包
+    NGMC_ID_FORCE_PUSH_GIFT                 = 573;// 强制触发推送礼包
+    NGMC_ID_PLAYER_OFFLINE 					= 574;   //玩家下线
+	NGMC_ID_RESET_PUSH_GIFT                 = 575;// 重置推送礼包
+
+    NGMC_ID_ADD_RESIDENT                    = 600;   //添加居民 (不带参数 则添加所有) 带参数1 添个数
+    NGMC_ID_REMOVE_RESIDENT                 = 601;   //移除居民 (不带参数 则删除所有) 带参数1 删个数
+    NGMC_ID_CURE_RESIDENT                   = 602;   //治疗居民 参数1 治疗数值    
+    NGMC_ID_PUBLISH_EDICT                   = 603;   //发布政令 参数1 类型(1:强制工作 2:举办排队)
+    NGMC_ID_ADD_AFFAIR                      = 604;   //添加事务 参数1 事务id
+    NGMC_ID_ADD_DECREE_ORDER                = 605;   //添加法典点数 参数1 数量
+    NGMC_ID_DECREE_CD_CLEAR                 = 606;   //法典CD清除所有
+    NGMC_ID_ADD_METEOR                      = 607;   //开启陨石雨 参数1 陨石雨id    
+    NGMC_ID_AFFAIR_CLEAR                    = 608;   //删除所有事务    
+    NGMC_ID_METEOR_NEXT_STAGE               = 609;   //陨石雨直接进入入侵阶段 参数1 陨石雨id
+    NGMC_ID_NODE_SWITCH                     = 610;   //切换至节点
+    NGMC_ID_ILL_RESIDENT                    = 611;   //使居民生病 参数1 生病数量
+    NGMC_ID_ADD_RESIDENT_LETTER             = 612;   //添加居民信件 参数1 信件id
+    NGMC_ID_TAKE_OFF_ALL_RESIDENT           = 613;   //下阵所有居民
+
+    NGMC_ID_ADD_DISPATCH                    = 620;   //添加派遣 参数1 派遣id
+    // 派遣所有任务
+    NGMC_ID_DISPATCH_ALL                    = 621;   //派遣所有任务
+
+ //////////////////////副本服GM(700-800)    
+    NGMC_ID_ADD_BR_ITEM                 = 700;   //: 添加道具
+    NGMC_ID_NEXT_STAGE                  = 701;   // 进入下一阶段
+    NGMC_ID_STOP_AI                     = 702;   // 停止AI  参数1: 1 停止AI 0 开始AI
+    NGMC_ID_SET_SCORE                   = 703;   //设置局内积分  参数1: 积分
+	NGMC_ID_GET_BTROBJ_PROPERTY         = 704;   //查询大逃杀单位属性
+    NGMC_ID_STOP_REVIVE                 = 705;   //GM停止复活 参数1: 1 停止 0 恢复
+    NGMC_ID_STAGE_PAUSE                 = 706;   //阶段暂停 参数1: 1 暂停 0 恢复
+	NGMC_ID_SET_MARCHING_SPEED_UP       = 707;   //速度
+
+    NGMC_ID_ADD_BR_ITEM_END             = 800;// 结束
+	//里程碑任务
+	NGMC_ID_SET_MILESTONE_TASK	 	      = 801;// 
+    //竞技场GM
+    NGMC_ID_SET_ATTEMPTS = 802;  //设置挑战次数
+    
+    NGMC_ID_DOLLAR_CHARGE_EVENT		    = 803;  //触发代币充值
+	//避难所地块
+	NGMC_ID_SET_AREA_GRID				= 804;	//
+
+    NGMC_ID_RECYCLE_ALL_DEVICE          = 805;    //一键分解所有装置
+    NGMC_ID_GEN_DEVICE_TEST             = 806; //批量生成装置测试：参数1：生成个数
+    NGMC_ID_PRINT_PROPERTY              = 807; //打印属性
+    NGMC_ID_PRESSURE_TEST               = 808; //压力测试
+    NGMC_ID_JOIN_ALLIANCE               = 809; //加入指定联盟
+    NGMC_ID_FAST_JOIN_ALLIANCE          = 810; //随机加入联盟
+    
+    //限时比赛活动
+    NGMC_ID_TIME_LIMIT_MTACH_TSTAGE     = 850;  //限时比赛 触发玩家阶段
+    
+    //押镖
+    NGMC_ID_ESCORT_TEST                 = 860;  //押镖行军测试
+    NGMC_ID_ESCORT_FINISH               = 861; //一件完成押镖, param1: slot
+    NGMC_ID_ESCORT_CLEAR                = 862;  //一件清空镖车, param1 : slot
+    NGMC_ID_ESCORT_COUNT                = 863;  //设置押镖劫镖次数, param1 : count
+    NGMC_ID_ESCORT_SPEED                = 864;  //设置押镖速度
+    
+    //载具
+    NGMC_ID_APC_LEVELUP_FREE_COUNT      = 870;  //改装车免费升级次数
+	
+	NGMC_ID_GET_CLEAR_ALL_EQUIP         = 871;  //清除玩家身上和背包种的全部装备
+	NGMC_ID_SEND_RED_PACKET				= 872;	//发送红包
+    
+    //竞技场GM
+    NGMC_ID_SET_ARENA_SCORE = 880;         //设置竞技场积分
+	
+	//世界BOSS
+	NGMC_ID_SET_WORLDBOSS_ATTACK_COUNT = 890;	//设置攻击世界BOSS次数
+	
+	//卸下装饰
+	NGMC_ID_TAKEOFF_DECORATION = 900;		//卸下装饰
+};
+
+//Http Actor msg
+enum HttpMsgID
+{
+    HTTPMSGID_QUERYMONEY                = 1;    //查钱
+    HTTPMSGID_LOGIN                     = 2;    //查钱
+   
+    HTTPMSGID_CONSUMEMONEY              = 4;    //消费钻石
+    HTTPMSGID_CANCELCOMSUMEMONEY        = 5;    //取消消费钻石
+    HTTPMSGID_DRAWGIFTMONEY             = 6;    //赠送钻石
+    HTTPMSGID_REPORTTXDATA              = 7;    //上报数据中心数据
+    HTTPMSGID_REPORTTXWXDATA            = 8;    //微信数据中心数据
+    HTTPMSGID_QQFRIENDSDETAIL           = 9;    //qqfriends_detail
+ 
+    HTTPMSGID_QUERYALLQQ                = 11;   //查询所有vip
+    HTTPMSGID_QUERYALLQQLaodVip         = 12;   //这是老的接口（坑爹的微信要老版本的接口，qq又要用新版本的接口）
+    HTTPMSGID_DORECHARGE_IOS            = 13;   //充值: ios
+    HTTPMSGID_DORECHARGE_GOOGLE         = 14;   //充值: google
+    HTTPMSGID_ADDICTIONGAMEINFO         = 15;   //防沉迷游戏配置
+    HTTPMSGID_ADDICTIONUSEINFO          = 16;   //防沉迷用户信息
+    HTTPMSGID_ADDICTIONREPORTINFO       = 17;   //上报防沉迷信息
+    HTTPMSGID_ADDICTIONREPORTLOGOUTINFO = 18;     //上报防沉迷登出信息
+    HTTPMSGID_ADDICTIONREPORTREMIND     = 19;   //上报弹窗口
+ 
+
+    HTTPMSGID_ADDICTIONREPORTINFOBATCH  = 24;   //上报防沉迷信息批量
+    HTTPMSGID_ADDICTIONUSEINFOBATCH     = 25;   //登录时批量查询接口
+    HTTPMSGID_QUERYTXFRIENDS            = 26;   //查询腾讯平台好友
+    HTTPMSGID_QUERYTXFRIENDSVIP         = 27;   //查询查询腾讯平台好友的vip
+    HTTPMSGID_QUERYTXFRIENDSSERVERLIST  = 28;   //查询腾讯平台好友服务器列表
+    HTTPMSGID_QUERYTXFRIENDSVIPSERVERLIST = 29; //查询查询腾讯平台好友的vip服务器列表
+    HTTPMSGID_GETFIRSTREG                 = 30;   //获取玩家实名注册后首次登录标识
+    HTTPMSGID_SENDGROUPMSG                 = 31;   //群obj消息推送
+	//审核相关  40 -49
+	HTTPMSGID_NAMENAME_CHECK 			= 40;   //名字审核
+	//登陆相关 50 -59
+	HTTPMSGID_USER_CHECK_LOGGING		= 50;   //登陆验证
+};
+
+enum RedisCmdID
+{
+    REDIS_ID_COMMON_DELETE          = 1;
+    REDIS_ID_COMMON_EXPIRED         = 2;
+    REDIS_ID_COMMON_SET             = 3;
+    REDIS_ID_COMMON_HDELETE         = 4;
+    REDIS_ID_COMMON_HMSET           = 5;
+    REDIS_ID_COMMON_HSET            = 6;
+    REDIS_ID_COMMON_ZADD            = 7;
+    REDIS_ID_COMMON_RPUAH           = 8;
+    REDIS_ID_COMMON_HVALUE          = 9;
+    REDIS_ID_COMMON_SETEX           = 10;
+    REDIS_ID_COMMON_GET             = 11;
+};

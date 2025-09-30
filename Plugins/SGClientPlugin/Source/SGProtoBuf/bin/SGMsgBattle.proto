@@ -1,0 +1,155 @@
+syntax = "proto2";
+
+package SGMsg;
+
+import "SGMsgBase.proto";
+
+//---------------------------战斗相关begin------------------------------
+enum RoundStatus
+{
+	RS_IDLE						= 1;		//初始状态
+	RS_HERO_SKILL				= 2;		//使用英雄技能
+}
+
+enum EBattleSkillPhase
+{
+	BSP_None			 = 0;	//
+	BSP_UseSkill		 = 1;	//使用技能
+	BSP_SkillGap		 = 2;	//技能间隔
+}
+message EffectData
+{
+	required GUID target			 = 1;	//目标guid
+	optional int64 data			 	 = 4;	//治疗或者伤害数值 
+	optional int64 skill_hero		 = 5;	//英雄ID
+	optional int64 skill_id			 = 6;	//技能ID
+	optional int64 EffectType		 = 7;	//伤害类型
+	optional int32 CriticalStrike	 = 8;	//是否暴击
+
+	//EffectType的值
+	//SoldierDamage_Normal    = 1,  //普攻
+    //SoldierDamage_Counter   = 2,  //反击
+    //SoldierDamage_Skill     = 3,  //技能
+}
+
+//飘字合包
+
+message NewBTSoldierData
+{
+	required int64 soldier_id		 = 1;	//
+	required int64 soldier_num		 = 2;	//当前数量
+	optional int64 injured_count	 = 3;	//受伤数量
+	optional int64 hero_id	 		 = 4;	//英雄ID
+}
+//	MSG_NTF_SOLIDER_DATA_UPDATE						 = 2603;	//自己的战斗信息更新，每个兵种的数量更新
+//  MSG_NTF_BRSG_IDLE_CURE         					 = 2890;// 部队脱战回血
+message NTFNewSoldierDataUpdate
+{
+	enum ReasonType
+	{
+		RT_None				 = 0;	//默认
+		RT_Poison			 = 1;	//中毒
+		RT_Revive			 = 2;	//复活
+	}
+	repeated NewBTSoldierData soldier_data				 = 1;	//部队数据
+	optional GUID SG_id									 = 2;	//队伍guid
+	optional int32 reason								 = 3;	//原因 1:中毒伤害
+}
+
+message NBRoundData
+{
+	optional int64 nomal_damage		 					 = 5;	//普通伤害---被普攻 和 反击 受到的伤害 buff的伤害
+	optional int64 skill_id								 = 10;	//当前使用技能ID 					删除
+	repeated EffectData damage_list						 = 11;	//伤害列表 						--打出去的伤害列表（技能，反击，普通攻击）
+	repeated EffectData cure_list						 = 12;	//治疗列表 						删除
+	optional int64 car_skill_id							 = 13;	//载具的使用技能ID 				删除
+	optional int32 skill_phase							 = 14;	//技能阶段 EBattleSkillPhase 	删除
+	optional int64 skill_hero							 = 15;	//使用技能的英雄id 				删除	
+
+	optional int64 suffered_skill_damage				= 16;	//受到的技能伤害总和 					
+	optional int64 attack_skill_damage					= 17;	//打出去的的技能伤害总和 					
+	optional int64 attack_damage						= 18;	//打出去的的普通伤害---普攻 和 反击 的伤害 buff的伤害
+	repeated EffectData suffered_damage_list			= 19;	//伤害列表 						--受到的伤害列表（技能，反击，普通攻击）
+
+}
+
+enum EBattleMsgType
+{
+	BTMT_FullMsg			 = 1;	//	NBRoundData
+	BTMT_SimpleMsg			 = 2;	//	SimpleRoundData
+}
+message SimpleRoundData
+{
+	optional int32 cur_soldier_count					 = 1;	//当前血量
+	optional int32 main_hero_fury	 					 = 2;	//当前怒气
+}
+//	MSG_NTF_BATTLE_ROUND_DATA						 = 2601;	//战斗回合数据
+message NTFNewBattleRoundData
+{
+	optional GUID object								 = 1;	// 发起攻击的 单位GUID
+	optional bytes battle_data							 = 2;	// NBRoundData
+	optional bytes simple_data		 					 = 4;	//SimpleRoundData
+	optional bytes soldier_data							 = 5;	//NTFNewSoldierDataUpdate
+}
+message NTFBattleRoundDataList
+{
+	repeated NTFNewBattleRoundData data_list			 = 1;
+}
+//---------------------------demo相关end------------------------------
+
+message DeadSoldierData
+{
+	optional int64 soldier_id		 = 1;	//
+	optional int64 dead_num		 	 = 2;	//死亡数量
+}
+
+// 伤兵通知game   MSG_GS2SS_RPC_WOUNDED_SOLDIER
+message SS2GSWoundedSoldier
+{
+	required GUID cityID 			= 1;
+	repeated NewBTSoldierData soldier_data	= 2;
+	repeated DeadSoldierData dead_data		= 3;
+}
+
+
+
+
+message GS2SSPlunderResourse
+{
+	required GUID SoldierID = 1;			// 部队ID
+	
+	repeated ResourseInfo infos = 2;	// 资源信息
+	
+	required int64 Load = 3;
+}
+
+
+// MSG_GS2SS_ASSEMBLE_PLUNDER_RESOURSE				 = 2613;	// 集结掠夺资源
+message GS2SSAssemblePlunderResourse
+{
+	repeated GS2SSPlunderResourse plunder_resourse = 1;		// 掠夺提交
+}
+
+
+// 击杀怪物奖励		MSG_SS2GS_MONSTER_REWARD	                     = 2611;
+message SS2GSMonsterReward
+{
+	required int64 	monster_id = 1; // 击杀怪物ConfigID
+}
+
+//	MSG_C2S_REQ_SET_DETAIL_BATTLE_MSG_LIMIT				 = 2614;	// 客户端登录上报每回合最大接收战斗详细单位信息数量 服务器默认50
+message ReqSetDetailBattleMsgLimit
+{
+	optional int32 limit						 = 1;	//服务器默认50， 如果上报0 服务器不处理
+}
+//	MSG_S2C_NTF_BATTLE_RESULT_MESSAGE                = 2617; // 通知客户端战斗胜利或失败特效
+message NtfBattleResultMessage
+{
+	optional GUID soldier_group_id					 = 1;
+	optional int32 result							 = 2;	//1 失败，其他 胜利
+}
+
+
+
+
+

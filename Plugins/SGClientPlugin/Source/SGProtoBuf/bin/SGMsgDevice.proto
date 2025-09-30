@@ -1,0 +1,98 @@
+syntax = "proto2";
+
+package SGMsg;
+
+//import "SGDefine.pb";
+import "SGMsgBase.proto";
+
+// ==================================================== 小游戏装置-begin ====================================================
+
+// req DeviceBagList
+// MSG_C2S_REQ_DEVICE_BAG_LIST                  = 3951; // 请求装置背包列表
+// 请求结构空:EmptyMsg
+
+message DeviceInfo
+{
+    message PropertyData
+    {
+        optional int64 propid = 1;      //属性id
+        optional int32 proptype = 2;    //属性类型
+        optional int64 propvalue = 3;   //属性值
+    }
+	// 装置唯一ID
+	optional GUID guid = 1;
+	// 装置配置ID
+	optional int64 device_id = 2;
+	// 部位
+	optional int32 pos = 3;     //此处为0表示未穿戴
+	// 属性
+	repeated PropertyData propdata = 4;
+}
+
+message SmallGameInfo
+{
+    optional int32 dsuper_crit = 1; //大暴击能量
+    optional int32 attack_count = 2; //攻击总次数(服务器使用)
+    optional int32 free_gift_status = 3; //礼包领取状态：0 未领取，1 已经领取
+}
+
+// rsp DeviceNotify
+// MSG_S2C_RSP_DEVICE_NOTIFY                    = 3952; // 通知
+message S2CRspDeviceNotify
+{
+	enum DeviceNotify
+	{
+		PACK	 	= 0; // 全量包
+		ADD 		= 1; // 增
+		DEL 		= 2; // 删
+		UPDATE_POS  = 3; // 更新部位(穿或者脱装置)
+        UPDATE_SCORE = 4;   //更新评分
+        FREE_GIFT_STATUS = 5;  //更新小游戏奖励领取状态
+	}
+
+    optional int32 notify_type	= 1; // DeviceNotify 类型
+	repeated DeviceInfo devices = 2; 
+    optional int64 DeviceScoreSum = 3;  //装置总评分
+    optional SmallGameInfo small_game_info = 4;  //小游戏信息
+}
+
+// req DeviceCmd
+// MSG_C2S_REQ_DEVICE_CMD                       = 2142; // 装备升级 装备觉醒 英雄装备穿脱 等
+message C2SReqDeviceCmd
+{
+	enum DeviceCmd
+	{
+		// 穿装置
+		TAKE_ON  	 = 1;	
+		// 装置回收
+		RECYCLE 	 = 2;
+	}
+	optional int32 cmd				= 1; // DeviceCmd 类型
+	repeated GUID guid				= 2; // 装置实例ID
+}
+
+///////////////////////////////////////////////小游戏装置-end////////////////////////////////////////////////////////
+
+// ==================================================== 小游戏玩法-begin ====================================================
+
+
+//MSG_C2S_REQ_MIN_GAME_ATTACK
+message C2SReqMinGameAttack
+{
+    optional bool is_guide = 1; //是否引导进入
+    optional int32 speed_up = 2; //加速次数
+}
+
+//MSG_S2C_REQ_MIN_GAME_ATTACK
+message S2CRspMinGameAttack
+{
+    optional int32 attackid = 1;    //smallGameAttack配置表id
+    repeated GUID deviceids = 2;    //装置guid列表
+    optional int64 dsuper_crit = 3; //当前能量进度
+}
+
+//MSG_C2S_REQ_MIN_GAME_FREE_GIFT = 3956;
+// 请求结构空:EmptyMsg
+
+
+///////////////////////////////////////////////小游戏玩法-end////////////////////////////////////////////////////////

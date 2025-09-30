@@ -1,0 +1,83 @@
+syntax = "proto2";
+
+package SGMsg;
+
+import "SGMsgAlliance.proto";
+import "SGMsgChat.proto";
+import "SGMsgMail.proto";
+import "SGMsgActivity.proto";
+
+//实体类型
+
+enum EntityType
+{
+	Alliance 	= 0;  	//联盟
+	PS_Player 	= 1;  	//PublicServer上的Player
+	Chat 		= 2;  	//Chat
+	Mail 		= 3;	//邮件
+	Mail_Data = 4;	//邮件单条数据
+	RedPacket   = 5;	//红包数据
+	AllianceSearch 	= 6;  	//联盟搜索
+	FriendSearch	= 7;	//好友搜索
+    AllianceDuleMatch 	= 8;  	//联盟对决匹配数据
+    ChatLanguage    = 9;  	//Chat
+}
+
+//实体存储结构
+message EntityDB
+{
+	//基础字段 索引 1~20
+	optional string _id = 1;//ID
+	optional int32 area_id = 2;//小区
+	optional int64 last_daily_refresh_time = 3;
+	optional int64 last_weekly_refresh_time = 4;
+
+	//联盟 索引 21~100
+	optional AllianceBasic alliance_basic = 21;	//基础联盟信息。
+	optional AllianceMemberList alliance_member_list = 22;//联盟成员。
+	optional AllianceApplicationList alliance_application_list = 23;//申请加入列表
+	optional AllianceLog alliance_log = 24;//联盟日志记录
+	optional AllianceSchedule alliance_schedule = 25;//联盟日程
+	optional AllianceTech alliance_tech = 26;//联盟科技
+	optional AllianceGift alliance_gift = 27; //联盟礼物
+	optional AllianceHelp alliance_help = 28;//联盟帮助
+	optional AllianceMark alliance_mark = 29;//联盟标记
+	optional AllianceChat alliance_chat = 30;//联盟聊天
+	optional AllianceStorage alliance_storage = 31;  //联盟仓库
+	optional AllianceTerritory alliance_territory = 32;  //联盟领土
+	optional AllianceNpcTown alliance_npc_town = 33;  //联盟城镇相关
+	optional int64 mobilization_rank = 34;  //总动员等级
+	optional AllianceTaskChapter alliance_task = 35;// 联盟征程信息	
+    optional AllianceChat alliance_r4_chat = 36;//联盟R4频道聊天 
+	optional AllianceRedPacket alliance_redpacket = 37;	//联盟红包
+	optional AllianceRedPacketDB alliance_redpacket_db = 38;	//联盟红包（最终版）
+	optional AllianceNoticeList alliance_notice_list = 39;	//联盟公告评论
+	optional AllianceIntel alliance_intel = 40;	//联盟情报
+    optional AllianceDuleInfo alliance_dule_info = 41; //联盟对决
+	
+	//聊天 索引 101~110
+	optional ChatBasic chat_basic = 101;
+	optional FriendBasic friend_basic = 102;
+	optional ChatRoomData chat_room = 103;
+    optional ChatRoomData chat_language = 104;
+	
+	//邮件 索引 111~120
+	optional MailInfoData mail_data = 111;
+	optional int64 LastGetGlobalMailTime = 112;// 上次领取邮件的时间
+	repeated MailSimpleInfo mail_simples = 113;// 目前是战报邮件信息
+
+
+	//活动索引 121 ~ 140
+	optional DoomsdayAllianceData doomsday_data = 121;
+	optional ActivityMobilization activity_mobilization = 122;
+	optional AllianceBossData alliance_boss = 123;
+    
+    //跨服数据141~161
+    optional AllianceDuleMatchGroup alliance_dule_match_group = 141;
+}
+
+//实体存储结构列表
+message EntityDBList
+{
+	repeated EntityDB entity_db_list = 1;  //entity列表
+}
