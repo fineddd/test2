@@ -1,9 +1,0 @@
-{
-	"RemapUnityFiles": 
-	{
-		"Module.OnlineSubsystemHubPlugin.cpp.obj": [
-			"PerModuleInline.gen.cpp.obj",
-			"OnlineSubsystemHubPlugin.cpp.obj"
-		]
-	}
-}
